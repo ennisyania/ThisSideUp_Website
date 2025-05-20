@@ -6,7 +6,7 @@ const productListStyles = {
   gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
   gap: '20px',
   padding: '20px',
-  backgroundColor: '#F8FAF5', // Your background color
+  backgroundColor: '#F8FAF5', 
 };
 
 const productCardStyles = {
@@ -48,7 +48,6 @@ function ShirtList({ shirts }) {
 
 function handleAddToCart(product) {
   console.log(`Added ${product.name} to cart`);
-  // Implement your cart logic here
 }
 
 export default ShirtList;
