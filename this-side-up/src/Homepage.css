@@ -178,14 +178,16 @@
 }
 
 .brand-logo {
-  background-image: url('/public/images/pink this side up upscaled.png');
-  margin-top: 1%;
+  background-image: url('/public/images/pinklogo.png');
+  background-repeat: no-repeat;
+  width: 40vw;
   min-width: 300px;
   padding: 2rem;
-  width: 500px;         
-  height: 300px;  
-  background-size: auto;
-  clip-path: polygon(100% 0, 30% 0, 0 100%, 100% 100%); 
+  height: 300px;
+  background-size: 18rem auto;
+  background-position: center;
+  clip-path: polygon(0 0, 70% 0, 100% 100%, 0 100%);
+  flex-shrink: 0;
   flex: 1;
 }
 
@@ -203,8 +205,46 @@
 
 /* Tryout Section */
 .tryout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: -5rem;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: visible;
+}
+
+.tryout-image {
+  background-image: url('/public/images/ClothingGridImage.png');
+  background-repeat: repeat-x;
+  margin-top: 5%;
+  width: 40vw;
+  min-width: 300px;
   padding: 2rem;
-  text-align: center;
+  height: 300px;
+  background-size: contain;
+  background-position: center;
+  clip-path: polygon(0 0, 70% 0, 100% 100%, 0 100%);
+  flex-shrink: 0;
+  flex: 1;
+}
+
+.tryout-info {
+  transform: skew(28deg);
+  flex: 1;
+  margin-left: -15%;
+  margin-top: 5%;
+  width: 40vw;
+  padding: 2rem 3rem 2rem 20%;
+  min-width: 300px;
+  height: 300px;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 30% 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.tryout-info .content {
+  transform: skew(10deg); /* Cancel skew to keep text straight */
 }
 
 .tryout .free {

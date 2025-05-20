@@ -41,6 +41,12 @@ function Homepage() {
           <img src="/images/skimboard 4.png" alt="board 4 duplicate" />
           <img src="/images/skimboard 5.png" alt="board 5 duplicate" />
           <img src="/images/skimboard 6.png" alt="board 6 duplicate" />
+
+          <img src="/images/skimboard 2.png" alt="board 2 duplicate" />
+          <img src="/images/skimboard 3.png" alt="board 3 duplicate" />
+          <img src="/images/skimboard 4.png" alt="board 4 duplicate" />
+          <img src="/images/skimboard 5.png" alt="board 5 duplicate" />
+          <img src="/images/skimboard 6.png" alt="board 6 duplicate" />
         </div>
       </section>
 
@@ -52,11 +58,14 @@ function Homepage() {
 
       {/* Tryout Session */}
       <section className="tryout">
+        <div className='tryout-image'></div>
         <div className="tryout-info">
+          <div className='content'>
           <h2>First Tryout Session <span className="free">FREE!</span></h2>
           <p>Comes with one FREE drink!</p>
           <p>Come ride with us — test our boards, meet the crew, and get a feel for This Side Up. No pressure, just good times.</p>
           <button>Find Out More</button>
+          </div>
         </div>
       </section>
     </div>
