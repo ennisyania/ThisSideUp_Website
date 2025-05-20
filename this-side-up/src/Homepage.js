@@ -28,17 +28,26 @@ function Homepage() {
       </section>
 
       {/* Boards Showcase */}
-      <section className="boards">
-        <img src="board1.png" alt="board 1" />
-        <img src="board2.png" alt="board 2" />
-        <img src="board3.png" alt="board 3" />
-        <img src="board4.png" alt="board 4" />
+      <section className="boards-carousel">
+        <div className="carousel-track">
+          <img src="/images/skimboard 2.png" alt="board 2" />
+          <img src="/images/skimboard 3.png" alt="board 3" />
+          <img src="/images/skimboard 4.png" alt="board 4" />
+          <img src="/images/skimboard 5.png" alt="board 5" />
+          <img src="/images/skimboard 6.png" alt="board 6" />
+          {/* Duplicate for seamless loop */}
+          <img src="/images/skimboard 2.png" alt="board 2 duplicate" />
+          <img src="/images/skimboard 3.png" alt="board 3 duplicate" />
+          <img src="/images/skimboard 4.png" alt="board 4 duplicate" />
+          <img src="/images/skimboard 5.png" alt="board 5 duplicate" />
+          <img src="/images/skimboard 6.png" alt="board 6 duplicate" />
+        </div>
       </section>
 
       {/* Logo and Surfer Image */}
       <section className="logo-and-action">
-        <div className="brand-logo">This Side UP</div>
-        <img className="surfing-img" src="surfer.png" alt="Surfer in action" />
+        <div className="brand-logo"></div>
+        <img className="surfing-img" />
       </section>
 
       {/* Tryout Session */}
