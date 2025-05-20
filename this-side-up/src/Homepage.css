@@ -1,38 +1,169 @@
-.App {
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
+
+.homepage {
+  font-family: 'Inter', sans-serif;
+  color: #110f0f;
+  background: #F8FAF5;
+}
+
+
+
+/* Hero Section */
+.hero {
+  background-image: url('/public/images/Hero Banner.png');
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1440 / 469;
+
+
+  display: flex;
+  align-items: center;
+
+
+  background-size: cover;
+  background-position: bottom;
+  background-repeat: no-repeat;
+  z-index: -1;
+}
+
+.heroText {
+  position: relative;
+  max-width: 90%;
+  margin-left: 5vw;
+  padding: 1rem;
+
+  font-style: normal;
+  font-weight: 900;
+  font-size: clamp(2rem, 5vw, 4rem);
+  line-height: 1.2;
+
+  color: #F8FAF5;
+  text-shadow: 0px 4px 4px #4D4A4E;
+  text-align: left;
+}
+
+/* Clothing Section */
+.clothing {
+  display: flex;
+  flex-wrap: wrap;
+  gap: -5rem;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: visible;
+}
+
+.clothing-Images {
+  background-image: url('/public/images/ClothingGridImage.png');
+  background-repeat: repeat-x;
+  margin-top: 5%;
+  width: 40vw;
+  min-width: 300px;
+  padding: 2rem;
+  height: 300px;
+  background-size: contain;
+  background-position: center;
+  clip-path: polygon(0 0, 70% 0, 100% 100%, 0 100%);
+  flex-shrink: 0;
+  flex: 1;
+}
+
+.clothing-text {
+  flex: 1;
+  margin-left: -15%;
+  margin-top: 5%;
+  width: 40vw;
+  padding: 2rem 3rem 2rem 10%;
+  min-width: 300px;
+  height: 300px;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 30% 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.clothing-text h2 {
+  font-size: 2.5rem;
+  font-weight: 400;
+  margin-bottom: 1rem;
+}
+
+.clothing-text p {
+  padding-left: 5%;
+}
+
+.clothing .buttons {
+  padding-left: 20%;
+  max-width: 400px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+
+}
+
+.clothing .buttons button {
+  margin: 0.1rem;
+  margin-left: -2rem;
+  padding: 0.5rem 1rem;
+  background: #E86540;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 1rem;
+
+
+  clip-path: polygon(20% 0, 100% 0, 80% 100%, 0 100%);
+}
+
+
+.clothing .buttons button:hover {
+  background: #4D4A4E;    
+  color: #F8FAF5;
+  opacity: 80%;
+}
+
+/* Boards */
+.boards {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+  gap: 1rem;
+}
+
+.boards img {
+  width: 80px;
+  height: auto;
+}
+
+/* Logo and Action Shot */
+.logo-and-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 2rem;
+}
+
+.brand-logo {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #ff00ff;
+}
+
+/* Tryout Section */
+.tryout {
+  padding: 2rem;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.tryout .free {
+  color: #E86540;
+  font-weight: bold;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.tryout button {
+  background: #E86540;
+  padding: 0.5rem 1rem;
+  margin-top: 1rem;
+  border: none;
 }
