@@ -3,6 +3,7 @@
   background-color: rgba(248, 250, 245, 1);
   border-bottom: 2px solid rgba(17, 15, 15, 1);
   box-sizing: border-box;
+  z-index: 1000; 
 }
 
 .topLoggedin {
@@ -30,6 +31,7 @@
   gap: 4rem;
   white-space: nowrap;
   flex: 0 0 auto;
+  z-index: 1000;
 }
 
 .clickable {
