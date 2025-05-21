@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const RightArrowIcon = () => (
   <svg
@@ -22,13 +23,13 @@ const Navbar = () => {
   return (
     <div className="topLoggedinContainer">
       <div className="topLoggedin">
-        <a href="./Homepage.js">
+        <Link to="/">
           <img
             src="./nobackgroundlogo.png"
             alt="Logo"
             className="thissideuplogonobackground1"
           />
-        </a>
+        </Link>
 
         <div className="frame1">
           <div
@@ -37,61 +38,59 @@ const Navbar = () => {
             onMouseLeave={() => setShowDropdown(false)}
             style={{ position: "relative" }}
           >
-            <a href="#" className="clickable">
-              Products
-            </a>
+            <span className="clickable">Products</span>
             {showDropdown && (
               <div className="products-dropdown">
-                <a href="./Skimboards.js">
+                <Link to="/skimboards">
                   <RightArrowIcon />
                   Skimboards
-                </a>
-                <a href="./Tshirt.js">
+                </Link>
+                <Link to="/tshirt">
                   <RightArrowIcon />
                   T-shirts
-                </a>
-                <a href="./Jackets.js">
+                </Link>
+                <Link to="/jackets">
                   <RightArrowIcon />
                   Jackets
-                </a>
-                <a href="./Boardshorts.js">
+                </Link>
+                <Link to="/boardshorts">
                   <RightArrowIcon />
                   Boardshorts
-                </a>
-                <a href="./Accessories">
+                </Link>
+                <Link to="/accessories">
                   <RightArrowIcon />
                   Accessories
-                </a>
-                <a href="./Customskimboards.js">
+                </Link>
+                <Link to="/customSkimboards">
                   <RightArrowIcon />
                   Custom Skimboards
-                </a>
+                </Link>
               </div>
             )}
           </div>
 
           <div className="about">
-            <a href="./About.js" className="clickable">
+            <Link to="/about" className="clickable">
               About
-            </a>
+            </Link>
           </div>
 
           <div className="contact">
-            <a href="./Contact.js" className="clickable">
+            <Link to="/contact" className="clickable">
               Contact
-            </a>
+            </Link>
           </div>
         </div>
 
         <div className="loggedinprofileandcart">
           <div className="helpcircle">
-            <a href="./FAQ">
+            <Link to="/faq">
               <img
                 src="./faqcircle.svg"
                 alt="Help Icon"
                 style={{ width: "2rem", height: "2rem" }}
               />
-            </a>
+            </Link>
           </div>
 
           <div
@@ -100,31 +99,31 @@ const Navbar = () => {
             onMouseLeave={() => setShowProfileDropdown(false)}
             style={{ position: "relative" }}
           >
-            <a href="./Profile.js">
+            <Link to="/myProfile">
               <img
                 src="./usericon.svg"
                 alt="User Icon"
                 style={{ width: "2rem", height: "2rem" }}
               />
-            </a>
+            </Link>
             {showProfileDropdown && (
               <div className="profile-dropdown">
-                <a href="./MyAccount.js">My Account</a>
-                <a href="./FAQ">FAQ</a>
+                <Link to="/myProfile">My Account</Link>
+                <Link to="/faq">FAQ</Link>
                 <hr />
-                <a href="./Logout.js">Logout</a>
+                <Link to="/logout">Logout</Link>
               </div>
             )}
           </div>
 
           <div className="shoppingcart">
-            <a href="./Cart.js">
+            <Link to="/cart">
               <img
                 src="./carticon.svg"
                 alt="Cart Icon"
                 style={{ width: "2rem", height: "2rem" }}
               />
-            </a>
+            </Link>
           </div>
         </div>
       </div>
