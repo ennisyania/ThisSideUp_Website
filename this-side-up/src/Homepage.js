@@ -8,7 +8,7 @@ function Homepage() {
   return (
     <div className="homepage">
       {/* Navbar */}
-      <div>
+      <div className='navbar'>
       <Navbar />
     </div>
 
@@ -36,29 +36,23 @@ function Homepage() {
       <section className="boards-carousel">
         <div className="carousel-track">
           <img src="/images/skimboard 2.png" alt="board 2" />
-          <img src="/images/skimboard 3.png" alt="board 3" />
-          <img src="/images/skimboard 4.png" alt="board 4" />
+          <img src="/images/skimboard 6.png" alt="board 3" />
+          <img src="/images/skimboard 2.png" alt="board 4" />
           <img src="/images/skimboard 5.png" alt="board 5" />
           <img src="/images/skimboard 6.png" alt="board 6" />
           {/* Duplicate for seamless loop */}
-          <img src="/images/skimboard 2.png" alt="board 2 duplicate" />
-          <img src="/images/skimboard 3.png" alt="board 3 duplicate" />
-          <img src="/images/skimboard 4.png" alt="board 4 duplicate" />
-          <img src="/images/skimboard 5.png" alt="board 5 duplicate" />
-          <img src="/images/skimboard 6.png" alt="board 6 duplicate" />
-
-          <img src="/images/skimboard 2.png" alt="board 2 duplicate" />
-          <img src="/images/skimboard 3.png" alt="board 3 duplicate" />
-          <img src="/images/skimboard 4.png" alt="board 4 duplicate" />
-          <img src="/images/skimboard 5.png" alt="board 5 duplicate" />
-          <img src="/images/skimboard 6.png" alt="board 6 duplicate" />
+          <img src="/images/skimboard 2.png" alt="board 2" />
+          <img src="/images/skimboard 6.png" alt="board 3" />
+          <img src="/images/skimboard 2.png" alt="board 4" />
+          <img src="/images/skimboard 5.png" alt="board 5" />
+          <img src="/images/skimboard 6.png" alt="board 6" />
         </div>
       </section>
 
       {/* Logo and Surfer Image */}
       <section className="logo-and-action">
         <div className="brand-logo"></div>
-        <img className="surfing-img" />
+        <img className="surfing-img" alt='man surfing'/>
       </section>
 
       {/* Tryout Session */}
@@ -69,7 +63,14 @@ function Homepage() {
           <h2>First Tryout Session <span className="free">FREE!</span></h2>
           <p>Comes with one FREE drink!</p>
           <p>Come ride with us — test our boards, meet the crew, and get a feel for This Side Up. No pressure, just good times.</p>
+          <div>
+            <p>Saturday tryout session from 3-6pm <br />
+            Sunday tryout session from 9am til your legs give out <br />
+            Weekdays reach out to us to schedule a session  </p>
+          </div>
+          <div className='buttons'>
           <button>Find Out More</button>
+          </div>
           </div>
         </div>
       </section>
