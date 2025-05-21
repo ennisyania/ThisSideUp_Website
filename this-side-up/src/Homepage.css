@@ -1,6 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
-
-
 .homepage {
   font-family: 'Inter', sans-serif;
   color: #110f0f;
@@ -89,6 +86,7 @@
   align-items: center;
   justify-content: flex-start;
   overflow: visible;
+  margin-right: 10%;
 }
 
 .clothing-Images {
@@ -106,7 +104,7 @@
   flex: 1;
 }
 
-.clothing-text {
+.right-text {
   flex: 1;
   margin-left: -15%;
   margin-top: 5%;
@@ -120,7 +118,7 @@
   justify-content: center;
 }
 
-.clothing-text h2 {
+.right-text h2 {
   font-size: 2.5rem;
   font-weight: 400;
   margin-bottom: 1rem;
@@ -200,7 +198,6 @@
   height: 300px;
   background-size: 18rem auto;
   background-position: center;
-  clip-path: polygon(0 0, 70% 0, 100% 100%, 0 100%);
   flex-shrink: 0;
   flex: 1;
 }
@@ -221,73 +218,88 @@
 .tryout {
   display: flex;
   flex-wrap: wrap;
-  gap: -5rem;
-  align-items: center;
-  justify-content: flex-start;
-  overflow: visible;
+  gap: 2rem;
+  align-items: stretch;
+  justify-content: center;
+  overflow: hidden;
+  margin-right: 10%;
 }
+
 
 .tryout-image {
   background-image: url('/public/images/Tryouts image.png');
+  
   margin-top: 5%;
   width: 40vw;
   min-width: 300px;
   padding: 2rem;
-  height: 300px;
+  height: 500px;
   background-size: cover;
   background-repeat: no-repeat;
-  background-position: left;
+  background-position: right;
+  aspect-ratio: 4 / 3;
   clip-path: polygon(0 0, 70% 0, 100% 100%, 0 100%);
   flex-shrink: 0;
   flex: 1;
 }
 
-.tryout-info {
+.tryout .right-text {
+  height: 500px;
+}
+
+.content {
   flex: 1;
-  margin-left: -15%;
-  margin-top: 5%;
-  width: 40vw;
-  padding: 2rem 3rem 2rem 20%;
-  min-width: 300px;
-  height: 300px;
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 30% 100%);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  min-width: 280px;
+  max-width: 600px;
+  height: 500px;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
 }
 
 .tryout h2 {
-
 
   font-family: 'Inter';
   font-style: normal;
   font-weight: 900;
   font-size: 48px;
-  line-height: 58px;
-  /* identical to box height */
-
-  color: #000000;
-
-  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 
 }
 
 .tryout .free {
   color: #E86540;
   font-weight: bold;
+  font-style: italic;
+  text-decoration-line: underline;
+  margin-left: 5%;
 }
 
-.tryout button {
-  align-items: left;
-  margin: 0.1rem;
-  padding: 0.5rem 1rem;
-  background: #E86540;
-  border: none;
-  cursor: pointer;
-  font-weight: 500;
-  font-size: 1rem;
-
-
-  clip-path: polygon(20% 0, 100% 0, 80% 100%, 0 100%);
+.free-drink {
+  margin-left: 10%;
+  font-weight: 700;
 
 }
+
+.smallText {
+  margin-left: 15%;
+  font-style: italic;
+}
+
+.time-box {
+background-image: url('/public/images/sessions.png');
+background-repeat: no-repeat;
+background-size:contain;
+margin-left: 20%;
+height: 100px;
+padding: 20px;
+padding-bottom: 0px;
+font-size: 16px;
+}
+
+.tryout .buttons {
+  margin-left: 30%;
+  margin-right: -100%;
+}
+
+
+
+
