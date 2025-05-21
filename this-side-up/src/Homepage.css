@@ -1,0 +1,260 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+
+
+.homepage {
+  font-family: 'Inter', sans-serif;
+  color: #110f0f;
+  background: #F8FAF5;
+}
+
+
+
+/* Hero Section */
+.hero {
+  background-image: url('/public/images/Hero Banner.png');
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1440 / 469;
+
+
+  display: flex;
+  align-items: center;
+
+
+  background-size: cover;
+  background-position: bottom;
+  background-repeat: no-repeat;
+  z-index: -1;
+}
+
+.heroText {
+  position: relative;
+  max-width: 90%;
+  margin-left: 5vw;
+  padding: 1rem;
+
+  font-family: inter;
+  font-style: bolder;
+  font-weight: 900;
+  font-size: 4rem;
+
+
+  color: #F8FAF5;
+  text-shadow: 0px 4px 4px #4D4A4E;
+  text-align: left;
+}
+
+/* Clothing Section */
+.clothing {
+  display: flex;
+  flex-wrap: wrap;
+  gap: -5rem;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: visible;
+}
+
+.clothing-Images {
+  background-image: url('/public/images/ClothingGridImage.png');
+  background-repeat: repeat-x;
+  margin-top: 5%;
+  width: 40vw;
+  min-width: 300px;
+  padding: 2rem;
+  height: 300px;
+  background-size: contain;
+  background-position: center;
+  clip-path: polygon(0 0, 70% 0, 100% 100%, 0 100%);
+  flex-shrink: 0;
+  flex: 1;
+}
+
+.clothing-text {
+  flex: 1;
+  margin-left: -15%;
+  margin-top: 5%;
+  width: 40vw;
+  padding: 2rem 3rem 2rem 10%;
+  min-width: 300px;
+  height: 300px;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 30% 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.clothing-text h2 {
+  font-size: 2.5rem;
+  font-weight: 400;
+  margin-bottom: 1rem;
+}
+
+.clothing-text p {
+  padding-left: 10%;
+}
+
+.clothing .buttons {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-left: 25%;
+  max-width: 400px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+
+}
+
+.clothing .buttons button {
+  align-items: left;  margin: 0.1rem;
+  margin-left: -2rem;
+  padding: 0.5rem 1rem;
+  background: #E86540;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 1rem;
+
+
+  clip-path: polygon(20% 0, 100% 0, 80% 100%, 0 100%);
+}
+
+
+.clothing .buttons button:hover {
+  background: #4D4A4E;    
+  color: #F8FAF5;
+  opacity: 80%;
+}
+
+/* Boards */
+
+.boards-carousel {
+  width: 100%;
+  height: 30rem;
+  overflow: hidden;
+  padding: 2rem 1rem;
+  box-sizing: border-box;
+}
+
+.carousel-track {
+  display: flex;
+  flex-wrap: nowrap;
+  animation: scroll-left 10s linear infinite;
+}
+
+.carousel-track img {
+  height: clamp(20rem, 30vw, 20rem); 
+  width: auto;
+  padding: 1rem;
+  margin-right: 1rem;
+  flex-shrink: 0;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-160%);
+  }
+}
+
+@media (max-width: 768px) {
+  .carousel-track img {
+    height: clamp(6rem, 40vw, 12rem);
+    padding: 0.5rem;
+    margin-right: 0.5rem;
+  }
+}
+
+/* Logo and Action Shot */
+.logo-and-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.brand-logo {
+  background-image: url('/public/images/pinklogo.png');
+  background-repeat: no-repeat;
+  width: 40vw;
+  min-width: 300px;
+  padding: 2rem;
+  height: 300px;
+  background-size: 18rem auto;
+  background-position: center;
+  clip-path: polygon(0 0, 70% 0, 100% 100%, 0 100%);
+  flex-shrink: 0;
+  flex: 1;
+}
+
+.surfing-img {
+  background-image: url('/public/images/surfer.png');
+  min-width: 300px;
+  padding: 2rem;
+  width: 500px;     
+  height: 300px;  
+  background-size: auto;
+  background-position: top center;
+  clip-path: polygon(100% 0, 30% 0, 0 100%, 100% 100%); 
+  flex: 1;
+}
+
+/* Tryout Section */
+.tryout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: -5rem;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: visible;
+}
+
+.tryout-image {
+  background-image: url('/public/images/ClothingGridImage.png');
+  background-repeat: repeat-x;
+  margin-top: 5%;
+  width: 40vw;
+  min-width: 300px;
+  padding: 2rem;
+  height: 300px;
+  background-size: contain;
+  background-position: center;
+  clip-path: polygon(0 0, 70% 0, 100% 100%, 0 100%);
+  flex-shrink: 0;
+  flex: 1;
+}
+
+.tryout-info {
+  transform: skew(28deg);
+  flex: 1;
+  margin-left: -15%;
+  margin-top: 5%;
+  width: 40vw;
+  padding: 2rem 3rem 2rem 20%;
+  min-width: 300px;
+  height: 300px;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 30% 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.tryout-info .content {
+  transform: skew(10deg); /* Cancel skew to keep text straight */
+}
+
+.tryout .free {
+  color: #E86540;
+  font-weight: bold;
+}
+
+.tryout button {
+  background: #E86540;
+  padding: 0.5rem 1rem;
+  margin-top: 1rem;
+  border: none;
+}
