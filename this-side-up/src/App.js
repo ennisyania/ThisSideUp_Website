@@ -2,10 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import Navbar from './component/Navbar';
-import './component/Navbar.css';
 
 import Footer from './component/Footer';
-import './component/Footer.css';
 
 import Homepage from './Homepage.js';
 import About from './About.js';
@@ -66,16 +64,19 @@ function App() {
         <Route path="/myProfile" element={<Profile />} />
         <Route path="/orderhistory" element={<CustomerOrderHistory />} />
 
-        <Route path="/admin" element={<Admin />} />
-        <Route path="/adminProducts" element={<AdminProducts />} />
-        <Route path="/adminViewProducts" element={<AdminViewProducts />} />
-        <Route path="/adminAddProduct" element={<AdminAddProduct />} />
-        <Route path="/adminEditProducts" element={<AdminEditProducts />} />
-        <Route path="/adminOrders" element={<AdminOrders />} />
-        <Route path="/adminOrderDetail" element={<AdminOrderDetail />} />
-        <Route path="/adminCustomers" element={<AdminCustomers />} />
-        <Route path="/adminIndividualCustomer" element={<AdminIndividualCustomer />} />
-        <Route path="/adminSettings" element={<AdminSettings />} />
+        <Route path="/admin" element={<Admin />}>
+          <Route index element={<AdminProducts />} />
+          <Route path="products" element={<AdminProducts />} />
+          <Route path="viewproducts" element={<AdminViewProducts />} />
+          <Route path="addproduct" element={<AdminAddProduct />} />
+          <Route path="editproducts/:id" element={<AdminEditProducts />} />
+          <Route path="orders" element={<AdminOrders />} />
+          <Route path="orderdetail/:id" element={<AdminOrderDetail />} />
+          <Route path="customers" element={<AdminCustomers />} />
+          <Route path="individualcustomer/:id" element={<AdminIndividualCustomer />} />
+          <Route path="settings" element={<AdminSettings />} />
+        </Route>
+
 
         <Route path="*" element={<NotFound />} />
       </Routes>
