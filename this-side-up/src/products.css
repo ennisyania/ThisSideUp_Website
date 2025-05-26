@@ -4,6 +4,8 @@
   background: #F8FAF5;
 }
 
+
+
 /* Hero Section */
 .hero {
   top: 0;
@@ -14,11 +16,41 @@
 
   display: flex;
   align-items: center;
-
+  
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   z-index: -1;
 }
 
+.skimboards .hero {
+  background-image: url('/public/images/skimboard-banner.png');
+}
 
+
+
+
+/* title section */
+.title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: auto; 
+}
+    /* text */
+    .title h1 {
+      font-family: 'Inter';
+    font-style: normal;
+    font-weight: 900;
+    font-size: 6vh;
+    line-height: 0.2;
+    }
+    /* Vector */
+
+    .vector-line {
+      box-sizing: border-box;
+      background-color:#110f0f ;
+      width: 15vw;
+      height: 1.2vw;
+      border: 2px solid #E86540;
+    }
