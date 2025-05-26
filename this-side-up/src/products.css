@@ -1,0 +1,26 @@
+.skimboards {
+  font-family: 'Inter', sans-serif;
+  color: #110f0f;
+  background: #F8FAF5;
+}
+
+/* Hero Section */
+/* 
+.hero img{
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1440 / 469;
+
+  display: flex;
+  align-items: center;
+
+  background-size: cover;
+  background-position: bottom;
+  background-repeat: no-repeat;
+  z-index: -1;
+
+
+} */
+

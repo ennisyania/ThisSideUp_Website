@@ -1,9 +1,12 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Homepage.css';
 
 
 
 function Homepage() {
+
+  const navigate = useNavigate();
 
   return (
     <div className="homepage">
@@ -20,10 +23,10 @@ function Homepage() {
           <h2>Trying to look good<br />while riding the waves?</h2>
           <p className="smallText">Browse through our collection of high-quality <br />clothing made to enhance your flow.</p>
           <div className="buttons">
-            <button>Accessories</button>
-            <button>Jackets</button>
-            <button>T-Shirt</button>
-            <button>Boardshorts</button>
+            <button onClick={() => navigate('/accessories')}>Accessories</button>
+            <button onClick={() => navigate('/jackets')}>Jackets</button>
+            <button onClick={() => navigate('/tshirt')}>T-Shirt</button>
+            <button onClick={() => navigate('/boardshorts')}>Boardshorts</button>
           </div>
         </div>
 
@@ -37,7 +40,7 @@ function Homepage() {
 
       {/* Boards Showcase */}
 
-    
+
 
       <section className="boards-carousel">
         <div className="carousel-track">
@@ -61,7 +64,7 @@ function Homepage() {
 
         </div>
 
-        
+
       </section>
 
       {/* Image overlay */}
@@ -87,20 +90,20 @@ function Homepage() {
               <br /> No pressure, just good times.</p>
             <div className='time-box'></div>
             <div className='buttons'>
-              <button>Find Out More</button>
+              <button onClick={() => navigate('/more-info')}>Find Out More</button>
             </div>
           </div>
         </div>
       </section>
 
       {/* Image overlay */}
-        <div className="image-overlay3">
-          <img src="/images/skimboard 1.png" alt="surfOverlay" className="board-img3" />
-        </div>
+      <div className="image-overlay3">
+        <img src="/images/skimboard 1.png" alt="surfOverlay" className="board-img3" />
+      </div>
 
     </div>
 
-    
+
   );
 }
 

@@ -1,5 +1,14 @@
 import React from 'react';
+import './products.css';
 
 export default function Skimboards() {
-  return <h1>This is the Skimboards</h1>;
+  return (
+    <div className='skimboards'>
+      {/* Hero */}
+      <section>
+        <img src="/images/skimboard banner.png" alt="Skimboard Hero" />
+      </section>
+
+    </div>
+  )
 }
