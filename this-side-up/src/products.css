@@ -1,0 +1,138 @@
+.skimboards {
+  font-family: 'Inter', sans-serif;
+  color: #110f0f;
+  background: #F8FAF5;
+}
+
+
+
+/* Hero Section */
+.hero {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1440 / 350;
+
+  display: flex;
+  align-items: center;
+  
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -1;
+}
+
+.skimboards .hero {
+  background-image: url('/public/images/skimboard-banner.png');
+}
+
+
+
+
+/* title section */
+.title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: auto; 
+}
+    /* text */
+    .title h1 {
+      font-family: 'Inter';
+    font-style: normal;
+    font-weight: 900;
+    font-size: 6vh;
+    line-height: 0.2;
+    }
+    /* Vector */
+
+    .vector-line {
+      box-sizing: border-box;
+      background-color:#110f0f ;
+      width: 15vw;
+      height: 1.2vw;
+      border: 2px solid #E86540;
+    }
+
+
+/* product section */
+/* Container (Frame 61) */
+.product-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 50px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px 20px;
+  box-sizing: border-box;
+}
+
+/* Common Frame Style */
+.product-frame {
+  display: flex;
+  flex: 0 0 calc(25% - 20px);
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 344px;
+  box-sizing: border-box;
+}
+
+/* Product Image */
+.product-image {
+  width: 100%;
+  max-width: 200px;
+  height: auto;
+  background-size: cover;
+  background-position: center;
+}
+
+/* Product Title */
+.product-title {
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 1.25rem;
+  line-height: 1.5rem;
+  text-align: center;
+  color: #000000;
+}
+
+/* Product Price */
+.product-price {
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 1rem;
+  line-height: 1.2rem;
+  text-align: center;
+  color: #707070;
+}
+
+
+/* Responsive Tweaks */
+@media (max-width: 1024px) {
+  .product-row {
+    gap: 30px;
+  }
+
+  .product-frame {
+    max-width: 45%;
+  }
+}
+
+@media (max-width: 768px) {
+  .product-row {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .product-frame {
+    max-width: 80%;
+  }
+}

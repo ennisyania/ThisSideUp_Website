@@ -1,0 +1,356 @@
+.homepage {
+  font-family: 'Inter', sans-serif;
+  color: #110f0f;
+  background: #F8FAF5;
+}
+
+
+
+/* images */
+
+.image-overlay {
+  position: relative;
+  width: 100%;
+  height: 0;
+  z-index: 1000;
+}
+
+.board-img {
+  position: static;
+  height: 50vw;
+  width: 30%;
+  z-index: 10;
+  pointer-events: none;
+  aspect-ratio: 1440 / 469;
+  transform: translateX(85vw) translateY(-90vh) rotate(-30deg);
+}
+
+/* image2 */
+
+.image-overlay2 {
+  position: relative;
+  width: 100%;
+  height: 0;
+}
+
+.board-img2 {
+  position: absolute;
+  height: 50vw;
+  width: 30%;
+  z-index: 1000;
+  pointer-events: none;
+  aspect-ratio: 1440 / 469;
+  transform: translateX(-20vw) translateY(-80vh) rotate(-10deg);
+}
+
+.image-overlay3 {
+  position: relative;
+  width: 100%;
+  height: 0;
+  z-index: 1000;
+}
+
+.board-img3 {
+  position: static;
+  height: 50vw;
+  width: 30%;
+  z-index: 10;
+  pointer-events: none;
+  aspect-ratio: 1440 / 469;
+  transform: translateX(85vw) translateY(-100vh) rotate(20deg);
+}
+
+
+.buttons {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-left: 25%;
+  max-width: 400px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+
+}
+
+.buttons button {
+  align-items: left;
+  margin: 0.1rem;
+  margin-left: -2rem;
+  padding: 0.5rem 1rem;
+  background: #E86540;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 1rem;
+
+
+  clip-path: polygon(20% 0, 100% 0, 80% 100%, 0 100%);
+}
+
+.buttons button:hover {
+  background: #4D4A4E;
+  color: #F8FAF5;
+  opacity: 80%;
+}
+
+
+
+/* Hero Section */
+.hero {
+  background-image: url('/public/images/Hero Banner.png');
+  top: 0;
+  left: 0;
+  width: 100%;
+  aspect-ratio: 1440 / 350;
+
+  display: flex;
+  align-items: center;
+
+  background-size: contain;
+  background-position: bottom;
+  background-repeat: no-repeat;
+  z-index: -1;
+}
+
+.heroText {
+  position: relative;
+  max-width: 90%;
+  margin-left: 5vw;
+  padding: 1rem;
+
+  font-family: 'Inter', sans-serif;
+  font-style: normal;
+  font-weight: 900;
+  font-size: 64px;
+  line-height: 77px;
+
+
+  color: #F8FAF5;
+  text-shadow: 0px 4px 4px #4D4A4E;
+  text-align: left;
+}
+
+/* Clothing Section */
+.clothing {
+  display: flex;
+  flex-wrap: wrap;
+  gap: -5rem;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: visible;
+  margin-right: 10%;
+}
+
+.clothing-Images {
+  background-image: url('/public/images/ClothingGridImage.png');
+  background-repeat: repeat-x;
+  margin-top: 5%;
+  width: 40vw;
+  min-width: 300px;
+  padding: 2rem;
+  height: 20vw;
+  background-size: contain;
+  background-position: center;
+  clip-path: polygon(0 0, 70% 0, 100% 100%, 0 100%);
+  flex-shrink: 0;
+  flex: 1;
+}
+
+.right-text {
+  flex: 1;
+  margin-left: -15%;
+  margin-top: 5%;
+  width: 40vw;
+  padding: 2rem 3rem 2rem 10%;
+  min-width: 300px;
+  height: 20vw;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 30% 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.right-text h2 {
+  font-size: 2.5rem;
+  font-weight: 400;
+  margin-bottom: 1rem;
+}
+
+.clothing-text p {
+  padding-left: 10%;
+}
+
+.buttons button:hover {
+  background: #4D4A4E;
+  color: #F8FAF5;
+  opacity: 80%;
+}
+
+/* Boards */
+.boards-carousel {
+  width: 100%;
+  overflow: hidden;
+  padding: 2rem 1rem;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 2;
+}
+
+.carousel-track {
+  display: flex;
+  flex-wrap: nowrap;
+  animation: scroll-left 5s linear infinite;
+}
+
+.carousel-track img {
+  height: 20vw;
+  width: auto;
+  padding: 1rem;
+  margin-right: 1rem;
+  flex-shrink: 0;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* Animation */
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 768px) {
+  .carousel-track img {
+    height: clamp(6rem, 40vw, 12rem);
+    padding: 0.5rem;
+    margin-right: 0.5rem;
+  }
+}
+
+.boards-carousel:hover .carousel-track {
+  animation-play-state: paused;
+}
+
+/* Logo and Action Shot */
+.logo-and-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.brand-logo {
+  background-image: url('/public/images/pinklogo.png');
+  background-repeat: no-repeat;
+  width: 20vw;
+  min-width: 300px;
+  padding: 2rem;
+  height: 30vw;
+  background-size: 18rem auto;
+  background-position: center;
+  flex-shrink: 0;
+  flex: 1;
+}
+
+.surfing-img {
+  background-image: url('/public/images/surfer.png');
+  min-width: 300px;
+  padding: 2rem;
+  width: 500px;
+  height: 20vw;
+  background-size: auto;
+  background-position: top center;
+  clip-path: polygon(100% 0, 30% 0, 0 100%, 100% 100%);
+  flex: 1;
+}
+
+/* Tryout Section */
+.tryout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: stretch;
+  justify-content: center;
+  overflow: hidden;
+  margin-right: 10%;
+}
+
+
+.tryout-image {
+  background-image: url('/public/images/Tryouts image.png');
+
+  margin-top: 5%;
+  width: 40vw;
+  min-width: 300px;
+  padding: 4rem;
+  height: 20vw;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #110f0f;
+  align-self: center;
+  aspect-ratio: 4 / 3;
+  clip-path: polygon(0 0, 70% 0, 100% 100%, 0 100%);
+  flex-shrink: 0;
+  flex: 1;
+}
+
+.tryout .right-text {
+  height: 500px;
+}
+
+.content {
+  flex: 1;
+  min-width: 280px;
+  max-width: 600px;
+  height: 00px;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+}
+
+.tryout h2 {
+
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 900;
+  font-size: 48px;
+
+}
+
+.tryout .free {
+  color: #E86540;
+  font-weight: bold;
+  font-style: italic;
+  text-decoration-line: underline;
+  margin-left: 5%;
+}
+
+.free-drink {
+  margin-left: 10%;
+  font-weight: 700;
+
+}
+
+.smallText {
+  margin-left: 15%;
+  font-style: italic;
+}
+
+.time-box {
+  background-image: url('/public/images/sessions.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  margin-left: 20%;
+  height: 100px;
+  padding: 20px;
+  padding-bottom: 0px;
+  font-size: 16px;
+}
+
+.tryout .buttons {
+  margin-left: 30%;
+  margin-right: -100%;
+}
