@@ -42,7 +42,11 @@ function Homepage() {
 
 
 
-      <section className="boards-carousel">
+      <section
+        className="boards-carousel"
+        onClick={() => navigate('/skimboards')}
+        style={{ cursor: 'pointer' }}
+      >
         <div className="carousel-track">
           <img src="/images/skimboard 2.png" alt="board 2" />
           <img src="/images/skimboard 6.png" alt="board 3" />
@@ -101,7 +105,7 @@ function Homepage() {
         <img src="/images/skimboard 1.png" alt="surfOverlay" className="board-img3" />
       </div>
 
-    </div>
+    </div >
 
 
   );
