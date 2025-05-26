@@ -1,17 +1,13 @@
 
 import './Homepage.css';
-import Navbar from './component/Navbar';
+
 
 
 
 function Homepage() {
   return (
     <div className="homepage">
-      {/* Navbar */}
-      <div className='navbar'>
-      <Navbar />
-    </div>
-
+      
       {/* Hero */}
       <section className='hero'>
         <h1 className='heroText'>Ride the Shore<br />Own the Wave</h1>
