@@ -16,11 +16,11 @@
 }
 
 .board-img {
-  position:static;
+  position: static;
   height: 50vw;
-  width: 30%; 
+  width: 30%;
   z-index: 10;
-  pointer-events: none; 
+  pointer-events: none;
   aspect-ratio: 1440 / 469;
   transform: translateX(85vw) translateY(-90vh) rotate(-30deg);
 }
@@ -34,11 +34,11 @@
 }
 
 .board-img2 {
-  position:absolute;
+  position: absolute;
   height: 50vw;
-  width: 30%; 
+  width: 30%;
   z-index: 1000;
-  pointer-events: none; 
+  pointer-events: none;
   aspect-ratio: 1440 / 469;
   transform: translateX(-20vw) translateY(-80vh) rotate(-10deg);
 }
@@ -51,11 +51,11 @@
 }
 
 .board-img3 {
-  position:static;
+  position: static;
   height: 50vw;
-  width: 30%; 
+  width: 30%;
   z-index: 10;
-  pointer-events: none; 
+  pointer-events: none;
   aspect-ratio: 1440 / 469;
   transform: translateX(85vw) translateY(-100vh) rotate(20deg);
 }
@@ -101,18 +101,15 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: auto;
-  aspect-ratio: 1440 / 469;
+  aspect-ratio: 1440 / 350;
 
   display: flex;
   align-items: center;
 
-  background-size: cover;
+  background-size: contain;
   background-position: bottom;
   background-repeat: no-repeat;
   z-index: -1;
-
-
 }
 
 .heroText {
@@ -274,7 +271,7 @@
 .tryout {
   display: flex;
   flex-wrap: wrap;
-  gap: 2rem;
+  gap: 1rem;
   align-items: stretch;
   justify-content: center;
   overflow: hidden;

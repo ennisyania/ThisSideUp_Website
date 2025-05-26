@@ -5,8 +5,7 @@ export default function Skimboards() {
   return (
     <div className='skimboards'>
       {/* Hero */}
-      <section>
-        <img src="/images/skimboard banner.png" alt="Skimboard Hero" />
+      <section className="hero" style={{ backgroundImage: 'url(/images/skimboard-banner.png)' }}>
       </section>
 
     </div>
