@@ -1,10 +1,29 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import './NotFound.css';
 
-export default function NotFound() {
+function NotFound() {
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    navigate('/');
+  };
+
   return (
-    <div style={{ padding: '2rem', textAlign: 'center' }}>
-      <h1>404 - Page Not Found</h1>
-      <p>The page you're looking for doesn't exist 🐱‍👤</p>
+    <div className="notfound-container">
+      <div className="notfound-bg-shape" />
+      <div className="notfound-error-text">
+        Er<span className="errorWhite">ror</span>
+      </div>
+      <div className="notfound-subtext">
+        <span className="blackWithWhiteOutline">Looks like som</span>
+        <span className="whiteWithBlackOutline">ething went wrong</span>
+      </div>
+      <button className="notfound-button" onClick={handleBack}>
+        Back To Homepage
+      </button>
     </div>
   );
 }
+
+export default NotFound;
