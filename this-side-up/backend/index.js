@@ -1,9 +1,17 @@
+const { MongoClient } = require('mongodb');
 require('dotenv').config();
 
-const mongoose = require('mongoose');
+const uri = process.env.MONGODB_URI;
+const client = new MongoClient(uri);
 
-const mongoUri = process.env.MONGODB_URI;
-
-mongoose.connect(mongoUri)
-  .then(() => console.log("Connected to MongoDB"))
-  .catch(err => console.error("MongoDB connection error:", err));
+async function run() {
+  try {
+    await client.connect();
+    console.log("Connected to MongoDB!");
+  } catch (e) {
+    console.error(e);
+  } finally {
+    await client.close();
+  }
+}
+run();
