@@ -1,36 +1,53 @@
 import React from 'react';
-import './products.css';
+import { Link } from 'react-router-dom';
 
-const tshirts = [
-  { id: 1, imageSrc: '/images/tshirt-1.png', title: 'Skull Ripper Tee', price: '$25.00' },
-  { id: 2, imageSrc: '/images/tshirt-2.png', title: 'Diamond Beast Tee', price: '$28.00' },
-  { id: 3, imageSrc: '/images/tshirt-3.png', title: 'Death Grip Tee', price: '$25.00' },
-  { id: 4, imageSrc: '/images/tshirt-4.png', title: 'Tiki Thunder Tee', price: '$30.00' },
-  { id: 5, imageSrc: '/images/tshirt-5.png', title: 'Speed Demon Tee', price: '$27.00' },
-  { id: 6, imageSrc: '/images/tshirt-6.png', title: 'Radical Wave Tee', price: '$32.00' },
-];
+const productListStyles = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+  gap: '20px',
+  padding: '20px',
+  backgroundColor: '#F8FAF5', 
+};
 
-export default function Tshirt() {
+const productCardStyles = {
+  border: '1px solid #ddd',
+  borderRadius: '8px',
+  padding: '15px',
+  textAlign: 'center',
+};
+
+const imageStyles = {
+  maxWidth: '100%',
+  height: 'auto',
+  marginBottom: '10px',
+};
+
+const linkStyles = {
+  textDecoration: 'none',
+  color: 'inherit',
+};
+
+function ShirtList({ shirts }) {
   return (
-    <div className='tshirts'>
-
-
-      {/* title */}
-      <div className='title'>
-        <h1>T-Shirts</h1>
-        <div className="vector-line"></div>
-      </div>
-
-      {/* products */}
-      <div className="product-row">
-        {tshirts.map(product => (
-          <div key={product.id} className="product-frame">
-            <img src={product.imageSrc} alt={product.title} className="product-image" />
-            <div className="product-title">{product.title}</div>
-            <div className="product-price">{product.price}</div>
-          </div>
-        ))}
-      </div>
+    <div style={productListStyles}>
+      {shirts.map((shirt) => (
+        <div key={shirt.id} style={productCardStyles}>
+          <Link to={`/products/${shirt.id}`} style={linkStyles}>
+            <img src={shirt.image} alt={shirt.name} style={imageStyles} />
+            <h3>{shirt.name}</h3>
+            <p>${shirt.price.toFixed(2)}</p>
+          </Link>
+          <button onClick={() => handleAddToCart(shirt)} style={{ backgroundColor: '#007bff', color: 'white', border: 'none', padding: '8px 15px', borderRadius: '5px', cursor: 'pointer' }}>
+            Add to Cart
+          </button>
+        </div>
+      ))}
     </div>
   );
 }
+
+function handleAddToCart(product) {
+  console.log(`Added ${product.name} to cart`);
+}
+
+export default ShirtList;
