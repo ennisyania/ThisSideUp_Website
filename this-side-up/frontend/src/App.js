@@ -64,6 +64,8 @@ function App() {
         <Route path="/myProfile" element={<Profile />} />
         <Route path="/orderhistory" element={<CustomerOrderHistory />} />
 
+        <Route path="/product/:id" element={<ProductDetail />} />
+
         <Route path="/admin" element={<Admin />}>
           <Route index element={<AdminProducts />} />
           <Route path="products" element={<AdminProducts />} />
