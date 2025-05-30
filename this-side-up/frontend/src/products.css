@@ -27,8 +27,19 @@
   background-image: url('/public/images/skimboard-banner.png');
 }
 
+.shirts .clothesb {
+  background-image: url('/public/images/skimboard-banner.png');
+}
 
+/* Banner for T-Shirts Page */
+.tshirts .tshirts-hero-banner { /* Targets the section within the .tshirts container */
+  background-image: url('/public/images/Supplies-banner.png');
+}
 
+/* Banner for Jackets Page */
+.jackets .jackets-hero-banner { /* Targets the section within the .jackets container */
+  background-image: url('/public/images/Supplies-banner.png');
+}
 
 /* title section */
 .title {

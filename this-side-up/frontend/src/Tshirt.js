@@ -13,13 +13,14 @@ const tshirts = [
 export default function Tshirt() {
   return (
     <div className='tshirts'>
-
-
+      <section className="hero tshirts-hero-banner">
+      </section>
       {/* title */}
       <div className='title'>
         <h1>T-Shirts</h1>
         <div className="vector-line"></div>
       </div>
+      
 
       {/* products */}
       <div className="product-row">

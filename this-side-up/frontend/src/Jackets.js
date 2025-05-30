@@ -13,8 +13,7 @@ const jackets = [
 export default function Jackets() {
   return (
     <div className='jackets'>
-
-
+      <section className="hero jackets-hero-banner"></section>
       {/* title */}
       <div className='title'>
         <h1>Jackets</h1>
