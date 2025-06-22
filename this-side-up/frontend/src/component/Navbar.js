@@ -101,7 +101,7 @@ const Navbar = () => {
             onMouseLeave={() => setShowProfileDropdown(false)}
             style={{ position: "relative" }}
           >
-            <Link to="/myProfile">
+            <Link to="/login">
               <img
                 src="./usericon.svg"
                 alt="User Icon"
@@ -110,7 +110,7 @@ const Navbar = () => {
             </Link>
             {showProfileDropdown && (
               <div className="profile-dropdown">
-                <Link to="/myProfile">My Account</Link>
+                <Link to="/login">My Account</Link>
                 <Link to="/faq">FAQ</Link>
                 <hr />
                 <Link to="/logout">Logout</Link>
