@@ -25,6 +25,9 @@ import Cart from './Cart.js';
 import CheckOut from './CheckOut.js';
 import Tryouts from './Tryouts.js';
 
+import PrivacyPolicy from './PrivacyPolicy.js';
+import TermsAndConditions from './TermsAndConditions.js';
+
 import Admin from './admin/AAdmin.js';
 import AdminProducts from './admin/AProducts.js';
 import AdminViewProducts from './admin/AViewProducts.js';
@@ -63,6 +66,9 @@ function App() {
         <Route path="/customSkimboards" element={<CustomSkimboards />} />
         <Route path="/myProfile" element={<Profile />} />
         <Route path="/orderhistory" element={<CustomerOrderHistory />} />
+
+        <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
+        <Route path="/termsAndConditions" element={<TermsAndConditions />} />
 
         <Route path="/admin" element={<Admin />}>
           <Route index element={<AdminProducts />} />
