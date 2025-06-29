@@ -35,4 +35,18 @@ router.get('/tshirts', async (req, res) => {
   }
 });
 
+// Get jackets
+router.get('/jackets', async (req, res) => {
+  try {
+    await client.connect();
+    const db = client.db(dbName);
+    const collection = db.collection('products');
+    const jackets = await collection.find({ category: 'jacket' }).toArray();
+    res.json(jackets);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch jackets' });
+  }
+});
+
 module.exports = router;
