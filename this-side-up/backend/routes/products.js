@@ -7,6 +7,7 @@ const uri = process.env.MONGO_URI;
 const client = new MongoClient(uri);
 const dbName = 'ThisSideUp';
 
+// Get skimboards
 router.get('/skimboards', async (req, res) => {
   try {
     await client.connect();
@@ -17,6 +18,20 @@ router.get('/skimboards', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to fetch skimboards' });
+  }
+});
+
+// Get t-shirts
+router.get('/tshirts', async (req, res) => {
+  try {
+    await client.connect();
+    const db = client.db(dbName);
+    const collection = db.collection('products');
+    const tshirts = await collection.find({ category: 't-shirt' }).toArray();
+    res.json(tshirts);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch t-shirts' });
   }
 });
 
