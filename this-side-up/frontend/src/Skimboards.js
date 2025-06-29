@@ -1,4 +1,6 @@
+// frontend/src/components/Skimboards.js
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import './products.css';
 
 export default function Skimboards() {
@@ -9,7 +11,7 @@ export default function Skimboards() {
       .then(res => res.json())
       .then(data => {
         const formatted = data.map((item, index) => ({
-          id: index,
+          id: item.productId,
           imageSrc: item.imageurl,
           title: item.name,
           price: item.price[0] ? `$${item.price[0].toFixed(2)}` : '$0.00'
@@ -28,11 +30,11 @@ export default function Skimboards() {
       </div>
       <div className="product-row">
         {products.map(product => (
-          <div key={product.id} className="product-frame">
+          <Link to={`/productdetail/${product.id}`} key={product.id} className="product-frame">
             <img src={product.imageSrc} alt={product.title} className="product-image" />
             <div className="product-title">{product.title}</div>
             <div className="product-price">{product.price}</div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>
