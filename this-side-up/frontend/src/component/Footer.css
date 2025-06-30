@@ -1,0 +1,161 @@
+/* Footer Styles */
+.site-footer {
+    background-color: #333; /* Dark background color */
+    color: #fff;
+    padding: 40px 20px 20px; /* Top, horizontal, bottom padding */
+    text-align: center;
+}
+
+.footer-content-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap; /* Allow sections to wrap on smaller screens */
+    justify-content: space-around; /* Distribute space evenly */
+    gap: 30px; /* Gap between sections */
+    text-align: left; /* Align text within sections to left */
+}
+
+.footer-section {
+    flex: 1; /* Allow sections to grow and shrink */
+    min-width: 250px; /* Minimum width before wrapping */
+    margin-bottom: 20px; /* Space between sections when wrapped */
+}
+
+/* Logo Section */
+.footer-logo-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Align items to the start for logo and social */
+}
+
+.footer-main-logo {
+    height: 60px; /* Adjust logo size */
+    width: auto;
+    object-fit: contain;
+    margin-bottom: 15px;
+    filter: brightness(0) invert(1); /* Makes a dark logo white if it's a solid color */
+}
+
+.footer-social-icons {
+    display: flex;
+    gap: 15px; /* Space between social icons */
+}
+
+.social-icon {
+    height: 30px; /* Adjust social icon size */
+    width: 30px;
+    filter: brightness(0) invert(1); /* Makes icons white */
+    transition: transform 0.2s ease;
+}
+
+.social-icon:hover {
+    transform: scale(1.1);
+}
+
+/* Customer Service Section */
+.footer-customer-service h3,
+.footer-made-in-sg h3 {
+    font-size: 1.2em;
+    margin-bottom: 15px;
+    color: #eee;
+    text-transform: uppercase;
+}
+
+.footer-customer-service ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-customer-service ul li {
+    margin-bottom: 8px;
+}
+
+.footer-customer-service ul li a {
+    text-decoration: none;
+    color: #ccc; /* Lighter text for links */
+    font-size: 0.95em;
+    transition: color 0.2s ease;
+}
+
+.footer-customer-service ul li a:hover {
+    color: #fff; /* White on hover */
+    text-decoration: underline;
+}
+
+/* Made in Singapore Section */
+.footer-made-in-sg p {
+    line-height: 1.6;
+    color: #ccc;
+    font-size: 0.95em;
+}
+
+/* Bottom Copyright */
+.footer-bottom {
+    border-top: 1px solid #555; /* Separator line */
+    margin-top: 30px;
+    padding-top: 20px;
+}
+
+.footer-copyright {
+    font-size: 0.85em;
+    color: #aaa; /* Even lighter for copyright */
+    margin: 0;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .footer-content-wrapper {
+        flex-direction: column;
+        align-items: center; /* Center items in column layout */
+        text-align: center; /* Center text for all sections */
+    }
+
+    .footer-section {
+        min-width: unset; /* Remove min-width restriction */
+        width: 100%; /* Take full width */
+        margin-bottom: 30px;
+    }
+
+    .footer-logo-section {
+        align-items: center; /* Center logo and social icons */
+    }
+
+    .footer-customer-service ul {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center; /* Center list items */
+        gap: 10px 20px; /* Space between items */
+    }
+
+    .footer-customer-service ul li {
+        margin-bottom: 0; /* Remove vertical margin if using gap */
+    }
+}
+
+@media (max-width: 480px) {
+    .site-footer {
+        padding: 30px 15px 15px;
+    }
+
+    .footer-main-logo {
+        height: 50px;
+    }
+
+    .social-icon {
+        height: 25px;
+        width: 25px;
+    }
+
+    .footer-customer-service h3,
+    .footer-made-in-sg h3 {
+        font-size: 1.1em;
+    }
+
+    .footer-customer-service ul li a,
+    .footer-made-in-sg p,
+    .footer-copyright {
+        font-size: 0.9em;
+    }
+}
