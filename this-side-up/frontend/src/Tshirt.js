@@ -32,7 +32,7 @@ useEffect(() => {
       <div className="product-row">
         {products.map(product => (
           <Link to={`/productdetail/${product.id}`} key={product.id} className="product-frame">
-            <img src={product.imageSrc} alt={product.title} className="product-image" />
+            <img src={product.imageSrc} alt={product.title} className="products-image" />
             <div className="product-title">{product.title}</div>
             <div className="product-price">{product.price}</div>
           </Link>
