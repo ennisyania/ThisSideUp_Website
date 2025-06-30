@@ -33,13 +33,19 @@
 
 /* Banner for T-Shirts Page */
 .tshirts .tshirts-hero-banner { /* Targets the section within the .tshirts container */
-  background-image: url('/public/images/Supplies-banner.png');
+  background-image: url('/public/images/Shirt-banner.png');
 }
 
 /* Banner for Jackets Page */
 .jackets .jackets-hero-banner { /* Targets the section within the .jackets container */
   background-image: url('/public/images/Supplies-banner.png');
 }
+
+/* Banner for Accessoriess Page */
+.accessories .accessories-hero-banner { 
+  background-image: url('/public/images/Accessories-banner.png');
+}
+
 
 /* title section */
 .title {
