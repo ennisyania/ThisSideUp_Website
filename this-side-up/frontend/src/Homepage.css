@@ -16,7 +16,7 @@
 }
 
 .board-img {
-  position: static;
+  position: absolute;
   height: 50vw;
   width: 30%;
   z-index: 10;
@@ -51,7 +51,7 @@
 }
 
 .board-img3 {
-  position: static;
+  position: absolute;
   height: 50vw;
   width: 30%;
   z-index: 10;

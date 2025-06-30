@@ -19,25 +19,26 @@
 
 .background-image {
   position: absolute;
-  top: -10%;
   right: 0;
-  width: 55vw;
-  height: auto;
+  top: 0;
+  width: 50vw;       
+  height: 150vh;    
   max-height: none;
-  z-index: -1;
+  z-index: -100;
   pointer-events: none;
   user-select: none;
-  object-fit: contain;
+  object-fit: cover; /* makes sure it fills the area */
 }
 
 
-.skimboard-image {
+
+
+.product-image {
   position: absolute;
-  right: 12%;
+  max-width: 40%;
+  right: 1rem;
   top: 50%;
-  transform: translateY(-50%);
-  height: 100vh;
-  width: auto;
+  transform: translateY(-50%) scale(0.5);
   object-fit: contain;
   filter: drop-shadow(0 8px 8px rgba(0, 0, 0, 0.3));
   pointer-events: none;
@@ -185,4 +186,11 @@
   font-size: 1vw;
   line-height: 1.6;
 }
+
+.details-list {
+  list-style-type: none;
+  padding-left: 0;
+  margin: 0;
+}
+
 

@@ -49,4 +49,23 @@ router.get('/jackets', async (req, res) => {
   }
 });
 
+// GET a single product by productId
+router.get('/:productId', async (req, res) => {
+  const { productId } = req.params;
+  try {
+    await client.connect();
+    const db = client.db(dbName);
+    const product = await db.collection('products').findOne({ productId });
+
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    res.json(product);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 module.exports = router;
