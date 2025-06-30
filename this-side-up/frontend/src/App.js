@@ -2,8 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import Navbar from './component/Navbar.js';
-
 import Footer from './component/Footer.js';
+import AdminLayout from './component/AdminSideBar.js';
 
 import Homepage from './Homepage.js';
 import About from './About.js';
@@ -44,34 +44,45 @@ import NotFound from './NotFound.js';
 function App() {
   return (
     <Router>
-      <Navbar />
       <Routes>
-        <Route path="/" element={<Homepage />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
 
-        <Route path="/skimboards" element={<Skimboards />} />
-        <Route path="/boardshorts" element={<Boardshorts />} />
-        <Route path="/accessories" element={<Accessories />} />
-        <Route path="/tshirt" element={<Tshirt />} />
-        <Route path="/jackets" element={<Jackets />} />
-        <Route path="/productdetail/:productId" element={<ProductDetail />} />
+        {/* Public Routes with Navbar & Footer */}
+        <Route
+          path="*"
+          element={
+            <>
+              <Navbar />
+              <Routes>
+                <Route path="/" element={<Homepage />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/faq" element={<FAQ />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/myProfile" element={<Profile />} />
+                <Route path="/orderhistory" element={<CustomerOrderHistory />} />
+                <Route path="/skimboards" element={<Skimboards />} />
+                <Route path="/boardshorts" element={<Boardshorts />} />
+                <Route path="/accessories" element={<Accessories />} />
+                <Route path="/tshirt" element={<Tshirt />} />
+                <Route path="/jackets" element={<Jackets />} />
+                <Route path="/productdetail/:productId" element={<ProductDetail />} />
+                <Route path="/customSkimboards" element={<CustomSkimboards />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/checkout" element={<CheckOut />} />
+                <Route path="/tryouts" element={<Tryouts />} />
+                <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
+                <Route path="/termsAndConditions" element={<TermsAndConditions />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+              <Footer />
+            </>
+          }
+        />
 
-        <Route path="/faq" element={<FAQ />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/checkout" element={<CheckOut />} />
-        <Route path="/tryouts" element={<Tryouts />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/customSkimboards" element={<CustomSkimboards />} />
-        <Route path="/myProfile" element={<Profile />} />
-        <Route path="/orderhistory" element={<CustomerOrderHistory />} />
-
-        <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
-        <Route path="/termsAndConditions" element={<TermsAndConditions />} />
-
-        <Route path="/admin" element={<Admin />}>
-          <Route index element={<AdminProducts />} />
+        {/* Admin Routes (no Navbar or Footer) */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<Admin />} />
           <Route path="products" element={<AdminProducts />} />
           <Route path="viewproducts" element={<AdminViewProducts />} />
           <Route path="addproduct" element={<AdminAddProduct />} />
@@ -82,11 +93,7 @@ function App() {
           <Route path="individualcustomer/:id" element={<AdminIndividualCustomer />} />
           <Route path="settings" element={<AdminSettings />} />
         </Route>
-
-
-        <Route path="*" element={<NotFound />} />
       </Routes>
-      <Footer />
     </Router>
   );
 }
