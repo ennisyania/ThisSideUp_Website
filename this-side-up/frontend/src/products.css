@@ -103,7 +103,6 @@
 /* Product Image */
 .products-image {
   width: auto;
-  max-width: 300px;
   height: 30rem;
   background-size: cover;
   background-position: center;
