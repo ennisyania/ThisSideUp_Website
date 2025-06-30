@@ -1,9 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import './ProductDetail.css';
 
 export default function ProductDetail() {
+  const { productId } = useParams();
+  const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState(null);
+
+  useEffect(() => {
+    fetch(`http://localhost:5000/api/products/${productId}`)
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! Status: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then((data) => {
+        console.log('Fetched product:', data);
+        setProduct(data);
+      })
+      .catch((err) => {
+        console.error('Fetch error:', err);
+      });
+  }, [productId]);
+  if (!product) {
+    return <div>Loading...</div>;
+  }
 
   const increaseQuantity = () => setQuantity((q) => q + 1);
   const decreaseQuantity = () => setQuantity((q) => (q > 0 ? q - 1 : 0));
@@ -36,17 +59,17 @@ export default function ProductDetail() {
 
       {/* Skimboard image on right, centered vertically */}
       <img
-        src="/images/skimboard 2.png"
-        alt="Skimboard"
-        className="skimboard-image"
+        src={product.imageurl}
+        alt={product.name}
+        className="product-image"
       />
 
       {/* Content wrapper */}
       <div className="product-content">
-        <h1 className="product-detail-title">4'7 Blue Inferno</h1>
+        <h1 className="product-detail-title">{product.name}</h1>
         <hr className="divider" />
         <div className="size-selector">
-          {['50”', '52”', '54”', '56”'].map((size) => (
+          {product.sizes.map((size, idx) => (
             <button
               key={size}
               onClick={() => handleSizeSelect(size)}
@@ -57,7 +80,11 @@ export default function ProductDetail() {
             </button>
           ))}
         </div>
-        <p className="product-detail-price">$275.00</p>
+        <p className="product-detail-price">
+          {selectedSize
+            ? `$${product.price[product.sizes.indexOf(selectedSize)]}.00`
+            : 'Select a size'}
+        </p>
 
         <div className="quantity-selector">
           <button onClick={decreaseQuantity}>-</button>
@@ -71,34 +98,15 @@ export default function ProductDetail() {
 
         <div className="size-selector2" style={{ marginTop: '2rem' }}>
           <div className="product-description">
-            The Blue Inferno is crafted for riders who live for that perfect rush between sand and sea.
-            <br />
-            <br />
-            Its clean white base keeps it classic and sharp, while bold blue flames and coral designs lick the edges,
-            giving it an untamed, oceanic energy.
-            <br />
-            <br />
-            Lightweight but sturdy, this board is designed for quick cuts, smooth glides, and powerful wraps.
-            <br />
-            <br />
-            Whether you're just skimming the surface or carving deep lines, the Blue Inferno gives you the perfect
-            balance of speed, stability, and style.
-            <br />
-            <br />
-            Built for all levels, it's the ultimate board for chasing adrenaline and mastering the shoreline.
+            {product.description}
           </div>
 
           <div className="features">
-            <h2>Build Tech</h2>
-            <ul>
-              <li>3/4” Thick</li>
-              <li>V.R.T.™ Technology</li>
-              <li>Continuous Core</li>
-              <li>E-Glass™ Wrap</li>
-              <li>PolyLam™ Texture Finish</li>
-              <li>FlexSpine™ Carbon Stringer</li>
-              <li>Resin Art</li>
-              <li>Polyester Resin</li>
+            <h2>Details</h2>
+            <ul className="details-list">
+              {product.details.map((item, idx) => (
+                <li key={idx}>{item}</li>
+              ))}
             </ul>
           </div>
         </div>
