@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useContext} from "react";
 import './Navbar.css';
 import { Link } from 'react-router-dom';
+import AuthContext from "../context/AuthContext";
 
 
 const RightArrowIcon = () => (
@@ -21,6 +22,8 @@ const RightArrowIcon = () => (
 const Navbar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  const { user, logout } = useContext(AuthContext);
+
 
   return (
     <div className="topLoggedinContainer">
@@ -110,10 +113,22 @@ const Navbar = () => {
             </Link>
             {showProfileDropdown && (
               <div className="profile-dropdown">
-                <Link to="/login">My Account</Link>
-                <Link to="/faq">FAQ</Link>
-                <hr />
-                <Link to="/logout">Logout</Link>
+                {user ? (
+                  <>
+                    <span style={{ padding: "0.5rem 1rem" }}>Logged in as <strong>{user.email}</strong></span>
+                    <Link to="/account">My Account</Link>
+                    <Link to="/faq">FAQ</Link>
+                    <hr />
+                    <button onClick={logout} style={{ background: "none", border: "none", cursor: "pointer", padding: "0.5rem 1rem", textAlign: "left", width: "100%" }}>
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link to="/login">Login</Link>
+                    <Link to="/register">Register</Link>
+                  </>
+                )}
               </div>
             )}
           </div>
