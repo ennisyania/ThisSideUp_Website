@@ -15,7 +15,6 @@ app.use('/api/products', productsRoute);
 app.use('/api/user', userRoute);
 
 const PORT = process.env.PORT || 5000;
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/ThisSideUp';
 
 mongoose.connect(MONGO_URI)
   .then(() => {
