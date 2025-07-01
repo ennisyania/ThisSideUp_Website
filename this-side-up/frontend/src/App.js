@@ -1,4 +1,4 @@
-import React, { useState } from 'react'; // MODIFIED: Import useState
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import Navbar from './component/Navbar.js';
@@ -42,6 +42,31 @@ import AdminSettings from './admin/ASettings.js';
 import NotFound from './NotFound.js';
 
 function App() {
+  // Global cart state
+  const [cartItems, setCartItems] = useState([]);
+
+  // Function to add product to cart or increase quantity if it exists
+  const handleAddToCart = (productToAdd) => {
+    setCartItems((prevItems) => {
+      const existingItem = prevItems.find(
+        (item) =>
+          item.id === productToAdd.id && item.variant === productToAdd.variant
+      );
+
+      if (existingItem) {
+        // Increase quantity for existing item with same variant
+        return prevItems.map((item) =>
+          item.id === productToAdd.id && item.variant === productToAdd.variant
+            ? { ...item, quantity: item.quantity + productToAdd.quantity }
+            : item
+        );
+      } else {
+        // Add new product item
+        return [...prevItems, productToAdd];
+      }
+    });
+  };
+
   return (
     <Router>
       <Routes>
@@ -51,7 +76,7 @@ function App() {
           path="*"
           element={
             <>
-              <Navbar />
+              <Navbar cartItems={cartItems} />
               <Routes>
                 <Route path="/" element={<Homepage />} />
                 <Route path="/about" element={<About />} />
@@ -66,9 +91,15 @@ function App() {
                 <Route path="/accessories" element={<Accessories />} />
                 <Route path="/tshirt" element={<Tshirt />} />
                 <Route path="/jackets" element={<Jackets />} />
-                <Route path="/productdetail/:productId" element={<ProductDetail />} />
+
+                {/* Pass handleAddToCart prop to ProductDetail */}
+                <Route
+                  path="/productdetail/:productId"
+                  element={<ProductDetail onAddToCart={handleAddToCart} />}
+                />
+
                 <Route path="/customSkimboards" element={<CustomSkimboards />} />
-                <Route path="/cart" element={<Cart />} />
+                <Route path="/cart" element={<Cart cartItems={cartItems} />} />
                 <Route path="/checkout" element={<CheckOut />} />
                 <Route path="/tryouts" element={<Tryouts />} />
                 <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
