@@ -8,7 +8,11 @@ const userSchema = new Schema({
     type: String,
     required: true,
     unique: true,
-  },
+    lowercase: true,
+    trim: true,
+    match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, // simple email regex validation
+  }
+  ,
   password: {
     type: String,
     required: true,
@@ -16,7 +20,7 @@ const userSchema = new Schema({
 });
 
 // Static signup method
-userSchema.statics.signup = async function(email, password) {
+userSchema.statics.register = async function (email, password) {
   const exists = await this.findOne({ email });
 
   if (exists) {
