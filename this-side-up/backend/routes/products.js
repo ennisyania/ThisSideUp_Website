@@ -49,6 +49,34 @@ router.get('/jackets', async (req, res) => {
   }
 });
 
+// Get boardshorts
+router.get('/boardshorts', async (req, res) => {
+  try {
+    await client.connect();
+    const db = client.db(dbName);
+    const collection = db.collection('products');
+    const boardshorts = await collection.find({ category: 'boardshort' }).toArray();
+    res.json(boardshorts);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch boardshorts' });
+  }
+});
+
+// Get assecsories
+router.get('/accessories', async (req, res) => {
+  try {
+    await client.connect();
+    const db = client.db(dbName);
+    const collection = db.collection('products');
+    const accessories = await collection.find({ category: 'accessory' }).toArray();
+    res.json(accessories);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch accessories' });
+  }
+});
+
 // GET a single product by productId
 router.get('/:productId', async (req, res) => {
   const { productId } = req.params;

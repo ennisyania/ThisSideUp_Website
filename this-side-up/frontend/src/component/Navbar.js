@@ -1,7 +1,11 @@
 import React, { useState, useContext} from "react";
 import './Navbar.css';
 import { Link } from 'react-router-dom';
+
 import AuthContext from "../context/AuthContext";
+
+
+import PopUpCart from './PopUpCart'; // <-- updated component name
 
 
 const RightArrowIcon = () => (
@@ -22,81 +26,65 @@ const RightArrowIcon = () => (
 const Navbar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+
   const { user, logout } = useContext(AuthContext);
 
 
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
+
   return (
-    <div className="topLoggedinContainer">
-      <div className="topLoggedin">
-        <Link to="/">
-          <img
-            src="./nobackgroundlogo.png"
-            alt="Logo"
-            className="thissideuplogonobackground1"
-          />
-        </Link>
+    <>
+      <div className="topLoggedinContainer">
+        <div className="topLoggedin">
+          <Link to="/">
+            <img
+              src="./nobackgroundlogo.png"
+              alt="Logo"
+              className="thissideuplogonobackground1"
+            />
+          </Link>
 
-        <div className="frame1">
-          <div
-            className="products"
-            onMouseEnter={() => setShowDropdown(true)}
-            onMouseLeave={() => setShowDropdown(false)}
-            style={{ position: "relative" }}
-          >
-            <span className="clickable">Products</span>
-            {showDropdown && (
-              <div className="products-dropdown">
-                <Link to="/skimboards">
-                  <RightArrowIcon />
-                  Skimboards
-                </Link>
-                <Link to="/tshirt">
-                  <RightArrowIcon />
-                  T-shirts
-                </Link>
-                <Link to="/jackets">
-                  <RightArrowIcon />
-                  Jackets
-                </Link>
-                <Link to="/boardshorts">
-                  <RightArrowIcon />
-                  Boardshorts
-                </Link>
-                <Link to="/accessories">
-                  <RightArrowIcon />
-                  Accessories
-                </Link>
-                <Link to="/customSkimboards">
-                  <RightArrowIcon />
-                  Custom Skimboards
-                </Link>
-              </div>
-            )}
+          <div className="frame1">
+            <div
+              className="products"
+              onMouseEnter={() => setShowDropdown(true)}
+              onMouseLeave={() => setShowDropdown(false)}
+              style={{ position: "relative" }}
+            >
+              <span className="clickable">Products</span>
+              {showDropdown && (
+                <div className="products-dropdown">
+                  <Link to="/skimboards"><RightArrowIcon /> Skimboards</Link>
+                  <Link to="/tshirt"><RightArrowIcon /> T-shirts</Link>
+                  <Link to="/jackets"><RightArrowIcon /> Jackets</Link>
+                  <Link to="/boardshorts"><RightArrowIcon /> Boardshorts</Link>
+                  <Link to="/accessories"><RightArrowIcon /> Accessories</Link>
+                  <Link to="/customSkimboards"><RightArrowIcon /> Custom Skimboards</Link>
+                </div>
+              )}
+            </div>
+
+            <div className="about">
+              <Link to="/about" className="clickable">About</Link>
+            </div>
+
+            <div className="contact">
+              <Link to="/contact" className="clickable">Contact</Link>
+            </div>
           </div>
 
-          <div className="about">
-            <Link to="/about" className="clickable">
-              About
-            </Link>
-          </div>
+          <div className="loggedinprofileandcart">
+            <div className="helpcircle">
+              <Link to="/faq">
+                <img
+                  src="./faqcircle.svg"
+                  alt="Help Icon"
+                  style={{ width: "2rem", height: "2rem" }}
+                />
+              </Link>
+            </div>
 
-          <div className="contact">
-            <Link to="/contact" className="clickable">
-              Contact
-            </Link>
-          </div>
-        </div>
-
-        <div className="loggedinprofileandcart">
-          <div className="helpcircle">
-            <Link to="/faq">
-              <img
-                src="./faqcircle.svg"
-                alt="Help Icon"
-                style={{ width: "2rem", height: "2rem" }}
-              />
-            </Link>
-          </div>
 
           <div
             className="user"
@@ -133,18 +121,20 @@ const Navbar = () => {
             )}
           </div>
 
-          <div className="shoppingcart">
-            <Link to="/cart">
+
+            <div className="shoppingcart" onClick={() => setIsCartOpen(true)}>
               <img
                 src="./carticon.svg"
                 alt="Cart Icon"
-                style={{ width: "2rem", height: "2rem" }}
+                style={{ width: '2rem', height: '2rem', cursor: 'pointer' }}
               />
-            </Link>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      <PopUpCart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+    </>
   );
 };
 
