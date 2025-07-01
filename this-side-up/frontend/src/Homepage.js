@@ -99,7 +99,7 @@ function Homepage() {
               <br /> No pressure, just good times.</p>
             <div className='time-box'></div>
             <div className='buttons'>
-              <button onClick={() => navigate('/more-info')}>Find Out More</button>
+              <button onClick={() => navigate('/tryouts')}>Find Out More</button>
             </div>
           </div>
         </div>
