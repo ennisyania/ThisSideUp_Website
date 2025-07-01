@@ -1,29 +1,21 @@
 const User = require('../models/userModel');
-
+const { createToken, maxAge } = require('../utils/jwt'); // import JWT helper
 
 const validateEmail = (email) => {
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return re.test(email);
-}
-
+};
 
 const validatePassword = (password) => {
   const re = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
   return re.test(password);
-}
+};
 
-
-const loginUser = async (req, res) => {
-    res.json({ mssg: 'login user' })
-}
-
-// register user
 const registerUser = async (req, res) => {
   const { email, password } = req.body;
 
   console.log('Register data:', { email, password });
 
-  // Validate email and password BEFORE creating user
   if (!email || !validateEmail(email)) {
     console.log('Invalid email');
     return res.status(400).json({ error: 'Invalid or missing email.' });
@@ -31,8 +23,8 @@ const registerUser = async (req, res) => {
 
   if (!password || !validatePassword(password)) {
     console.log('Invalid password');
-    return res.status(400).json({ 
-      error: 'Password must be at least 8 characters long and contain at least one letter and one number.' 
+    return res.status(400).json({
+      error: 'Password must be at least 8 characters long and contain at least one letter and one number.'
     });
   }
 
@@ -40,12 +32,17 @@ const registerUser = async (req, res) => {
     const user = await User.register(email, password);
     console.log('New user:', user);
 
+    // Generate JWT token here
+    const token = createToken(user._id);
+
     res.status(200).json({
       email: user.email,
       user: {
         id: user._id,
         email: user.email,
-      }
+      },
+      token,
+      expiresIn: maxAge
     });
   } catch (error) {
     console.log('Signup error:', error);
@@ -53,4 +50,46 @@ const registerUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser }
+const bcrypt = require('bcrypt');
+
+const loginUser = async (req, res) => {
+  const { email, password } = req.body;
+
+  // Validate inputs first (optional, but recommended)
+  if (!email || !validateEmail(email)) {
+    return res.status(400).json({ error: 'Invalid or missing email.' });
+  }
+  if (!password) {
+    return res.status(400).json({ error: 'Missing password.' });
+  }
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ error: 'Invalid email or password.' });
+    }
+
+    const auth = await bcrypt.compare(password, user.password);
+    if (!auth) {
+      return res.status(400).json({ error: 'Invalid email or password.' });
+    }
+
+    // Generate token
+    const token = createToken(user._id);
+
+    res.status(200).json({
+      email: user.email,
+      user: {
+        id: user._id,
+        email: user.email,
+      },
+      token,
+      expiresIn: maxAge
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+
+module.exports = { registerUser, loginUser };
