@@ -34,5 +34,20 @@ userSchema.statics.register = async function (email, password) {
   return user;
 };
 
+//Static login ethod
+userSchema.statics.login = async function(email, password) {
+  const user = await this.findOne({ email });
+  if (!user) {
+    throw Error('Incorrect email or password');
+  }
+
+  const auth = await bcrypt.compare(password, user.password);
+  if (!auth) {
+    throw Error('Incorrect email or password');
+  }
+
+  return user;
+};
+
 
 module.exports = mongoose.model('user', userSchema);
