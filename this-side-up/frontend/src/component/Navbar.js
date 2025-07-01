@@ -98,7 +98,6 @@ const Navbar = () => {
               )}
             </div>
 
-            {/* Cart Icon */}
             <div className="shoppingcart" onClick={() => setIsCartOpen(true)}>
               <img
                 src="./carticon.svg"
@@ -110,7 +109,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* PopUpCart component */}
       <PopUpCart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </>
   );
