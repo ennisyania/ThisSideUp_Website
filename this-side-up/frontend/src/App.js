@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import PrivateRoute from './component/PrivateRoute.js';
 
 import Navbar from './component/Navbar.js';
 import Footer from './component/Footer.js';
@@ -84,8 +85,22 @@ function App() {
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/myProfile" element={<Profile />} />
-                <Route path="/orderhistory" element={<CustomerOrderHistory />} />
+                <Route
+                  path="myProfile"
+                  element={
+                    <PrivateRoute>
+                      <Profile />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="orderhistory"
+                  element={
+                    <PrivateRoute>
+                      <CustomerOrderHistory />
+                    </PrivateRoute>
+                  }
+                />
                 <Route path="/skimboards" element={<Skimboards />} />
                 <Route path="/boardshorts" element={<Boardshorts />} />
                 <Route path="/accessories" element={<Accessories />} />
@@ -99,8 +114,24 @@ function App() {
                 />
 
                 <Route path="/customSkimboards" element={<CustomSkimboards />} />
-                <Route path="/cart" element={<Cart cartItems={cartItems} />} />
-                <Route path="/checkout" element={<CheckOut />} />
+
+                <Route
+                  path="cart"
+                  element={
+                    <PrivateRoute>
+                      <Cart />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="checkout"
+                  element={
+                    <PrivateRoute>
+                      <CheckOut />
+                    </PrivateRoute>
+                  }
+                />
+
                 <Route path="/tryouts" element={<Tryouts />} />
                 <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
                 <Route path="/termsAndConditions" element={<TermsAndConditions />} />
