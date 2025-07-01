@@ -49,6 +49,20 @@ router.get('/jackets', async (req, res) => {
   }
 });
 
+// Get boardshorts
+router.get('/boardshorts', async (req, res) => {
+  try {
+    await client.connect();
+    const db = client.db(dbName);
+    const collection = db.collection('products');
+    const boardshorts = await collection.find({ category: 'boardshort' }).toArray();
+    res.json(boardshorts);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch boardshorts' });
+  }
+});
+
 // GET a single product by productId
 router.get('/:productId', async (req, res) => {
   const { productId } = req.params;
