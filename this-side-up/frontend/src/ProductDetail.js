@@ -40,10 +40,11 @@ export default function ProductDetail() {
       alert('Please select at least 1 item.');
       return;
     }
-    if (!selectedSize) {
+    if (Array.isArray(product.sizes) && product.sizes.length > 0 && !selectedSize) {
       alert('Please select a size.');
       return;
     }
+
     alert(`Added ${quantity} item(s) of size ${selectedSize} to cart.`);
     // Add further cart logic here 
   };
@@ -68,23 +69,34 @@ export default function ProductDetail() {
       <div className="product-content">
         <h1 className="product-detail-title">{product.name}</h1>
         <hr className="divider" />
-        <div className="size-selector">
-          {product.sizes.map((size, idx) => (
-            <button
-              key={size}
-              onClick={() => handleSizeSelect(size)}
-              className={selectedSize === size ? 'selected' : ''}
-              type="button"
-            >
-              <span>{size}</span>
-            </button>
-          ))}
-        </div>
+        {Array.isArray(product.sizes) && product.sizes.length > 0 && (
+          <div className="size-selector">
+            {product.sizes.map((size) => (
+              <button
+                key={size}
+                onClick={() => handleSizeSelect(size)}
+                className={selectedSize === size ? 'selected' : ''}
+                type="button"
+              >
+                <span>{size}</span>
+              </button>
+            ))}
+          </div>
+        )}
+
         <p className="product-detail-price">
-          {selectedSize
-            ? `$${product.price[product.sizes.indexOf(selectedSize)]}.00`
-            : 'Select a size'}
+          {Array.isArray(product.sizes) && product.sizes.length > 0 ? (
+            selectedSize ? (
+              `$${product.price[product.sizes.indexOf(selectedSize)] * quantity}.00`
+            ) : (
+              'Select a size'
+            )
+          ) : (
+            `$${product.price[0] * quantity}.00`
+          )}
         </p>
+
+
 
         <div className="quantity-selector">
           <button onClick={decreaseQuantity}>-</button>
