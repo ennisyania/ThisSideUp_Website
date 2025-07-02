@@ -8,7 +8,8 @@ import PrivateRoute from './component/PrivateRoute.js';
 // Import Layout Components
 import Navbar from './component/Navbar.js';
 import Footer from './component/Footer.js';
-import AdminLayout from './component/AdminSideBar.js';
+import AdminLayout from './component/AdminLayout.js'; 
+
 
 // Import General Pages
 import Homepage from './Homepage.js';
@@ -16,6 +17,7 @@ import About from './About.js';
 import Contact from './Contact.js';
 import FAQ from './FAQ.js';
 import Login from './Login.js';
+import Logout from './Logout.js';
 import Register from './Register.js';
 import Profile from './Profile.js';
 import CustomerOrderHistory from './CustomerOrderHistory.js';
@@ -33,9 +35,6 @@ import Cart from './Cart.js';
 import CheckOut from './CheckOut.js';
 import Tryouts from './Tryouts.js';
 
-
-// NEW: Import Logout component
-import Logout from './Logout.js';
 
 // Import Admin Pages
 
@@ -100,6 +99,7 @@ function App() {
                 <Route path="/faq" element={<FAQ />} />
 
                 <Route path="/login" element={<Login />} />
+                <Route path="/logout" element={<Logout />} />
                 <Route path="/register" element={<Register />} />
                 <Route
                   path="myProfile"

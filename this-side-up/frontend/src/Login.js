@@ -1,12 +1,14 @@
 // src/Login.js
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
+import AuthContext from './context/AuthContext';
 
 import './component/AuthForm.css'; // Assuming this CSS file exists for form styling
 
-export default function Login({ setIsLoggedIn }) { // Receive setIsLoggedIn as a prop
+export default function Login() { // Receive setIsLoggedIn as a prop
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const { login, logout } = useContext(AuthContext);
 
     const navigate = useNavigate(); // Initialize useNavigate
 
@@ -15,24 +17,20 @@ export default function Login({ setIsLoggedIn }) { // Receive setIsLoggedIn as a
         e.preventDefault();
         console.log('Login submitted:', { email, password });
 
-        // Admin authentication logic
         if (email === 'admin@gmail.com' && password === 'admin') {
             alert('Admin Login successful! Redirecting to Admin Dashboard.');
-            setIsLoggedIn(true); // Set login status to true for admin
-            navigate('/admin'); // Redirect to admin dashboard
-        }
-        // Regular user authentication logic
-        else if (email === 'test@example.com' && password === 'password123') { // Example regular user credentials
+            login({ email }, "admin_token"); // Mark logged in
+            navigate('/admin');
+        } else if (email === 'test@example.com' && password === 'password123') {
             alert('Login successful!');
-            setIsLoggedIn(true); // Set login status to true for regular user
-            navigate('/'); // Redirect to homepage for regular user
-        }
-        // Failed login
-        else {
+            login({ email }, "user_token"); // Mark logged in
+            navigate('/');
+        } else {
             alert('Invalid email or password.');
-            setIsLoggedIn(false); // Ensure login status is false on failure
+            logout(); // Clear any auth
         }
     };
+
 
     return (
         <div className="auth-page-container">

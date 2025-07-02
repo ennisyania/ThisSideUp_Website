@@ -14,75 +14,7 @@ export default function AAdmin() {
 
     return (
         <div className="admin-dashboard-container">
-            {/* Admin Sidebar Navigation */}
-            <aside
-                className="admin-sidebar"
-                style={{
-                    backgroundImage: `url(${adminSidebarBgUrl})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat'
-                }}
-            >
-                <div className="admin-sidebar-header">
-                    <img src={logoWhiteUrl} alt="This Side Up Logo" className="admin-logo" />
-                </div>
-                <nav className="admin-nav">
-                    <ul>
-                        {/* Dashboard Link - Active only when path is exactly /admin */}
-                        <li>
-                            <Link
-                                to="/admin"
-                                className={location.pathname === '/admin' ? 'active' : ''}
-                            >
-                                <i className="fa-solid fa-chart-line"></i>
-                                Dashboard
-                            </Link>
-                        </li>
-                        {/* Products Link - Active when path starts with /admin/products */}
-                        <li>
-                            <Link
-                                to="/admin/products"
-                                className={location.pathname.startsWith('/admin/products') ? 'active' : ''}
-                            >
-                                <i className="fa-solid fa-box"></i>
-                                Products
-                            </Link>
-                        </li>
-                        {/* Orders Link */}
-                        <li>
-                            <Link
-                                to="/admin/orders"
-                                className={location.pathname.startsWith('/admin/orders') || location.pathname.startsWith('/admin/orderdetail') ? 'active' : ''}
-                            >
-                                <i className="fa-solid fa-clipboard-list"></i>
-                                Orders
-                            </Link>
-                        </li>
-                        {/* Customers Link */}
-                        <li>
-                            <Link
-                                to="/admin/customers"
-                                className={location.pathname.startsWith('/admin/customers') || location.pathname.startsWith('/admin/individualcustomer') ? 'active' : ''}
-                            >
-                                <i className="fa-solid fa-users"></i>
-                                Customers
-                            </Link>
-                        </li>
-                        {/* Settings Link */}
-                        <li>
-                            <Link
-                                to="/admin/settings"
-                                className={location.pathname.startsWith('/admin/settings') ? 'active' : ''}
-                            >
-                                <i className="fa-solid fa-gear"></i>
-                                Settings
-                            </Link>
-                        </li>
-                    </ul>
-                </nav>
-            </aside>
-
+            
             {/* Main Content Area */}
             <main className="admin-main-content">
                 <header className="admin-main-header">

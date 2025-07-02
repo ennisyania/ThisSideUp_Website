@@ -1,6 +1,7 @@
-import React, { useState, useContext} from "react";
+import React, { useState, useContext } from "react";
 import './Navbar.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+
 
 import AuthContext from "../context/AuthContext";
 
@@ -31,6 +32,13 @@ const Navbar = () => {
 
 
   const [isCartOpen, setIsCartOpen] = useState(false);
+
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    navigate('/logout');
+  };
+
 
 
   return (
@@ -86,40 +94,41 @@ const Navbar = () => {
             </div>
 
 
-          <div
-            className="user"
-            onMouseEnter={() => setShowProfileDropdown(true)}
-            onMouseLeave={() => setShowProfileDropdown(false)}
-            style={{ position: "relative" }}
-          >
-            <Link to="/login">
+            <div
+              className="user"
+              onMouseEnter={() => setShowProfileDropdown(true)}
+              onMouseLeave={() => setShowProfileDropdown(false)}
+              style={{ position: "relative" }}
+            >
+
               <img
                 src="./usericon.svg"
                 alt="User Icon"
                 style={{ width: "2rem", height: "2rem" }}
               />
-            </Link>
-            {showProfileDropdown && (
-              <div className="profile-dropdown">
-                {user ? (
-                  <>
-                    <span style={{ padding: "0.5rem 1rem" }}>Logged in as <strong>{user.email}</strong></span>
-                    <Link to="/account">My Account</Link>
-                    <Link to="/faq">FAQ</Link>
-                    <hr />
-                    <button onClick={logout} style={{ background: "none", border: "none", cursor: "pointer", padding: "0.5rem 1rem", textAlign: "left", width: "100%" }}>
-                      Logout
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <Link to="/login">Login</Link>
-                    <Link to="/register">Register</Link>
-                  </>
-                )}
-              </div>
-            )}
-          </div>
+
+              {showProfileDropdown && (
+                <div className="profile-dropdown">
+                  {user ? (
+                    <>
+                      <span style={{ padding: "0.5rem 1rem" }}>Logged in as <strong>{user.email}</strong></span>
+                      <Link to="/account">My Account</Link>
+                      <Link to="/faq">FAQ</Link>
+                      <hr />
+                      <Link to="/logout">
+                        Logout
+                      </Link>
+
+                    </>
+                  ) : (
+                    <>
+                      <Link to="/login">Login</Link>
+                      <Link to="/register">Register</Link>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
 
 
             <div className="shoppingcart" onClick={() => setIsCartOpen(true)}>
@@ -131,7 +140,7 @@ const Navbar = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div >
 
       <PopUpCart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </>

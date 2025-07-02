@@ -1,25 +1,27 @@
-// src/Logout.js
-import React, { useState } from 'react'; // Import useState
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Logout.css'
+import AuthContext from './context/AuthContext';
+import './Logout.css';
 
-export default function Logout({ handleLogout }) {
+export default function Logout() {
     const navigate = useNavigate();
-    const [showConfirm, setShowConfirm] = useState(true); // State to control prompt visibility
+    const { logout } = useContext(AuthContext);
+    const [showConfirm, setShowConfirm] = useState(true);
 
     const confirmLogout = () => {
-        setShowConfirm(false); // Hide the prompt
-        handleLogout(); // Proceed with logout (this will also redirect to homepage)
+        setShowConfirm(false);
+        logout(); // clear user
+        navigate('/'); // redirect
     };
 
     const cancelLogout = () => {
-        setShowConfirm(false); // Hide the prompt
-        navigate(-1); // Go back to the previous page
+        setShowConfirm(false);
+        navigate(-1);
     };
 
     return (
         <div className="logout-page-container">
-            {showConfirm && (
+            {showConfirm ? (
                 <div className="logout-confirm-prompt">
                     <h2>Log Out?</h2>
                     <p>Are you sure?</p>
@@ -32,8 +34,7 @@ export default function Logout({ handleLogout }) {
                         </button>
                     </div>
                 </div>
-            )}
-            {!showConfirm && (
+            ) : (
                 <div className="logout-content">
                     <h2>Logging out...</h2>
                     <p>You are being securely logged out of your account.</p>
