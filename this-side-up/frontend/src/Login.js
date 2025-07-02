@@ -1,16 +1,35 @@
 // src/Login.js
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate
 
-import './component/AuthForm.css';
+import './component/AuthForm.css'; // Assuming this CSS file exists for form styling
 
-export default function Login() {
+export default function Login({ setIsLoggedIn }) { // Receive setIsLoggedIn as a prop
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate(); // Initialize useNavigate
 
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log('Login submitted:', { email, password });
+
+        // Admin authentication logic
+        if (email === 'admin@gmail.com' && password === 'admin') {
+            alert('Admin Login successful! Redirecting to Admin Dashboard.');
+            setIsLoggedIn(true); // Set login status to true for admin
+            navigate('/admin'); // Redirect to admin dashboard
+        }
+        // Regular user authentication logic
+        else if (email === 'test@example.com' && password === 'password123') { // Example regular user credentials
+            alert('Login successful!');
+            setIsLoggedIn(true); // Set login status to true for regular user
+            navigate('/'); // Redirect to homepage for regular user
+        }
+        // Failed login
+        else {
+            alert('Invalid email or password.');
+            setIsLoggedIn(false); // Ensure login status is false on failure
+        }
     };
 
     return (
@@ -19,26 +38,24 @@ export default function Login() {
                 <h2>Login</h2>
                 <form className="auth-form" onSubmit={handleSubmit}>
                     <div className="form-group">
-                        {/* Removed label, added placeholder */}
                         <input
                             type="email"
                             id="email"
                             name="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            placeholder="Email" /* MODIFIED */
+                            placeholder="Email"
                             required
                         />
                     </div>
                     <div className="form-group">
-                        {/* Removed label, added placeholder */}
                         <input
                             type="password"
                             id="password"
                             name="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Password" /* MODIFIED */
+                            placeholder="Password"
                             required
                         />
                     </div>

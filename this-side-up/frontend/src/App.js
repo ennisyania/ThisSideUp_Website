@@ -1,6 +1,6 @@
 // src/App.js
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // Removed useNavigate import here
 
 // Import Layout Components
 import Navbar from './component/Navbar.js';
@@ -29,6 +29,9 @@ import Cart from './Cart.js';
 import CheckOut from './CheckOut.js';
 import Tryouts from './Tryouts.js';
 
+// NEW: Import Logout component
+import Logout from './Logout.js';
+
 // Import Admin Pages
 import Admin from './admin/AAdmin.js';
 import AdminProducts from './admin/AProducts.js';
@@ -44,6 +47,9 @@ import AdminSettings from './admin/ASettings.js';
 
 function App() {
     const [cartItems, setCartItems] = useState([]);
+    // NEW: State to track user login status
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    // Removed: const navigate = useNavigate(); from here
 
     const handleAddToCart = (product, variant = 'Default') => {
         setCartItems((prevItems) => {
@@ -74,14 +80,21 @@ function App() {
         console.log("Placing order with items:", cartItems);
         alert('Order Placed Successfully!'); // Simpler confirmation
         setCartItems([]); // Clear the cart after order is placed
-        // No navigation to order-confirmation page
+    };
+
+    // NEW: Function to handle user logout - removed navigation from here
+    const handleLogout = () => {
+        setIsLoggedIn(false); // Set login status to false
+        alert('You have been logged out.'); // Inform the user
+        // Removed: navigate('/'); // Redirection now handled by Logout.js
     };
 
     const totalCartItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
     return (
         <Router>
-            <Navbar cartItemCount={totalCartItems} />
+            {/* Pass isLoggedIn and handleLogout to Navbar for conditional display */}
+            <Navbar cartItemCount={totalCartItems} isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
             <Routes>
                 <Route path="/" element={<Homepage />} />
                 <Route path="/about" element={<About />} />
@@ -99,18 +112,21 @@ function App() {
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="/cart" element={<Cart cartItems={cartItems} setCartItems={setCartItems} />} />
 
-                {/* IMPORTANT: Pass cartItems and handlePlaceOrder to CheckOut */}
                 <Route
                     path="/checkout"
                     element={<CheckOut cartItems={cartItems} handlePlaceOrder={handlePlaceOrder} />}
                 />
                 
                 <Route path="/tryouts" element={<Tryouts />} />
-                <Route path="/login" element={<Login />} />
+                {/* Pass setIsLoggedIn to Login component */}
+                <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/customSkimboards" element={<CustomSkimboards />} />
                 <Route path="/myProfile" element={<Profile />} />
                 <Route path="/orderhistory" element={<CustomerOrderHistory />} />
+
+                {/* NEW: Logout Route */}
+                <Route path="/logout" element={<Logout handleLogout={handleLogout} />} />
 
                 {/* Admin Routes with Nested Structure */}
                 <Route path="/admin" element={<Admin />}>
@@ -120,7 +136,7 @@ function App() {
                     <Route path="addproduct" element={<AdminAddProduct />} />
                     <Route path="editproducts/:id" element={<AdminEditProducts />} />
                     <Route path="orders" element={<AdminOrders />} />
-                    <Route path="orderdetail/:id" element={<AdminOrderDetail />} />
+                    <Route path="orderdetail/:id" element="<AdminOrderDetail />" />
                     <Route path="customers" element={<AdminCustomers />} />
                     <Route path="individualcustomer/:id" element={<AdminIndividualCustomer />} />
                     <Route path="settings" element={<AdminSettings />} />
