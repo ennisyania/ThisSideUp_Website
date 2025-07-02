@@ -49,7 +49,7 @@
 }
 
 .continue-shopping-button {
-    background-color: #e06e3e;
+    background-color: #E86540;
     color: white;
     padding: 12px 25px;
     border-radius: 5px;
@@ -162,7 +162,7 @@
 
 .cart-item-price-full-page {
     font-weight: 700;
-    color: #e06e3e;
+    color: #E86540;
     font-size: 1.2em;
     min-width: 80px;
     text-align: right;
@@ -203,7 +203,7 @@
 .proceed-to-checkout-button {
     display: block;
     width: 100%;
-    background-color: #e06e3e;
+    background-color: #E86540;
     color: white;
     text-align: center;
     padding: 15px;
@@ -216,7 +216,7 @@
 }
 
 .proceed-to-checkout-button:hover {
-    background-color: #c95c30;
+    background-color: #E86540;
 }
 
 .continue-shopping-link {

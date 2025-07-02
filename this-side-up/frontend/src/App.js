@@ -1,11 +1,14 @@
+
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import PrivateRoute from './component/PrivateRoute.js';
 
+// Import Layout Components
 import Navbar from './component/Navbar.js';
 import Footer from './component/Footer.js';
 import AdminLayout from './component/AdminSideBar.js';
 
+// Import General Pages
 import Homepage from './Homepage.js';
 import About from './About.js';
 import Contact from './Contact.js';
@@ -14,7 +17,9 @@ import Login from './Login.js';
 import Register from './Register.js';
 import Profile from './Profile.js';
 import CustomerOrderHistory from './CustomerOrderHistory.js';
+import NotFound from './NotFound.js'; // Generic 404 page
 
+// Import Product/Shop Pages
 import Skimboards from './Skimboards.js';
 import Boardshorts from './Boardshorts.js';
 import Accessories from './Accessories.js';
@@ -40,9 +45,9 @@ import AdminCustomers from './admin/ACustomers.js';
 import AdminIndividualCustomer from './admin/AIndividualCustomer.js';
 import AdminSettings from './admin/ASettings.js';
 
-import NotFound from './NotFound.js';
 
 function App() {
+
   // Global cart state
   const [cartItems, setCartItems] = useState([]);
 
@@ -83,6 +88,7 @@ function App() {
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/faq" element={<FAQ />} />
+
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route
@@ -114,6 +120,7 @@ function App() {
                 />
 
                 <Route path="/customSkimboards" element={<CustomSkimboards />} />
+
 
                 <Route
                   path="cart"
@@ -158,6 +165,7 @@ function App() {
       </Routes>
     </Router>
   );
+
 }
 
 export default App;
