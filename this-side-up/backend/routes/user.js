@@ -1,15 +1,20 @@
-const express = require('express')
+const express = require('express');
 
-//controller functions
-const {loginUser, registerUser} = require('../controllers/userController')
+// Require before use
+const requireAuth = require('../middlewares/requireAuth');
+const { loginUser, registerUser, getCart } = require('../controllers/userController');
 
+console.log('requireAuth:', requireAuth); // now this works fine
 
-const router = express.Router()
+const router = express.Router();
 
-//login route
-router.post('/login', loginUser)
+// Login route
+router.post('/login', loginUser);
 
-//register route
-router.post('/register', registerUser)
+// Register route
+router.post('/register', registerUser);
 
-module.exports = router
+// Protected route for cart
+router.get('/cart', requireAuth, getCart);
+
+module.exports = router;

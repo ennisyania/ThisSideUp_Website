@@ -1,22 +1,48 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const { nanoid } = require('nanoid');
 
 const Schema = mongoose.Schema;
-
 const userSchema = new Schema({
+  userId: {
+    type: String,
+    default: () => `usr_${nanoid(6)}`, // e.g., usr_f1z2a9
+    unique: true,
+  },
+  name: { type: String },  // optional full name field
   email: {
     type: String,
     required: true,
     unique: true,
     lowercase: true,
     trim: true,
-    match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, // simple email regex validation
-  }
-  ,
+    match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+  },
+  phone: { type: String },
+  address: {
+    street: String,
+    city: String,
+    state: String,
+    zip: String,
+    country: String,
+  },
+  registeredDate: { type: Date, default: Date.now },
+  orders: [{ type: Schema.Types.ObjectId, ref: 'Order' }], // if you have an Order model
+  cart: [
+    {
+      productId: { type: Schema.Types.ObjectId, ref: 'Product' },
+      quantity: { type: Number, default: 1, min: 1 },
+    },
+  ],
   password: {
     type: String,
     required: true,
   },
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user',
+  }
 });
 
 // Static signup method

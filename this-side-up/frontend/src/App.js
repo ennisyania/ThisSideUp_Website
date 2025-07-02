@@ -3,12 +3,13 @@ import React, { useState } from 'react';
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import PrivateRoute from './component/PrivateRoute.js';
+import ProtectedAdminRoute from './component/ProtectedAdminRoute.js';
 
 
 // Import Layout Components
 import Navbar from './component/Navbar.js';
 import Footer from './component/Footer.js';
-import AdminLayout from './component/AdminLayout.js'; 
+import AdminLayout from './component/AdminLayout.js';
 
 
 // Import General Pages
@@ -132,7 +133,7 @@ function App() {
                 <Route path="/customSkimboards" element={<CustomSkimboards />} />
 
 
-                
+
                 <Route
                   path="checkout"
                   element={
@@ -154,7 +155,14 @@ function App() {
         />
 
         {/* Admin Routes (no Navbar or Footer) */}
-        <Route path="/admin" element={<AdminLayout />}>
+        <Route
+          path="/admin"
+          element={
+            <ProtectedAdminRoute>
+              <AdminLayout />
+            </ProtectedAdminRoute>
+          }
+        >
           <Route index element={<Admin />} />
           <Route path="products" element={<AdminProducts />} />
           <Route path="viewproducts" element={<AdminViewProducts />} />

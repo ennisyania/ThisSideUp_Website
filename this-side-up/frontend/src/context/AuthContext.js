@@ -1,24 +1,17 @@
-// src/contexts/AuthContext.js
 import { createContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
+export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState(() => localStorage.getItem('token') || null);
 
-  // When app loads, try to get saved auth from localStorage
   useEffect(() => {
-    const savedUser = localStorage.getItem('user');
-    const savedToken = localStorage.getItem('token');
-
-    if (savedUser && savedToken) {
-      setUser(JSON.parse(savedUser));
-      setToken(savedToken);
+    if (token) {
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+      if (storedUser) setUser(storedUser);
     }
-    setLoading(false);
-  }, []);
+  }, [token]);
 
   const login = (user, token) => {
     setUser(user);
@@ -35,10 +28,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, token, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
-};
+}
 
 export default AuthContext;
