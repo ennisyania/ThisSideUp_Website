@@ -7,7 +7,9 @@ import './component/AuthForm.css'; // Assuming this CSS file exists for form sty
 export default function Login({ setIsLoggedIn }) { // Receive setIsLoggedIn as a prop
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
     const navigate = useNavigate(); // Initialize useNavigate
+
 
     const handleSubmit = (e) => {
         e.preventDefault();

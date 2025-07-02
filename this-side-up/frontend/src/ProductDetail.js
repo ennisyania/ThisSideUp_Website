@@ -1,72 +1,128 @@
-// src/ProductDetail.js
 import React, { useState, useEffect } from 'react';
-// Make sure you have this CSS file for styling ProductDetail
-// import './ProductDetail.css'; 
+import { useParams } from 'react-router-dom';
+import './ProductDetail.css';
 
-// This component expects onAddToCart as a prop
-const ProductDetail = ({ onAddToCart }) => {
-    // State to hold the selected variant
-    const [selectedVariant, setSelectedVariant] = useState('S'); // Default variant
+export default function ProductDetail() {
+  const { productId } = useParams();
+  const [product, setProduct] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const [selectedSize, setSelectedSize] = useState(null);
 
-    // Dummy product for demonstration (replace with actual fetching based on URL param or ID)
-    const product = {
-        id: 'example-product',
-        imageSrc: '/images/example-product.png',
-        title: 'Stylish Summer Tee',
-        price: 29.99,
-        description: 'A comfortable and stylish tee perfect for summer days.',
-        variants: ['S', 'M', 'L', 'XL'],
-    };
-
-    // If product details are fetched, you might update state here
-    useEffect(() => {
-        // Example: Fetch product details based on a route parameter
-        // const productId = new URLSearchParams(window.location.search).get('id');
-        // fetchProductDetails(productId).then(data => setProduct(data));
-    }, []);
-
-    const handleAddClick = () => {
-        if (product && selectedVariant) {
-            const confirmAdd = window.confirm(`Add "${product.title} (${selectedVariant})" to cart?`);
-            if (confirmAdd) {
-                onAddToCart(product, selectedVariant);
-                alert(`${product.title} (${selectedVariant}) added to cart!`); // Simple feedback
-            }
+  useEffect(() => {
+    fetch(`http://localhost:5000/api/products/${productId}`)
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! Status: ${res.status}`);
         }
-    };
+        return res.json();
+      })
+      .then((data) => {
+        console.log('Fetched product:', data);
+        setProduct(data);
+      })
+      .catch((err) => {
+        console.error('Fetch error:', err);
+      });
+  }, [productId]);
+  if (!product) {
+    return <div>Loading...</div>;
+  }
 
-    return (
-        <div className="product-detail-container">
-            {/* Keeping the image clickable to potentially view larger image,
-                but the primary add to cart is still the button after variant selection.
-                If you want the image click to add to cart directly, we'd need to remove the button.
-                For now, only the explicit button adds to cart on this page. */}
-            <img src={product.imageSrc} alt={product.title} className="product-detail-image" />
-            <div className="product-info">
-                <h1>{product.title}</h1>
-                <p className="product-price">${product.price.toFixed(2)}</p>
-                <p className="product-description">{product.description}</p>
+  const increaseQuantity = () => setQuantity((q) => q + 1);
+  const decreaseQuantity = () => setQuantity((q) => (q > 0 ? q - 1 : 0));
 
-                <div className="product-variants">
-                    <label htmlFor="variant-select">Select Variant:</label>
-                    <select
-                        id="variant-select"
-                        value={selectedVariant}
-                        onChange={(e) => setSelectedVariant(e.target.value)}
-                    >
-                        {product.variants.map(variant => (
-                            <option key={variant} value={variant}>{variant}</option>
-                        ))}
-                    </select>
-                </div>
+  const handleSizeSelect = (size) => {
+    setSelectedSize(size === selectedSize ? null : size);
+  };
 
-                {/* This button will trigger the confirmation directly */}
-                <button onClick={handleAddClick} className="add-to-cart-button">
-                    Add to Cart
-                </button>
-            </div>
+  const handleAddToCart = () => {
+    if (quantity === 0) {
+      alert('Please select at least 1 item.');
+      return;
+    }
+    if (Array.isArray(product.sizes) && product.sizes.length > 0 && !selectedSize) {
+      alert('Please select a size.');
+      return;
+    }
+
+    alert(`Added ${quantity} item(s) of size ${selectedSize} to cart.`);
+    // Add further cart logic here 
+  };
+
+  return (
+    <div className="product-container">
+      {/* Background image */}
+      <img
+        src="/productdetailbackground.svg"
+        alt="Decorative Background"
+        className="background-image"
+      />
+
+      {/* Skimboard image on right, centered vertically */}
+      <img
+        src={product.imageurl}
+        alt={product.name}
+        className="product-image"
+      />
+
+      {/* Content wrapper */}
+      <div className="product-content">
+        <h1 className="product-detail-title">{product.name}</h1>
+        <hr className="divider" />
+        {Array.isArray(product.sizes) && product.sizes.length > 0 && (
+          <div className="size-selector">
+            {product.sizes.map((size) => (
+              <button
+                key={size}
+                onClick={() => handleSizeSelect(size)}
+                className={selectedSize === size ? 'selected' : ''}
+                type="button"
+              >
+                <span>{size}</span>
+              </button>
+            ))}
+          </div>
+        )}
+
+        <p className="product-detail-price">
+          {Array.isArray(product.sizes) && product.sizes.length > 0 ? (
+            selectedSize ? (
+              `$${product.price[product.sizes.indexOf(selectedSize)] * quantity}.00`
+            ) : (
+              'Select a size'
+            )
+          ) : (
+            `$${product.price[0] * quantity}.00`
+          )}
+        </p>
+
+
+
+        <div className="quantity-selector">
+          <button onClick={decreaseQuantity}>-</button>
+          <span>{quantity}</span>
+          <button onClick={increaseQuantity}>+</button>
         </div>
-    );
-};
 
-export default ProductDetail;
+        <button className="add-to-cart" onClick={handleAddToCart}>
+          <span>Add To Cart</span>
+        </button>
+
+        <div className="size-selector2" style={{ marginTop: '2rem' }}>
+          <div className="product-description">
+            {product.description}
+          </div>
+
+          <div className="features">
+            <h2>Details</h2>
+            <ul className="details-list">
+              {product.details.map((item, idx) => (
+                <li key={idx}>{item}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
