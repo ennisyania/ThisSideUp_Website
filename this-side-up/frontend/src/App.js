@@ -1,7 +1,9 @@
 
 import React, { useState } from 'react';
+
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import PrivateRoute from './component/PrivateRoute.js';
+
 
 // Import Layout Components
 import Navbar from './component/Navbar.js';
@@ -31,8 +33,15 @@ import Cart from './Cart.js';
 import CheckOut from './CheckOut.js';
 import Tryouts from './Tryouts.js';
 
+
+// NEW: Import Logout component
+import Logout from './Logout.js';
+
+// Import Admin Pages
+
 import PrivacyPolicy from './PrivacyPolicy.js';
 import TermsAndConditions from './TermsAndConditions.js';
+
 
 import Admin from './admin/AAdmin.js';
 import AdminProducts from './admin/AProducts.js';
@@ -84,6 +93,7 @@ function App() {
             <>
               <Navbar cartItems={cartItems} />
               <Routes>
+
                 <Route path="/" element={<Homepage />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
@@ -140,6 +150,7 @@ function App() {
                 />
 
                 <Route path="/tryouts" element={<Tryouts />} />
+
                 <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
                 <Route path="/termsAndConditions" element={<TermsAndConditions />} />
                 <Route path="*" element={<NotFound />} />

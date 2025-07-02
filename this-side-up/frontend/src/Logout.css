@@ -1,0 +1,173 @@
+/* src/Logout.css */
+
+/* Variables (consistent with other CSS files) */
+:root {
+    --primary-color: #E86540; /* Orange/Red from brand */
+    --secondary-color: #D89481; /* Lighter orange/pink from brand */
+    --text-dark: #333;
+    --text-medium: #555;
+    --text-light: #777;
+    --border-color: #e0e0e0;
+    --background-light: #F8FAF5; /* Overall page background */
+    --surface-white: #fff; /* For the modal/prompt background */
+    --shadow-light: rgba(0, 0, 0, 0.05);
+    --shadow-medium: rgba(0, 0, 0, 0.1);
+    --shadow-dark: rgba(0, 0, 0, 0.3);
+    --navbar-height: 80px;
+    --footer-height: 200px;
+}
+
+.logout-page-container {
+    background-color: #F8FAF5; /* Match overall page background */
+    min-height: calc(100vh - var(--navbar-height, 80px) - var(--footer-height, 200px));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 40px 20px;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-dark);
+}
+
+/* Styling for the confirmation prompt box */
+.logout-confirm-prompt {
+    background-color: var(--surface-white); /* White background for the prompt box */
+    border-radius: 8px;
+    box-shadow: 0 4px 15px var(--shadow-medium);
+    padding: 40px;
+    max-width: 450px; /* Adjust max-width as needed */
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.logout-confirm-prompt h2 {
+    font-size: 2em;
+    color: var(--text-dark); /* Black text for "Log Out?" */
+    margin-bottom: 15px;
+    font-weight: 700; /* Bold as in the image */
+}
+
+.logout-confirm-prompt p {
+    font-size: 1.2em;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    color: var(--text-dark); /* Black text for "Are you sure?" */
+    font-weight: 600; /* Semibold as in the image */
+}
+
+.logout-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* Space between buttons */
+    margin-top: 20px;
+}
+
+/* Common button styling for slanted effect */
+.logout-yes-button,
+.logout-no-button {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 0; /* Sharp edges */
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    transform: skewX(-10deg); /* Slanted effect */
+    position: relative;
+    overflow: hidden;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    flex-grow: 1; /* Allow buttons to grow */
+    max-width: 150px; /* Limit individual button width */
+}
+
+/* Styling for the "Yes" button */
+.logout-yes-button {
+    background-color: var(--primary-color); /* Orange/Red */
+}
+
+/* Styling for the "No" button */
+.logout-no-button {
+    background-color: #cccccc; /* Grey color */
+}
+
+/* Span for counter-skewing text inside buttons */
+.logout-yes-button span,
+.logout-no-button span {
+    display: block;
+    transform: skewX(10deg); /* Counter-skew text to make it straight */
+    white-space: nowrap;
+    color: #000; /* Black text */
+}
+
+/* Hover effects for buttons */
+.logout-yes-button:hover {
+    background-color: #d45c36; /* Darken primary color */
+    transform: skewX(-10deg) translateY(-2px);
+    box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.logout-no-button:hover {
+    background-color: #b3b3b3; /* Darken grey on hover */
+    transform: skewX(-10deg) translateY(-2px);
+    box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Active effects for buttons */
+.logout-yes-button:active,
+.logout-no-button:active {
+    transform: skewX(-10deg) translateY(0);
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Fallback for "Logging out..." message if prompt is hidden */
+.logout-content {
+    background-color: transparent; /* Blends with page background */
+    padding: 50px;
+    max-width: 500px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.logout-content h2 {
+    font-size: 2em;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.logout-content p {
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.logout-content a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.logout-content a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive adjustments for buttons */
+@media (max-width: 480px) {
+    .logout-confirm-prompt {
+        padding: 30px;
+    }
+    .logout-confirm-prompt h2 {
+        font-size: 1.8em;
+    }
+    .logout-confirm-prompt p {
+        font-size: 1.1em;
+    }
+    .logout-buttons {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .logout-yes-button,
+    .logout-no-button {
+        max-width: 100%; /* Full width on small screens */
+    }
+}
