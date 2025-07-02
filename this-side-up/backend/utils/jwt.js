@@ -1,6 +1,10 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 
+const createToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '3d' }); // token valid for 3 days
+};
+
 const requireAuth = async (req, res, next) => {
   const { authorization } = req.headers;
 
@@ -19,4 +23,4 @@ const requireAuth = async (req, res, next) => {
   }
 };
 
-module.exports = requireAuth;
+module.exports = {requireAuth, createToken};
