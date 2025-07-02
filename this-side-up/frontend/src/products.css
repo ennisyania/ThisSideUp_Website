@@ -80,7 +80,7 @@
   flex-wrap: wrap;
   justify-content: center;
   align-items: flex-start;
-  gap: 50px;
+  gap: 10vw;
   width: 100%;
   margin: 0 auto;
   padding: 40px 20px;
@@ -90,21 +90,20 @@
 /* Common Frame Style */
 .product-frame {
   display: flex;
-  flex: 0 0 calc(25% - 20px);
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 10px;
-  width: 100%;
-  max-width: 344px;
+  gap: 20px;
+  width: calc(25% - 20px);
+  max-width: 300px;
   box-sizing: border-box;
 }
 
+
 /* Product Image */
-.product-image {
-  width: 100%;
-  max-width: 200px;
-  height: auto;
+.products-image {
+  width: auto;
+  height: 30rem;
   background-size: cover;
   background-position: center;
 }

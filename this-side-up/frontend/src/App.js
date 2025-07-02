@@ -1,10 +1,12 @@
-// src/App.js
+
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import PrivateRoute from './component/PrivateRoute.js';
 
 // Import Layout Components
 import Navbar from './component/Navbar.js';
 import Footer from './component/Footer.js';
+import AdminLayout from './component/AdminSideBar.js';
 
 // Import General Pages
 import Homepage from './Homepage.js';
@@ -29,7 +31,9 @@ import Cart from './Cart.js';
 import CheckOut from './CheckOut.js';
 import Tryouts from './Tryouts.js';
 
-// Import Admin Pages
+import PrivacyPolicy from './PrivacyPolicy.js';
+import TermsAndConditions from './TermsAndConditions.js';
+
 import Admin from './admin/AAdmin.js';
 import AdminProducts from './admin/AProducts.js';
 import AdminViewProducts from './admin/AViewProducts.js';
@@ -43,94 +47,125 @@ import AdminSettings from './admin/ASettings.js';
 
 
 function App() {
-    const [cartItems, setCartItems] = useState([]);
 
-    const handleAddToCart = (product, variant = 'Default') => {
-        setCartItems((prevItems) => {
-            const existingItemIndex = prevItems.findIndex(
-                (item) => item.id === product.id && item.variant === variant
-            );
+  // Global cart state
+  const [cartItems, setCartItems] = useState([]);
 
-            if (existingItemIndex > -1) {
-                const updatedItems = [...prevItems];
-                updatedItems[existingItemIndex] = {
-                    ...updatedItems[existingItemIndex],
-                    quantity: updatedItems[existingItemIndex].quantity + 1,
-                };
-                return updatedItems;
-            } else {
-                const itemPrice = typeof product.price === 'string'
-                    ? parseFloat(product.price.replace(/[^0-9.-]+/g, ""))
-                    : product.price;
+  // Function to add product to cart or increase quantity if it exists
+  const handleAddToCart = (productToAdd) => {
+    setCartItems((prevItems) => {
+      const existingItem = prevItems.find(
+        (item) =>
+          item.id === productToAdd.id && item.variant === productToAdd.variant
+      );
 
-                return [...prevItems, { ...product, price: itemPrice, quantity: 1, variant }];
-            }
-        });
-    };
+      if (existingItem) {
+        // Increase quantity for existing item with same variant
+        return prevItems.map((item) =>
+          item.id === productToAdd.id && item.variant === productToAdd.variant
+            ? { ...item, quantity: item.quantity + productToAdd.quantity }
+            : item
+        );
+      } else {
+        // Add new product item
+        return [...prevItems, productToAdd];
+      }
+    });
+  };
 
-    // Function to handle the final order placement
-    const handlePlaceOrder = () => {
-        // In a real application, you would send cartItems and user details to a backend here.
-        console.log("Placing order with items:", cartItems);
-        alert('Order Placed Successfully!'); // Simpler confirmation
-        setCartItems([]); // Clear the cart after order is placed
-        // No navigation to order-confirmation page
-    };
+  return (
+    <Router>
+      <Routes>
 
-    const totalCartItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
-
-    return (
-        <Router>
-            <Navbar cartItemCount={totalCartItems} />
-            <Routes>
+        {/* Public Routes with Navbar & Footer */}
+        <Route
+          path="*"
+          element={
+            <>
+              <Navbar cartItems={cartItems} />
+              <Routes>
                 <Route path="/" element={<Homepage />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
-
-                <Route path="/skimboards" element={<Skimboards onAddToCart={handleAddToCart} />} />
-                <Route path="/boardshorts" element={<Boardshorts onAddToCart={handleAddToCart} />} />
-                <Route path="/accessories" element={<Accessories onAddToCart={handleAddToCart} />} />
-                <Route path="/tshirt" element={<Tshirt onAddToCart={handleAddToCart} />} />
-                <Route path="/jackets" element={<Jackets onAddToCart={handleAddToCart} />} />
-
-                <Route path="/productdetail/:id" element={<ProductDetail onAddToCart={handleAddToCart} />} />
-                <Route path="/productdetail" element={<ProductDetail onAddToCart={handleAddToCart} />} /> {/* Fallback */}
-
                 <Route path="/faq" element={<FAQ />} />
-                <Route path="/cart" element={<Cart cartItems={cartItems} setCartItems={setCartItems} />} />
 
-                {/* IMPORTANT: Pass cartItems and handlePlaceOrder to CheckOut */}
-                <Route
-                    path="/checkout"
-                    element={<CheckOut cartItems={cartItems} handlePlaceOrder={handlePlaceOrder} />}
-                />
-                
-                <Route path="/tryouts" element={<Tryouts />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route
+                  path="myProfile"
+                  element={
+                    <PrivateRoute>
+                      <Profile />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="orderhistory"
+                  element={
+                    <PrivateRoute>
+                      <CustomerOrderHistory />
+                    </PrivateRoute>
+                  }
+                />
+                <Route path="/skimboards" element={<Skimboards />} />
+                <Route path="/boardshorts" element={<Boardshorts />} />
+                <Route path="/accessories" element={<Accessories />} />
+                <Route path="/tshirt" element={<Tshirt />} />
+                <Route path="/jackets" element={<Jackets />} />
+
+                {/* Pass handleAddToCart prop to ProductDetail */}
+                <Route
+                  path="/productdetail/:productId"
+                  element={<ProductDetail onAddToCart={handleAddToCart} />}
+                />
+
                 <Route path="/customSkimboards" element={<CustomSkimboards />} />
-                <Route path="/myProfile" element={<Profile />} />
-                <Route path="/orderhistory" element={<CustomerOrderHistory />} />
 
-                {/* Admin Routes with Nested Structure */}
-                <Route path="/admin" element={<Admin />}>
-                    <Route index element={<AdminProducts />} /> {/* Default child route for /admin */}
-                    <Route path="products" element={<AdminProducts />} />
-                    <Route path="viewproducts" element={<AdminViewProducts />} />
-                    <Route path="addproduct" element={<AdminAddProduct />} />
-                    <Route path="editproducts/:id" element={<AdminEditProducts />} />
-                    <Route path="orders" element={<AdminOrders />} />
-                    <Route path="orderdetail/:id" element={<AdminOrderDetail />} />
-                    <Route path="customers" element={<AdminCustomers />} />
-                    <Route path="individualcustomer/:id" element={<AdminIndividualCustomer />} />
-                    <Route path="settings" element={<AdminSettings />} />
-                </Route>
 
-                <Route path="*" element={<NotFound />} /> {/* Catch-all for undefined routes */}
-            </Routes>
-            <Footer />
-        </Router>
-    );
+                <Route
+                  path="cart"
+                  element={
+                    <PrivateRoute>
+                      <Cart />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="checkout"
+                  element={
+                    <PrivateRoute>
+                      <CheckOut />
+                    </PrivateRoute>
+                  }
+                />
+
+                <Route path="/tryouts" element={<Tryouts />} />
+                <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
+                <Route path="/termsAndConditions" element={<TermsAndConditions />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+              <Footer />
+            </>
+          }
+        />
+
+        {/* Admin Routes (no Navbar or Footer) */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<Admin />} />
+          <Route path="products" element={<AdminProducts />} />
+          <Route path="viewproducts" element={<AdminViewProducts />} />
+          <Route path="addproduct" element={<AdminAddProduct />} />
+          <Route path="editproducts/:id" element={<AdminEditProducts />} />
+          <Route path="orders" element={<AdminOrders />} />
+          <Route path="orderdetail/:id" element={<AdminOrderDetail />} />
+          <Route path="customers" element={<AdminCustomers />} />
+          <Route path="individualcustomer/:id" element={<AdminIndividualCustomer />} />
+          <Route path="settings" element={<AdminSettings />} />
+        </Route>
+      </Routes>
+    </Router>
+  );
+
 }
 
 export default App;
