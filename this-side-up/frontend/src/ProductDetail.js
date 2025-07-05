@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import './ProductDetail.css';
 
-export default function ProductDetail() {
+export default function ProductDetail({ onAddToCart }) {
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
@@ -10,116 +10,74 @@ export default function ProductDetail() {
 
   useEffect(() => {
     fetch(`http://localhost:5000/api/products/${productId}`)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`HTTP error! Status: ${res.status}`);
-        }
-        return res.json();
-      })
-      .then((data) => {
-        console.log('Fetched product:', data);
-        setProduct(data);
-      })
-      .catch((err) => {
-        console.error('Fetch error:', err);
-      });
+      .then((res) => res.json())
+      .then(setProduct)
+      .catch(console.error);
   }, [productId]);
-  if (!product) {
-    return <div>Loading...</div>;
+
+  if (!product) return <div>Loading...</div>;
+
+  const priceIndex = selectedSize ? product.sizes.indexOf(selectedSize) : 0;
+  const price = product.price[priceIndex] || product.price[0];
+
+
+
+const handleAddToCart = () => {
+  if (quantity === 0) {
+    alert('Please select at least 1 item.');
+    return;
   }
 
-  const increaseQuantity = () => setQuantity((q) => q + 1);
-  const decreaseQuantity = () => setQuantity((q) => (q > 0 ? q - 1 : 0));
+  if (Array.isArray(product.sizes) && product.sizes.length > 0 && !selectedSize) {
+    alert('Please select a size.');
+    return;
+  }
 
-  const handleSizeSelect = (size) => {
-    setSelectedSize(size === selectedSize ? null : size);
-  };
+  onAddToCart({
+    id: product.productId,
+    title: product.name,
+    price,
+    quantity,
+    variant: selectedSize || 'default',
+    imageSrc: product.imageurl,
+  });
 
-  const handleAddToCart = () => {
-    if (quantity === 0) {
-      alert('Please select at least 1 item.');
-      return;
-    }
-    if (Array.isArray(product.sizes) && product.sizes.length > 0 && !selectedSize) {
-      alert('Please select a size.');
-      return;
-    }
+  alert(`Added ${quantity} item(s) of size ${selectedSize || 'default'} to cart.`);
+};
 
-    alert(`Added ${quantity} item(s) of size ${selectedSize} to cart.`);
-    // Add further cart logic here 
-  };
+
+
 
   return (
     <div className="product-container">
-      {/* Background image */}
-      <img
-        src="/productdetailbackground.svg"
-        alt="Decorative Background"
-        className="background-image"
-      />
-
-      {/* Skimboard image on right, centered vertically */}
-      <img
-        src={product.imageurl}
-        alt={product.name}
-        className="product-image"
-      />
-
-      {/* Content wrapper */}
+      <img src="/productdetailbackground.svg" alt="" className="background-image" />
+      <img src={product.imageurl} alt={product.name} className="product-image" />
       <div className="product-content">
         <h1 className="product-detail-title">{product.name}</h1>
         <hr className="divider" />
-        {Array.isArray(product.sizes) && product.sizes.length > 0 && (
+        {product.sizes && product.sizes.length > 0 && (
           <div className="size-selector">
             {product.sizes.map((size) => (
-              <button
-                key={size}
-                onClick={() => handleSizeSelect(size)}
-                className={selectedSize === size ? 'selected' : ''}
-                type="button"
-              >
+              <button key={size} onClick={() => setSelectedSize(size)} className={selectedSize === size ? 'selected' : ''}>
                 <span>{size}</span>
               </button>
             ))}
           </div>
         )}
-
-        <p className="product-detail-price">
-          {Array.isArray(product.sizes) && product.sizes.length > 0 ? (
-            selectedSize ? (
-              `$${product.price[product.sizes.indexOf(selectedSize)] * quantity}.00`
-            ) : (
-              'Select a size'
-            )
-          ) : (
-            `$${product.price[0] * quantity}.00`
-          )}
-        </p>
-
-
-
+        <p className="product-detail-price">${(price * quantity).toFixed(2)}</p>
         <div className="quantity-selector">
-          <button onClick={decreaseQuantity}>-</button>
+          <button onClick={() => setQuantity((q) => Math.max(q - 1, 1))}>-</button>
           <span>{quantity}</span>
-          <button onClick={increaseQuantity}>+</button>
+          <button onClick={() => setQuantity((q) => q + 1)}>+</button>
         </div>
-
-        <button className="add-to-cart" onClick={handleAddToCart}>
+         <button className="add-to-cart" onClick={handleAddToCart}>
           <span>Add To Cart</span>
         </button>
-
         <div className="size-selector2" style={{ marginTop: '2rem' }}>
-          <div className="product-description">
-            {product.description}
-          </div>
-
+          <div className="product-description">{product.description}</div>
           <div className="features">
             <h2>Details</h2>
-            <ul className="details-list">
-              {product.details.map((item, idx) => (
-                <li key={idx}>{item}</li>
-              ))}
-            </ul>
+            <ul className="details-list">{product.details.map((item, idx) => <li key={idx}>{item}</li>)}</ul>
           </div>
         </div>
       </div>

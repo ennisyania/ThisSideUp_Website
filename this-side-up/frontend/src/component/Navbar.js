@@ -1,12 +1,8 @@
-import React, { useState, useContext} from "react";
+import React, { useState, useContext } from "react";
 import './Navbar.css';
 import { Link } from 'react-router-dom';
-
 import AuthContext from "../context/AuthContext";
-
-
-import PopUpCart from './PopUpCart'; // <-- updated component name
-
+import PopUpCart from './PopUpCart'; // updated popup cart
 
 const RightArrowIcon = () => (
   <svg
@@ -23,15 +19,12 @@ const RightArrowIcon = () => (
   </svg>
 );
 
-const Navbar = () => {
+const Navbar = ({ cartItems, onQuantityChange, onRemoveItem }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
-
-  const { user, logout } = useContext(AuthContext);
-
-
   const [isCartOpen, setIsCartOpen] = useState(false);
 
+  const { user, logout } = useContext(AuthContext);
 
   return (
     <>
@@ -85,42 +78,52 @@ const Navbar = () => {
               </Link>
             </div>
 
-
-          <div
-            className="user"
-            onMouseEnter={() => setShowProfileDropdown(true)}
-            onMouseLeave={() => setShowProfileDropdown(false)}
-            style={{ position: "relative" }}
-          >
-            <Link to="/login">
-              <img
-                src="./usericon.svg"
-                alt="User Icon"
-                style={{ width: "2rem", height: "2rem" }}
-              />
-            </Link>
-            {showProfileDropdown && (
-              <div className="profile-dropdown">
-                {user ? (
-                  <>
-                    <span style={{ padding: "0.5rem 1rem" }}>Logged in as <strong>{user.email}</strong></span>
-                    <Link to="/account">My Account</Link>
-                    <Link to="/faq">FAQ</Link>
-                    <hr />
-                    <button onClick={logout} style={{ background: "none", border: "none", cursor: "pointer", padding: "0.5rem 1rem", textAlign: "left", width: "100%" }}>
-                      Logout
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <Link to="/login">Login</Link>
-                    <Link to="/register">Register</Link>
-                  </>
-                )}
-              </div>
-            )}
-          </div>
-
+            <div
+              className="user"
+              onMouseEnter={() => setShowProfileDropdown(true)}
+              onMouseLeave={() => setShowProfileDropdown(false)}
+              style={{ position: "relative" }}
+            >
+              <Link to="/login">
+                <img
+                  src="./usericon.svg"
+                  alt="User Icon"
+                  style={{ width: "2rem", height: "2rem" }}
+                />
+              </Link>
+              {showProfileDropdown && (
+                <div className="profile-dropdown">
+                  {user ? (
+                    <>
+                      <span style={{ padding: "0.5rem 1rem" }}>
+                        Logged in as <strong>{user.email}</strong>
+                      </span>
+                      <Link to="/myProfile">My Account</Link>
+                      <Link to="/faq">FAQ</Link>
+                      <hr />
+                      <button
+                        onClick={logout}
+                        style={{
+                          background: "none",
+                          border: "none",
+                          cursor: "pointer",
+                          padding: "0.5rem 1rem",
+                          textAlign: "left",
+                          width: "100%"
+                        }}
+                      >
+                        Logout
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Link to="/login">Login</Link>
+                      <Link to="/register">Register</Link>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
 
             <div className="shoppingcart" onClick={() => setIsCartOpen(true)}>
               <img
@@ -133,7 +136,14 @@ const Navbar = () => {
         </div>
       </div>
 
-      <PopUpCart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      {/* PopUpCart connected to app-level cart */}
+      <PopUpCart
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        cartItems={cartItems}
+        onQuantityChange={onQuantityChange}
+        onRemoveItem={onRemoveItem}
+      />
     </>
   );
 };

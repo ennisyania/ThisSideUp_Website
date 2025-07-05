@@ -43,41 +43,55 @@ import AdminSettings from './admin/ASettings.js';
 import NotFound from './NotFound.js';
 
 function App() {
-  // Global cart state
   const [cartItems, setCartItems] = useState([]);
 
-  // Function to add product to cart or increase quantity if it exists
   const handleAddToCart = (productToAdd) => {
     setCartItems((prevItems) => {
       const existingItem = prevItems.find(
         (item) =>
-          item.id === productToAdd.id && item.variant === productToAdd.variant
+          item.id === productToAdd.id &&
+          item.variant === productToAdd.variant
       );
 
       if (existingItem) {
-        // Increase quantity for existing item with same variant
         return prevItems.map((item) =>
-          item.id === productToAdd.id && item.variant === productToAdd.variant
+          item.id === productToAdd.id &&
+          item.variant === productToAdd.variant
             ? { ...item, quantity: item.quantity + productToAdd.quantity }
             : item
         );
       } else {
-        // Add new product item
         return [...prevItems, productToAdd];
       }
     });
   };
 
+  const handleQuantityChange = (id, newQuantity) => {
+    setCartItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === id
+          ? { ...item, quantity: Math.max(1, newQuantity) }
+          : item
+      )
+    );
+  };
+
+  const handleRemoveItem = (id) => {
+    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+  };
+
   return (
     <Router>
       <Routes>
-
-        {/* Public Routes with Navbar & Footer */}
         <Route
           path="*"
           element={
             <>
-              <Navbar cartItems={cartItems} />
+              <Navbar
+                cartItems={cartItems}
+                onQuantityChange={handleQuantityChange}
+                onRemoveItem={handleRemoveItem}
+              />
               <Routes>
                 <Route path="/" element={<Homepage />} />
                 <Route path="/about" element={<About />} />
@@ -86,7 +100,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route
-                  path="myProfile"
+                  path="/myProfile"
                   element={
                     <PrivateRoute>
                       <Profile />
@@ -94,7 +108,7 @@ function App() {
                   }
                 />
                 <Route
-                  path="orderhistory"
+                  path="/orderhistory"
                   element={
                     <PrivateRoute>
                       <CustomerOrderHistory />
@@ -106,35 +120,42 @@ function App() {
                 <Route path="/accessories" element={<Accessories />} />
                 <Route path="/tshirt" element={<Tshirt />} />
                 <Route path="/jackets" element={<Jackets />} />
-
-                {/* Pass handleAddToCart prop to ProductDetail */}
                 <Route
                   path="/productdetail/:productId"
-                  element={<ProductDetail onAddToCart={handleAddToCart} />}
+                  element={
+                    <ProductDetail onAddToCart={handleAddToCart} />
+                  }
                 />
-
-                <Route path="/customSkimboards" element={<CustomSkimboards />} />
-
                 <Route
-                  path="cart"
+                  path="/customSkimboards"
+                  element={<CustomSkimboards />}
+                />
+                <Route
+                  path="/cart"
                   element={
                     <PrivateRoute>
-                      <Cart />
+                      <Cart
+                        cartItems={cartItems}
+                        onQuantityChange={handleQuantityChange}
+                        onRemoveItem={handleRemoveItem}
+                      />
                     </PrivateRoute>
                   }
                 />
                 <Route
-                  path="checkout"
+                  path="/checkout"
                   element={
                     <PrivateRoute>
                       <CheckOut />
                     </PrivateRoute>
                   }
                 />
-
                 <Route path="/tryouts" element={<Tryouts />} />
                 <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
-                <Route path="/termsAndConditions" element={<TermsAndConditions />} />
+                <Route
+                  path="/termsAndConditions"
+                  element={<TermsAndConditions />}
+                />
                 <Route path="*" element={<NotFound />} />
               </Routes>
               <Footer />
@@ -142,7 +163,7 @@ function App() {
           }
         />
 
-        {/* Admin Routes (no Navbar or Footer) */}
+        {/* Admin-only pages */}
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<Admin />} />
           <Route path="products" element={<AdminProducts />} />
@@ -152,7 +173,10 @@ function App() {
           <Route path="orders" element={<AdminOrders />} />
           <Route path="orderdetail/:id" element={<AdminOrderDetail />} />
           <Route path="customers" element={<AdminCustomers />} />
-          <Route path="individualcustomer/:id" element={<AdminIndividualCustomer />} />
+          <Route
+            path="individualcustomer/:id"
+            element={<AdminIndividualCustomer />}
+          />
           <Route path="settings" element={<AdminSettings />} />
         </Route>
       </Routes>
@@ -161,3 +185,4 @@ function App() {
 }
 
 export default App;
+
