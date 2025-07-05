@@ -1,87 +1,313 @@
 // src/CheckOut.js
-import React from 'react'; // Removed useState as it is not directly used in this component
-import { Link, useNavigate } from 'react-router-dom';
-import './CheckOut.css'; // Correct path assuming CheckOut.css is in src/
+import React, { useState, useEffect } from 'react';
+import './CheckOut.css'; // Ensure this CSS file exists and is correctly linked
 
-export default function CheckOut({ cartItems, handlePlaceOrder }) {
-  const navigate = useNavigate();
+export default function CheckOut({ cartItems, handlePlaceOrder }) { // Receive cartItems and handlePlaceOrder as props
+    // State for form fields
+    const [contactEmail, setContactEmail] = useState('');
+    const [countryRegion, setCountryRegion] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [address, setAddress] = useState('');
+    const [aptSuiteEtc, setAptSuiteEt0] = useState('');
+    const [postalCode, setPostalCode] = useState('');
+    const [phone, setPhone] = useState('');
+    const [newsAndOffers, setNewsAndOffers] = useState(false); // State for the checkbox
 
-  const calculateSubtotal = () => {
-    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
-  };
+    const [shippingMethod, setShippingMethod] = useState('standard'); // 'standard' or 'express'
 
-  const shippingCost = 5.00; // Example fixed shipping cost
-  const total = calculateSubtotal() + shippingCost;
+    const [cardNumber, setCardNumber] = useState('');
+    const [expiryDate, setExpiryDate] = useState('');
+    const [securityCode, setSecurityCode] = useState('');
+    const [nameOnCard, setNameOnCard] = useState('');
 
-  return (
-    <div className="checkout-container">
-      <h2>Checkout</h2>
-      <div className="checkout-content">
-        <div className="order-summary">
-          <h3>Order Summary</h3>
-          {cartItems.length === 0 ? (
-            <p>Your cart is empty.</p>
-          ) : (
-            <ul className="order-items">
-              {cartItems.map(item => (
-                <li key={item.id + item.variant} className="order-item">
-                  <span>{item.title} ({item.variant}) x {item.quantity}</span>
-                  <span>${(item.price * item.quantity).toFixed(2)}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-          <div className="summary-details">
-            <p>Subtotal: <span>${calculateSubtotal().toFixed(2)}</span></p>
-            <p>Shipping: <span>${shippingCost.toFixed(2)}</span></p>
-            <p className="total">Total: <span>${total.toFixed(2)}</span></p>
-          </div>
+    const [discountCode, setDiscountCode] = useState('');
+    const [appliedDiscount, setAppliedDiscount] = useState(0); // Store discount amount
+
+    // Calculate subtotal - robust against undefined cartItems
+    const calculateSubtotal = () => {
+        if (!Array.isArray(cartItems)) {
+            console.error("cartItems is not an array:", cartItems);
+            return 0;
+        }
+        return cartItems.reduce((total, item) => total + (item.price || 0) * (item.quantity || 0), 0);
+    };
+
+    // Calculate shipping cost based on selected method
+    const calculateShippingCost = () => {
+        if (shippingMethod === 'express') {
+            return 10.00; // Example express shipping cost
+        }
+        return 5.00; // Example standard shipping cost
+    };
+
+    const subtotal = calculateSubtotal();
+    const shippingCost = calculateShippingCost();
+    const total = subtotal + shippingCost - appliedDiscount;
+
+    // Handle Apply Discount button click
+    const handleApplyDiscount = () => {
+        // Dummy discount logic: apply a fixed discount for a specific code
+        if (discountCode === 'DISCOUNT10') {
+            setAppliedDiscount(10.00); // Apply $10 discount
+            alert('Discount applied!');
+        } else {
+            setAppliedDiscount(0);
+            alert('Invalid discount code.');
+        }
+    };
+
+    // Handle Paynow button click
+    const handlePaynowClick = () => {
+        // Basic validation (you'd add more comprehensive validation here)
+        if (!contactEmail || !firstName || !lastName || !address || !postalCode || !phone || !cardNumber || !expiryDate || !securityCode || !nameOnCard) {
+            alert('Please fill in all required fields for contact, delivery, and payment.');
+            return;
+        }
+
+        // Call the handlePlaceOrder prop from App.js to clear the cart and show alert
+        handlePlaceOrder();
+    };
+
+    return (
+        <div className="checkout-page-container">
+            <div className="checkout-content-wrapper">
+                {/* Left Column: Contact, Delivery, Shipping, Payment */}
+                <div className="checkout-left-column">
+                    {/* Contact Section */}
+                    <section className="checkout-section contact-section">
+                        <h2>Contact</h2>
+                        <div className="form-group">
+                            <input
+                                type="email"
+                                id="contactEmail"
+                                placeholder="Email"
+                                value={contactEmail}
+                                onChange={(e) => setContactEmail(e.target.value)}
+                                required
+                            />
+                        </div>
+                        {/* Moved checkbox from here */}
+                    </section>
+
+                    {/* Delivery Section */}
+                    <section className="checkout-section delivery-section">
+                        <h2>Delivery</h2>
+                        <div className="form-group">
+                            <input
+                                type="text"
+                                id="countryRegion"
+                                placeholder="Country/Region"
+                                value={countryRegion}
+                                onChange={(e) => setCountryRegion(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div className="form-group-row">
+                            <input
+                                type="text"
+                                id="firstName"
+                                placeholder="First Name"
+                                value={firstName}
+                                onChange={(e) => setFirstName(e.target.value)}
+                                required
+                            />
+                            <input
+                                type="text"
+                                id="lastName"
+                                placeholder="Last Name"
+                                value={lastName}
+                                onChange={(e) => setLastName(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div className="form-group">
+                            <input
+                                type="text"
+                                id="address"
+                                placeholder="Address"
+                                value={address}
+                                onChange={(e) => setAddress(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div className="form-group">
+                            <input
+                                type="text"
+                                id="aptSuiteEtc"
+                                placeholder="Apartment, suite, etc. (optional)"
+                                value={aptSuiteEtc}
+                                onChange={(e) => setAptSuiteEt0(e.target.value)}
+                            />
+                        </div>
+                        <div className="form-group-row">
+                            <input
+                                type="text"
+                                id="postalCode"
+                                placeholder="Postal code"
+                                value={postalCode}
+                                onChange={(e) => setPostalCode(e.target.value)}
+                                required
+                            />
+                            <input
+                                type="tel"
+                                id="phone"
+                                placeholder="Phone"
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
+                                required
+                            />
+                        </div>
+                    </section>
+                    
+                    {/* News and Offers Checkbox - MOVED HERE */}
+                    <div className="checkbox-group" style={{ paddingLeft: '30px', paddingRight: '30px', marginBottom: '20px' }}>
+                        <input
+                            type="checkbox"
+                            id="newsAndOffers"
+                            checked={newsAndOffers}
+                            onChange={(e) => setNewsAndOffers(e.target.checked)}
+                        />
+                        <label htmlFor="newsAndOffers">Email me with news and offers</label>
+                    </div>
+
+                    {/* Shipping Method Section */}
+                    <section className="checkout-section shipping-method-section">
+                        <h2>Shipping method</h2>
+                        <div className="shipping-options">
+                            <label className={`shipping-option ${shippingMethod === 'express' ? 'selected' : ''}`}>
+                                <input
+                                    type="radio"
+                                    name="shipping"
+                                    value="express"
+                                    checked={shippingMethod === 'express'}
+                                    onChange={() => setShippingMethod('express')}
+                                />
+                                <div className="shipping-details">
+                                    <span>TNT Express Worldwide</span>
+                                    <span>$10.00</span>
+                                </div>
+                            </label>
+                            <label className={`shipping-option ${shippingMethod === 'standard' ? 'selected' : ''}`}>
+                                <input
+                                    type="radio"
+                                    name="shipping"
+                                    value="standard"
+                                    checked={shippingMethod === 'standard'}
+                                    onChange={() => setShippingMethod('standard')}
+                                />
+                                <div className="shipping-details">
+                                    <span>UPS Standard Ground&reg;</span>
+                                    <span>$5.00</span>
+                                </div>
+                            </label>
+                        </div>
+                    </section>
+
+                    {/* Payment Section */}
+                    <section className="checkout-section payment-section">
+                        <h2>Payment</h2>
+                        <div className="payment-image-container">
+                            <img src="/images/Payment.png" alt="Payment Methods" className="payment-methods-img" />
+                        </div>
+                        <div className="form-group">
+                            <input
+                                type="text"
+                                id="cardNumber"
+                                placeholder="Card number"
+                                value={cardNumber}
+                                onChange={(e) => setCardNumber(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div className="form-group-row">
+                            <input
+                                type="text"
+                                id="expiryDate"
+                                placeholder="Expiration date (MM/YY)"
+                                value={expiryDate}
+                                onChange={(e) => setExpiryDate(e.target.value)}
+                                required
+                            />
+                            <input
+                                type="text"
+                                id="securityCode"
+                                placeholder="Security code"
+                                value={securityCode}
+                                onChange={(e) => setSecurityCode(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div className="form-group">
+                            <input
+                                type="text"
+                                id="nameOnCard"
+                                placeholder="Name on card"
+                                value={nameOnCard}
+                                onChange={(e) => setNameOnCard(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <button onClick={handlePaynowClick} className="paynow-button"><span>Paynow</span></button>
+                    </section>
+                </div>
+
+                {/* Right Column: Order Summary */}
+                <div className="checkout-right-column">
+                    <section className="order-summary-section">
+                        <h2>Order Summary</h2>
+                        <div className="order-items-list">
+                            {cartItems.length === 0 ? (
+                                <p>Your cart is empty.</p>
+                            ) : (
+                                cartItems.map(item => (
+                                    <div key={item.id + (item.variant || '')} className="order-summary-item">
+                                        {item.imageSrc && <img src={item.imageSrc} alt={item.title} className="order-item-image" />}
+                                        <div className="order-item-details">
+                                            <div className="order-item-title">{item.title}</div>
+                                            {item.variant && item.variant !== 'Default' && <div className="order-item-variant">{item.variant}</div>}
+                                        </div>
+                                        <div className="order-item-quantity">x{item.quantity}</div>
+                                        <div className="order-item-price">${(item.price * item.quantity).toFixed(2)}</div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+
+                        <div className="discount-code-section">
+                            <input
+                                type="text"
+                                placeholder="Discount code or gift card"
+                                value={discountCode}
+                                onChange={(e) => setDiscountCode(e.target.value)}
+                                className="discount-input"
+                            />
+                            <button onClick={handleApplyDiscount} className="apply-button"><span>Apply</span></button>
+                        </div>
+
+                        <div className="summary-breakdown">
+                            <div className="summary-line">
+                                <span>Subtotal</span>
+                                <span>${subtotal.toFixed(2)}</span>
+                            </div>
+                            <div className="summary-line">
+                                <span>Shipping</span>
+                                <span>${shippingCost.toFixed(2)}</span>
+                            </div>
+                            {appliedDiscount > 0 && (
+                                <div className="summary-line discount-line">
+                                    <span>Discount</span>
+                                    <span>-${appliedDiscount.toFixed(2)}</span>
+                                </div>
+                            )}
+                            <div className="summary-line total-line">
+                                <span>Total</span>
+                                <span>${total.toFixed(2)}</span>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
         </div>
-
-        <div className="shipping-payment-form">
-          <h3>Shipping Information</h3>
-          <form className="shipping-form">
-            <div className="form-group">
-              <label htmlFor="fullName">Full Name</label>
-              <input type="text" id="fullName" required />
-            </div>
-            <div className="form-group">
-              <label htmlFor="address">Address</label>
-              <input type="text" id="address" required />
-            </div>
-            <div className="form-group">
-              <label htmlFor="city">City</label>
-              <input type="text" id="city" required />
-            </div>
-            <div className="form-group">
-              <label htmlFor="postalCode">Postal Code</label>
-              <input type="text" id="postalCode" required />
-            </div>
-            <div className="form-group">
-              <label htmlFor="country">Country</label>
-              <input type="text" id="country" required />
-            </div>
-          </form>
-
-          <h3>Payment Information</h3>
-          <form className="payment-form">
-            <div className="form-group">
-              <label htmlFor="cardNumber">Card Number</label>
-              <input type="text" id="cardNumber" required />
-            </div>
-            <div className="form-group">
-              <label htmlFor="expiryDate">Expiry Date</label>
-              <input type="text" id="expiryDate" placeholder="MM/YY" required />
-            </div>
-            <div className="form-group">
-              <label htmlFor="cvv">CVV</label>
-              <input type="text" id="cvv" required />
-            </div>
-            <button type="button" onClick={handlePlaceOrder} className="place-order-button">Place Order</button>
-          </form>
-        </div>
-      </div>
-      <Link to="/cart" className="back-to-cart">Back to Cart</Link>
-    </div>
-  );
+    );
 }

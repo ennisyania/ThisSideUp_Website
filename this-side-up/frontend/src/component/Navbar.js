@@ -1,6 +1,9 @@
 import React, { useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 import './Navbar.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+
+
 import AuthContext from "../context/AuthContext";
 import PopUpCart from './PopUpCart'; // updated popup cart
 
@@ -25,6 +28,17 @@ const Navbar = ({ cartItems, onQuantityChange, onRemoveItem }) => {
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   const { user, logout } = useContext(AuthContext);
+
+
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    navigate('/logout');
+  };
+
+
 
   return (
     <>
@@ -78,42 +92,32 @@ const Navbar = ({ cartItems, onQuantityChange, onRemoveItem }) => {
               </Link>
             </div>
 
+
             <div
               className="user"
               onMouseEnter={() => setShowProfileDropdown(true)}
               onMouseLeave={() => setShowProfileDropdown(false)}
               style={{ position: "relative" }}
             >
-              <Link to="/login">
-                <img
-                  src="./usericon.svg"
-                  alt="User Icon"
-                  style={{ width: "2rem", height: "2rem" }}
-                />
-              </Link>
+
+              <img
+                src="./usericon.svg"
+                alt="User Icon"
+                style={{ width: "2rem", height: "2rem" }}
+              />
+
               {showProfileDropdown && (
                 <div className="profile-dropdown">
                   {user ? (
                     <>
-                      <span style={{ padding: "0.5rem 1rem" }}>
-                        Logged in as <strong>{user.email}</strong>
-                      </span>
-                      <Link to="/myProfile">My Account</Link>
+                      <span style={{ padding: "0.5rem 1rem" }}>Logged in as <strong>{user.email}</strong></span>
+                      <Link to="/account">My Account</Link>
                       <Link to="/faq">FAQ</Link>
                       <hr />
-                      <button
-                        onClick={logout}
-                        style={{
-                          background: "none",
-                          border: "none",
-                          cursor: "pointer",
-                          padding: "0.5rem 1rem",
-                          textAlign: "left",
-                          width: "100%"
-                        }}
-                      >
+                      <Link to="/logout">
                         Logout
-                      </button>
+                      </Link>
+
                     </>
                   ) : (
                     <>
@@ -125,6 +129,7 @@ const Navbar = ({ cartItems, onQuantityChange, onRemoveItem }) => {
               )}
             </div>
 
+
             <div className="shoppingcart" onClick={() => setIsCartOpen(true)}>
               <img
                 src="./carticon.svg"
@@ -134,7 +139,7 @@ const Navbar = ({ cartItems, onQuantityChange, onRemoveItem }) => {
             </div>
           </div>
         </div>
-      </div>
+      </div >
 
       {/* PopUpCart connected to app-level cart */}
       <PopUpCart

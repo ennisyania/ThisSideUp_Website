@@ -1,196 +1,440 @@
 /* src/CheckOut.css */
 
+:root {
+    --primary-color: #E86540; /* Orange/Red from brand */
+    --secondary-color: #D89481; /* Lighter orange/pink from brand */
+    --text-dark: #333;
+    --text-medium: #555;
+    --text-light: #777;
+    --border-color: #e0e0e0; /* Lighter border for inputs */
+    --background-light: #F8FAF5; /* Overall page background and sections background */
+    --surface-white: #fff; /* This variable is now less used for backgrounds */
+    --shadow-light: rgba(0, 0, 0, 0.05); /* Subtle shadow for elements */
+    --shadow-medium: rgba(0, 0, 0, 0.1); /* Medium shadow for main boxes */
+    --shadow-dark: rgba(0, 0, 0, 0.3);
+    --navbar-height: 80px;   /* Example, adjust to your actual Navbar height */
+    --footer-height: 200px;  /* Example, adjust to your actual Footer height */
+}
+
+/* Overall page container */
 .checkout-page-container {
-    max-width: 1200px;
-    margin: 40px auto;
-    padding: 20px;
-    font-family: 'Inter', sans-serif;
-    color: #333;
-}
-
-.checkout-header {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.checkout-header h1 {
-    font-size: 2.5rem;
-    color: #333;
-    margin-bottom: 10px;
-}
-
-.checkout-header .vector-line {
-    width: 200px; /* Adjust as needed */
-    height: 2px;
-    background-color: #E86540; 
-    margin: 0 auto;
-}
-
-.checkout-content {
+    background-color: var(--background-light); /* Page background is #F8FAF5 */
+    padding: 40px 0;
+    min-height: calc(100vh - var(--navbar-height) - var(--footer-height));
     display: flex;
-    flex-wrap: wrap; /* Allows columns to wrap on smaller screens */
-    gap: 40px;
     justify-content: center;
+    font-family: 'Inter', sans-serif;
 }
 
-.checkout-form-section {
-    flex: 2; /* Takes more space */
-    min-width: 300px; /* Minimum width before wrapping */
-    background-color: #f9f9f9;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+/* Wrapper for the two columns */
+.checkout-content-wrapper {
+    display: flex;
+    gap: 40px;
+    max-width: 1200px;
+    width: 90%;
+    margin: 0 auto;
+    flex-wrap: wrap;
 }
 
-.checkout-form-section h2 {
-    font-size: 1.8rem;
-    color: #333;
+/* Left Column Styling (Contact, Delivery, Shipping, Payment) */
+.checkout-left-column {
+    flex: 2;
+    min-width: 450px;
+    padding-right: 20px; /* Space from the right column */
+    box-sizing: border-box;
+}
+
+/* Right Column Styling (Order Summary) - NOW TRANSPARENT BACKGROUND */
+.checkout-right-column {
+    flex: 1;
+    min-width: 300px;
+    background-color: transparent; /* Make background transparent to blend with page */
+    border-radius: 0; /* No border-radius */
+    box-shadow: none; /* No box-shadow */
+    padding: 30px 0; /* Padding within this column */
+    box-sizing: border-box;
+}
+
+/* Individual sections within the left column - NO BOX EFFECT, BLEND WITH BACKGROUND */
+.checkout-section {
+    background-color: transparent; /* Make background transparent to blend with page */
+    border-radius: 0; /* No border-radius */
+    box-shadow: none; /* No box-shadow */
+    padding: 30px 0; /* Adjust padding as it's no longer a distinct box */
+    margin-bottom: 0; /* No extra margin from previous box effect */
+    box-sizing: border-box;
+}
+
+.checkout-section h2 {
+    font-size: 1.8em;
+    color: var(--text-dark);
     margin-bottom: 20px;
-    border-bottom: 1px solid #eee;
+    font-weight: 600;
+    border-bottom: 1px solid #eee; /* Keep subtle separator below heading */
     padding-bottom: 10px;
 }
 
-.checkout-form .form-group {
+/* Form Groups & Input Fields (Unified Styling) - RETAINING SUBTLE BORDERS, TRANSPARENT BACKGROUND */
+.form-group {
     margin-bottom: 15px;
 }
 
-.checkout-form label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #555;
+.form-group-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 15px;
 }
 
-.checkout-form input[type="text"],
-.checkout-form input[type="email"] {
-    width: calc(100% - 20px); /* Account for padding */
-    padding: 10px;
-    border: 1px solid #ddd;
+.form-group-row input {
+    flex: 1;
+}
+
+/* Universal input style for consistency - Retaining subtle full border */
+.form-group input,
+.discount-input,
+.form-group-row input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color); /* Subtle light gray border on all sides */
     border-radius: 4px;
-    font-size: 1rem;
+    font-size: 1em;
+    color: var(--text-dark);
+    background-color: transparent; /* Make input background transparent */
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.place-order-button {
-    background-color: #E86540; 
-    color: white;
+.form-group input::placeholder,
+.discount-input::placeholder,
+.form-group-row input::placeholder {
+    color: #a0a0a0;
+}
+
+.form-group input:focus,
+.discount-input:focus,
+.form-group-row input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(232, 101, 64, 0.2);
+}
+
+/* Checkbox group - Adjusted padding to align with section content */
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+    margin-bottom: 20px;
+    font-size: 0.9em;
+    color: var(--text-medium);
+    padding: 0; /* Removed padding to align with input fields in a 'no box' section */
+    box-sizing: border-box;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-right: 10px;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary-color);
+    flex-shrink: 0;
+}
+
+/* Shipping Method Section - Retains its own distinct look with borders, TRANSPARENT BACKGROUND */
+.shipping-method-section .shipping-options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.shipping-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #ddd; /* Keep subtle border for shipping options */
+    border-radius: 8px;
+    padding: 15px 20px;
+    cursor: pointer;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    background-color: transparent; /* Make shipping option background transparent */
+}
+
+.shipping-option.selected {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(232, 101, 64, 0.2);
+}
+
+.shipping-option input[type="radio"] {
+    margin-right: 15px;
+    accent-color: var(--primary-color);
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.shipping-option .shipping-details {
+    display: flex;
+    justify-content: space-between;
+    flex-grow: 1;
+    font-size: 1.05em;
+    font-weight: 500;
+}
+
+.shipping-option .shipping-details span:last-child {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+/* Payment Section */
+.payment-image-container {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.payment-methods-img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px var(--shadow-light); /* Keep subtle shadow for payment images */
+}
+
+/* Paynow Button (Slanted style with black text) */
+.paynow-button {
+    background-color: var(--primary-color);
     padding: 15px 30px;
     border: none;
-    border-radius: 5px;
-    font-size: 1.1rem;
+    border-radius: 0;
+    font-size: 1.2em;
+    font-weight: 600;
     cursor: pointer;
-    margin-top: 20px;
     width: 100%;
-    transition: background-color 0.3s ease;
+    margin-top: 25px;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    transform: skewX(-10deg);
+    position: relative;
+    display: block;
+    overflow: hidden;
+    box-shadow: 5px 5px 15px var(--shadow-dark);
+    text-decoration: none;
+    text-align: center;
 }
 
-.place-order-button:hover {
-    background-color: #d45c36; /* Slightly darker on hover */
+.paynow-button span {
+    display: block;
+    transform: skewX(10deg); /* Counter-skew text */
+    white-space: nowrap;
+    line-height: 1;
+    padding: 0;
+    margin: 0;
+    color: #000; /* Black text */
 }
 
-.place-order-button:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
+.paynow-button:hover {
+    background-color: darken(var(--primary-color), 10%);
+    transform: skewX(-10deg) translateY(-2px);
+    box-shadow: 7px 7px 20px rgba(0, 0, 0, 0.4);
 }
 
-
-.checkout-order-summary {
-    flex: 1; /* Takes less space */
-    min-width: 280px; /* Minimum width before wrapping */
-    background-color: #f9f9f9;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+.paynow-button:active {
+    background-color: darken(var(--primary-color), 20%);
+    transform: skewX(-10deg) translateY(0);
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
 }
 
-.checkout-order-summary h2 {
-    font-size: 1.8rem;
-    color: #333;
+/* Order Summary Section (Right Column) - ADJUSTED STYLES */
+.order-summary-section {
+    padding: 30px; /* Add back some padding for content spacing within the now transparent box */
+    box-sizing: border-box;
+}
+
+.order-summary-section h2 {
+    font-size: 1.8em;
+    color: var(--text-dark);
     margin-bottom: 20px;
+    font-weight: 600;
     border-bottom: 1px solid #eee;
     padding-bottom: 10px;
 }
 
-.summary-items {
-    margin-bottom: 20px;
-    border-bottom: 1px dashed #eee;
-    padding-bottom: 15px;
+.order-items-list {
+    margin-bottom: 25px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 10px;
 }
 
-.summary-item {
+.order-summary-item {
     display: flex;
     align-items: center;
     margin-bottom: 15px;
+    gap: 15px;
+    border-bottom: 1px dotted #eee;
+    padding-bottom: 10px;
 }
 
-.summary-item img {
-    width: 60px;
-    height: 60px;
+.order-summary-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.order-item-image {
+    width: 80px;
+    height: 80px;
     object-fit: cover;
     border-radius: 4px;
-    margin-right: 15px;
+    flex-shrink: 0;
 }
 
-.summary-item .item-details {
+.order-item-details {
     flex-grow: 1;
 }
 
-.summary-item .item-title {
-    font-weight: bold;
-    margin-bottom: 5px;
+.order-item-title {
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 1em;
 }
 
-.summary-item .item-quantity {
+.order-item-variant {
     font-size: 0.9em;
-    color: #777;
+    color: var(--text-light);
+    margin-top: 3px;
 }
 
-.summary-item .item-price {
-    font-weight: bold;
-    color: #E86540; /* Your brand color */
+.order-item-quantity {
+    font-size: 0.9em;
+    color: var(--text-medium);
+    flex-shrink: 0;
 }
 
-.summary-row {
+.order-item-price {
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 1em;
+    flex-shrink: 0;
+}
+
+/* Discount Code Section */
+.discount-code-section {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+/* Apply Button (Slanted style with black text) */
+.apply-button {
+    background-color: var(--secondary-color);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 0;
+    font-size: 0.95em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    flex-shrink: 0;
+    transform: skewX(-10deg);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.apply-button span {
+    display: block;
+    transform: skewX(10deg); /* Counter-skew text */
+    white-space: nowrap;
+    color: #000; /* Black text */
+}
+
+.apply-button:hover {
+    background-color: darken(var(--secondary-color), 10%);
+    transform: skewX(-10deg) translateY(-1px);
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.apply-button:active {
+    background-color: darken(var(--secondary-color), 20%);
+    transform: skewX(-10deg) translateY(0);
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Summary Breakdown */
+.summary-breakdown {
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.summary-line {
     display: flex;
     justify-content: space-between;
     margin-bottom: 10px;
-    font-size: 1.1rem;
+    font-size: 1.1em;
+    color: var(--text-medium);
 }
 
-.summary-row.total-row {
-    font-weight: bold;
-    font-size: 1.3rem;
-    color: #333;
-    border-top: 1px solid #eee;
-    padding-top: 15px;
-    margin-top: 15px;
+.summary-line span:last-child {
+    font-weight: 600;
+    color: var(--text-dark);
 }
 
-.summary-row span:first-child {
-    color: #555;
-}
-
-.summary-row span:last-child {
-    color: #333;
-}
-
-.empty-checkout-message {
-    text-align: center;
-    margin-top: 50px;
-    font-size: 1.2rem;
-    color: #666;
-}
-
-.empty-checkout-message .continue-shopping-button {
-    display: inline-block;
-    background-color: #E86540;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    text-decoration: none;
+.summary-line.total-line {
+    font-size: 1.3em;
+    font-weight: 700;
+    color: #000; /* Total is now black */
     margin-top: 20px;
-    transition: background-color 0.3s ease;
 }
 
-.empty-checkout-message .continue-shopping-button:hover {
-    background-color: #d45c36;
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .checkout-content-wrapper {
+        flex-direction: column;
+        width: 95%;
+    }
+    .checkout-left-column {
+        min-width: unset;
+        padding-right: 0;
+    }
+    .checkout-right-column {
+        min-width: unset;
+        padding: 25px 0; /* Adjust padding for smaller screens if needed */
+    }
+    .order-summary-section {
+        padding: 25px; /* Adjust padding for smaller screens */
+    }
+    /* No specific padding adjustment for .checkout-section if they are transparent */
+}
+
+@media (max-width: 600px) {
+    .checkout-section {
+        padding: 20px 0;
+    }
+    .checkout-section h2 {
+        font-size: 1.5em;
+    }
+    .form-group-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .paynow-button {
+        padding: 12px 20px;
+        font-size: 1em;
+    }
+    .order-summary-item {
+        flex-wrap: wrap;
+        justify-content: space-between;
+        text-align: left;
+    }
+    .order-item-image {
+        margin-bottom: 10px;
+    }
+    .order-item-details, .order-item-quantity, .order-item-price {
+        width: 100%;
+        text-align: left;
+    }
+    .checkbox-group {
+        padding: 0;
+    }
+    .order-summary-section {
+        padding: 20px;
+    }
 }

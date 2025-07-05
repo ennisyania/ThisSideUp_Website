@@ -11,9 +11,21 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  if (!res.headersSent) {
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+
 
 app.use('/api/products', productsRoute);
 app.use('/api/user', userRoute);
+// app.use('/api/customSkimboard', customSkimboardRoute);
+// app.use('/api/orders', ordersRoute); // Uncomment if you have an orders route
+
 
 const PORT = process.env.PORT || 5000;
 

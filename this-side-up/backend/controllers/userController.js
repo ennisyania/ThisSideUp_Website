@@ -82,14 +82,31 @@ const loginUser = async (req, res) => {
       user: {
         id: user._id,
         email: user.email,
+        role: user.role, 
       },
       token,
       expiresIn: maxAge
     });
+
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 
+const getCart = async (req, res) => {
+  try {
+    const userId = req.user._id; // You get this from JWT middleware
 
-module.exports = { registerUser, loginUser };
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json({ cart: user.cart });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
+module.exports = { registerUser, loginUser, getCart };
