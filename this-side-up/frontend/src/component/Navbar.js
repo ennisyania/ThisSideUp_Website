@@ -1,13 +1,11 @@
 import React, { useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 import './Navbar.css';
 import { Link, useNavigate } from 'react-router-dom';
 
 
 import AuthContext from "../context/AuthContext";
-
-
-import PopUpCart from './PopUpCart'; // <-- updated component name
-
+import PopUpCart from './PopUpCart'; // updated popup cart
 
 const RightArrowIcon = () => (
   <svg
@@ -24,9 +22,10 @@ const RightArrowIcon = () => (
   </svg>
 );
 
-const Navbar = () => {
+const Navbar = ({ cartItems, onQuantityChange, onRemoveItem }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
   const { user, logout } = useContext(AuthContext);
 
@@ -142,7 +141,14 @@ const Navbar = () => {
         </div>
       </div >
 
-      <PopUpCart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      {/* PopUpCart connected to app-level cart */}
+      <PopUpCart
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        cartItems={cartItems}
+        onQuantityChange={onQuantityChange}
+        onRemoveItem={onRemoveItem}
+      />
     </>
   );
 };
