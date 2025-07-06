@@ -1,0 +1,424 @@
+/* src/Profile.css */
+
+/* Variables (can reuse from Admin or define new ones) */
+:root {
+    --profile-sidebar-bg: #1A1A1A; /* Dark background for sidebar */
+    --profile-sidebar-text: #F0F0F0; /* Light text for sidebar */
+    --profile-active-link: #E86540; /* Orange/Red for active links */
+    --profile-main-bg: #F8FAF5; /* Light background for main content */
+    --profile-card-bg: #FFFFFF; /* White background for cards */
+    --profile-text-dark: #333;
+    --profile-text-medium: #555;
+    --profile-text-light: #777;
+    --profile-border-color: #eee;
+    --profile-input-border: #ddd;
+    --profile-shadow: rgba(0, 0, 0, 0.1);
+    --profile-success-color: #28a745;
+    --profile-danger-color: #dc3545;
+}
+
+/* Base Styles */
+.customer-profile-container {
+    display: flex;
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--profile-main-bg);
+}
+
+/* Sidebar Styling */
+.customer-profile-sidebar {
+    width: 33.33%; /* Takes up approximately 1/3 of the page width */
+    background-color: var(--profile-sidebar-bg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: var(--profile-sidebar-text);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+    transform: skewX(-15deg); /* Slanted left, as in the reference image */
+    transform-origin: top right; /* Pivot point for transformation */
+    position: relative; /* Needed for z-index */
+    z-index: 2; /* Ensure it's above the main content */
+}
+
+/* Counter-skew for content inside the sidebar */
+.customer-profile-sidebar .sidebar-header,
+.customer-profile-sidebar .profile-nav {
+    transform: skewX(15deg); /* Counter-skew children to make them straight */
+    transform-origin: top right; /* Match pivot point */
+}
+
+.customer-profile-sidebar .sidebar-header {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.customer-profile-sidebar .sidebar-header h2 {
+    font-size: 1.8em;
+    font-weight: 700;
+    color: var(--profile-sidebar-text);
+    margin-bottom: 10px;
+}
+
+.customer-profile-sidebar .logout-link {
+    color: #FFFFFF; /* Changed to white */
+    text-decoration: none;
+    font-size: 0.9em;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.customer-profile-sidebar .logout-link:hover {
+    color: #ff8c66;
+}
+
+.profile-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.profile-nav li {
+    margin-bottom: 10px;
+}
+
+.profile-nav a {
+    display: block;
+    padding: 12px 30px; /* Adjusted padding to move text further right */
+    color: var(--profile-sidebar-text);
+    text-decoration: none;
+    font-size: 1.1em;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.profile-nav a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.profile-nav a.active {
+    background-color: transparent; /* No background for active link */
+    color: #fff; /* White text for active link */
+    font-weight: 600;
+    box-shadow: none;
+}
+
+/* Main Content Area */
+.customer-profile-main-content {
+    flex-grow: 1;
+    padding: 30px;
+    padding-left: 50px; /* Push content right to compensate for sidebar skew */
+    margin-left: -50px; /* Pull the main content container left to compensate for sidebar's visual space */
+    padding-top: 80px; /* Moves contact info and address book downward initially */
+    background-color: var(--profile-main-bg);
+    overflow-y: auto;
+    position: relative; /* Needed for z-index and background image */
+    z-index: 1; /* Ensure it's behind the sidebar */
+    display: flex; /* Use flexbox to center cards */
+    flex-direction: column; /* Stack cards vertically */
+    align-items: center; /* Center cards horizontally */
+}
+
+/* New styling for titles outside the cards */
+.profile-section-title {
+    font-size: 1.5em; /* Match previous h3 size */
+    color: var(--profile-text-dark);
+    margin-bottom: 10px; /* Space between title and card */
+    font-weight: 600;
+    /* Apply skew to the title itself to align with the card's visual slant */
+    transform: skewX(-10deg); /* Match card's skew direction (leaning right) */
+    transform-origin: left center; /* Pivot from left center */
+    padding-left: 5px; /* Small adjustment for visual alignment */
+    width: 45%; /* Match card width for alignment */
+    min-width: 280px; /* Match card min-width */
+    box-sizing: border-box; /* Include padding in width calculation */
+    text-align: left; /* Align text to left within its skewed box */
+    margin: 0 auto 10px auto; /* Center horizontally with auto margins, keep bottom margin */
+}
+
+
+.profile-card {
+    background-color: var(--profile-card-bg);
+    border-radius: 0; /* Removed border-radius for sharp edges */
+    box-shadow: 0 4px 15px var(--profile-shadow);
+    padding: 5px 15px; /* Made even more compact */
+    margin-bottom: 25px; /* Increased margin-bottom to separate cards more */
+    border: 3px solid #000; /* Thicker black border */
+    transform: skewX(-10deg); /* Parallelogram leaning right (top-left leaning right, bottom-left leaning left) */
+    transform-origin: top right; /* Pivot from top right */
+    position: relative;
+    overflow: hidden;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+    width: 45%; /* Make the length (width) half the current size, adjusted slightly */
+    min-width: 280px; /* Ensure it doesn't get too small on larger screens */
+    box-sizing: border-box; /* Include padding and border in the width */
+    margin: 0 auto 25px auto; /* Center horizontally with auto margins, keep bottom margin */
+}
+
+/* Counter-skew for content inside the parallelogram cards */
+.profile-card > * {
+    transform: skewX(10deg); /* Counter-skew children to make them straight */
+    transform-origin: top right; /* Match pivot point */
+}
+
+/* Remove h3 styling from inside the card as it's now outside */
+.profile-card h3 {
+    display: none; /* Hide the h3 inside the card */
+}
+
+/* Form Group Styling */
+.form-group {
+    margin-bottom: 4px; /* Made even more compact */
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.8em; /* Smaller label font */
+    color: var(--profile-text-medium);
+    margin-bottom: 2px; /* Made more compact */
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"] {
+    width: 100%;
+    padding: 4px 6px; /* Made even more compact */
+    border: 1px solid var(--profile-input-border);
+    border-radius: 6px;
+    font-size: 0.9em; /* Smaller input font */
+    color: var(--profile-text-dark);
+    background-color: var(--profile-card-bg);
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input:focus {
+    border-color: var(--profile-active-link);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(232, 101, 64, 0.2);
+}
+
+.change-password-link {
+    color: var(--profile-active-link);
+    text-decoration: none;
+    font-size: 0.85em; /* Smaller link font */
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.change-password-link:hover {
+    color: #ff8c66;
+}
+
+.card-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 5px; /* Made even more compact */
+}
+
+.profile-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 12px; /* Made even more compact */
+    border-radius: 0; /* Sharp edges for button */
+    font-size: 0.9em; /* Smaller button font */
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s ease, box-shadow 0.2s ease;
+    white-space: nowrap;
+    border: none;
+    transform: skewX(-10deg); /* Apply parallelogram shape to button (matching card) */
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow for button */
+}
+
+.profile-button span {
+    transform: skewX(10deg); /* Counter-skew text inside button */
+    display: block;
+    color: #000; /* Set edit button word to black */
+}
+
+.profile-button.primary {
+    background-color: var(--profile-active-link);
+    color: #fff; /* This will be overridden by span color for text, but keeps background solid */
+}
+
+.profile-button.primary:hover {
+    background-color: #d45c36;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Address Book Styling */
+.address-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* Adjusted minmax for smaller cards */
+    gap: 8px; /* Made even more compact */
+}
+
+.address-box {
+    border: 1px solid var(--profile-border-color);
+    border-radius: 8px;
+    padding: 10px; /* Made even more compact */
+    background-color: #f9f9f9;
+    /* The address-box itself is not skewed, only its parent .profile-card */
+}
+
+.address-box h4 {
+    font-size: 0.95em; /* Smaller heading */
+    color: var(--profile-text-dark);
+    margin-top: 0;
+    margin-bottom: 5px; /* Made more compact */
+    font-weight: 600;
+}
+
+.address-box p {
+    font-size: 0.85em; /* Smaller paragraph font */
+    color: var(--profile-text-medium);
+    line-height: 1.2; /* Made more compact */
+    margin-bottom: 8px; /* Made more compact */
+}
+
+.edit-address-link {
+    color: var(--profile-active-link);
+    text-decoration: none;
+    font-size: 0.8em; /* Smaller link font */
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.edit-address-link:hover {
+    color: #ff8c66;
+}
+
+/* Order History Styling (if displayed) */
+.order-history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95em;
+    margin-top: 20px;
+}
+
+.order-history-table th,
+.order-history-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--profile-border-color);
+}
+
+.order-history-table th {
+    color: var(--profile-text-medium);
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 0.85em;
+    background-color: #f9f9f9;
+}
+
+.order-history-table tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.85em;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.status-badge.delivered { background-color: #e6ffe6; color: var(--profile-success-color); }
+.status-badge.shipped { background-color: #e0f2f7; color: #2196f3; }
+.status-badge.processing { background-color: #fff3cd; color: #ffc107; }
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+    .customer-profile-container {
+        flex-direction: column;
+    }
+    .customer-profile-sidebar {
+        width: 100%;
+        height: auto;
+        padding: 15px 20px;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        transform: skewX(0deg); /* Remove skew on smaller screens */
+        transform-origin: center;
+        z-index: auto;
+    }
+    /* Remove counter-skew for sidebar content on smaller screens */
+    .customer-profile-sidebar .sidebar-header,
+    .customer-profile-sidebar .profile-nav {
+        transform: skewX(0deg);
+        transform-origin: center;
+    }
+    .profile-nav {
+        display: none; /* Hide full nav on smaller screens, could add a toggle */
+    }
+    .customer-profile-main-content {
+        padding: 20px;
+        padding-left: 20px; /* Reset padding-left */
+        margin-left: 0; /* Reset margin-left */
+        padding-top: 30px; /* Reset padding-top */
+        background-size: cover; /* Adjust background image size for smaller screens */
+        background-position: top center; /* Adjust background image position for smaller screens */
+    }
+    .address-grid {
+        grid-template-columns: 1fr; /* Stack addresses on smaller screens */
+    }
+    /* Remove skew for cards on small screens */
+    .profile-card {
+        transform: skewX(0deg);
+        border-radius: 12px; /* Restore border-radius on small screens */
+        border: 1px solid #000; /* Adjust border thickness for smaller screens */
+        width: 100%; /* Full width on smaller screens */
+        min-width: unset; /* Remove min-width constraint */
+        margin-left: auto; /* Ensure centering on smaller screens */
+        margin-right: auto; /* Ensure centering on smaller screens */
+    }
+    .profile-card > * {
+        transform: skewX(0deg); /* Remove counter-skew on small screens */
+    }
+    .profile-button {
+        transform: skewX(0deg); /* Remove skew for button on small screens */
+        border-radius: 8px; /* Restore border-radius for button */
+    }
+    .profile-button span {
+        color: #000; /* Ensure button text is black on small screens */
+        transform: skewX(0deg); /* Remove counter-skew for button text */
+    }
+    .profile-section-title { /* Adjust title for smaller screens */
+        transform: skewX(0deg);
+        width: 100%;
+        text-align: center;
+        padding-left: 0;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .customer-profile-main-content {
+        padding: 15px;
+    }
+    .profile-card {
+        padding: 20px;
+    }
+    .profile-card h3 {
+        font-size: 1.3em;
+    }
+    .order-history-table {
+        font-size: 0.85em;
+    }
+    .order-history-table th,
+    .order-history-table td {
+        padding: 10px;
+    }
+}

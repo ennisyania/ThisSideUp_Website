@@ -1,6 +1,6 @@
 /* src/admin/AAdmin.css */
 
-/* Variables for Admin Dashboard helps why isit so flexed */
+/* Variables for Admin Dashboard */
 :root {
     --admin-sidebar-bg: #1A1A1A; /* Dark background for sidebar */
     --admin-sidebar-text: #F0F0F0; /* Light text for sidebar */
@@ -42,7 +42,7 @@ body {
 .admin-sidebar {
     width: 250px; /* Fixed width for sidebar */
     background-color: var(--admin-sidebar-bg); /* Dark background color */
-    /* Removed background-image from CSS, now handled in AAdmin.js */
+    /* Removed background-image from CSS, as it's handled in AAdmin.js */
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -98,11 +98,16 @@ body {
     transition: background-color 0.3s ease, color 0.3s ease, font-weight 0.3s ease; /* Added font-weight transition */
 }
 
-.admin-nav a i {
+/* Styling for sidebar image icons */
+.sidebar-icon {
+    width: 24px; /* Adjust size as needed */
+    height: 24px; /* Adjust size as needed */
     margin-right: 15px;
-    font-size: 1.2em;
-    width: 20px; /* Fixed width for icons to align text */
-    text-align: center;
+    filter: brightness(0) invert(1); /* Makes the icon white */
+}
+
+.admin-nav a.active .sidebar-icon {
+    filter: none; /* Reset filter for active icon if it has a color in the image */
 }
 
 .admin-nav a:hover {
@@ -219,13 +224,14 @@ body {
 }
 
 .admin-button.primary {
-    background-color: var(--admin-sidebar-active);
+    background-color: var(--admin-sidebar-bg); /* Dark button background */
     color: #fff;
+    border: none; /* No border for primary button */
 }
 
 .admin-button.primary:hover {
-    background-color: #d45c36; /* Slightly darker primary */
-    box-shadow: 0 4px 10px rgba(232, 101, 64, 0.3);
+    background-color: #2c2c2c; /* Slightly darker on hover */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .admin-button.secondary {
