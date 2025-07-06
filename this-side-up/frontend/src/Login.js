@@ -1,5 +1,4 @@
-// src/Login.js
-import React, { useState } from 'react'; // Removed useContext
+import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthContext from './context/AuthContext';
 import { GoogleLogin } from '@react-oauth/google';
@@ -8,37 +7,21 @@ import { jwtDecode } from 'jwt-decode';
 
 import './component/AuthForm.css';
 
-export default function Login({ setIsLoggedIn }) { // Re-added setIsLoggedIn prop
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    // const { login } = useContext(AuthContext); // REMOVED: No longer using AuthContext
-    const navigate = useNavigate();
+export default function Login() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-    const handleSubmit = (e) => { // Removed async
-        e.preventDefault();
-        console.log('Login attempt with:', { email, password });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-        // Admin authentication logic (hardcoded)
-        if (email === 'admin@gmail.com' && password === 'admin') {
-            alert('Admin Login successful! Redirecting to Admin Dashboard.');
-            localStorage.setItem('isLoggedIn', 'true'); // Persist login status
-            setIsLoggedIn(true); // Update state in App.js
-            navigate('/admin'); // Redirect to admin dashboard
-        }
-        // Regular user authentication logic (hardcoded)
-        else if (email === 'test@example.com' && password === 'password123') { // Example regular user credentials
-            alert('Login successful!');
-            localStorage.setItem('isLoggedIn', 'true'); // Persist login status
-            setIsLoggedIn(true); // Update state in App.js
-            navigate('/account'); // Redirect to /account for regular user
-        }
-        // Failed login
-        else {
-            alert('Invalid email or password.');
-            localStorage.setItem('isLoggedIn', 'false'); // Ensure login status is false on failure
-            setIsLoggedIn(false); // Update state in App.js
-        }
-    };
+    try {
+      const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/user/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
 
       const data = await res.json();
 
