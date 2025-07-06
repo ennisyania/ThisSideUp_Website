@@ -1,22 +1,28 @@
-// src/App.js
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+
+import React, { useState } from 'react';
+
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import PrivateRoute from './component/PrivateRoute.js';
+import ProtectedAdminRoute from './component/ProtectedAdminRoute.js';
+
 
 // Import Layout Components
 import Navbar from './component/Navbar.js';
 import Footer from './component/Footer.js';
+import AdminLayout from './component/AdminLayout.js';
+
 
 // Import General Pages
 import Homepage from './Homepage.js';
-import About from './About.js'; // Corrected: Added .js extension
+import About from './About.js';
 import Contact from './Contact.js';
 import FAQ from './FAQ.js';
 import Login from './Login.js';
+import Logout from './Logout.js';
 import Register from './Register.js';
 import Profile from './Profile.js';
 import CustomerOrderHistory from './CustomerOrderHistory.js';
-import NotFound from './NotFound.js';
-import ProfileDefaultContent from './ProfileDefaultContent.js'; // Import ProfileDefaultContent
+import NotFound from './NotFound.js'; // Generic 404 page
 
 // Import Product/Shop Pages
 import Skimboards from './Skimboards.js';
@@ -25,15 +31,18 @@ import Accessories from './Accessories.js';
 import Tshirt from './Tshirt.js';
 import Jackets from './Jackets.js';
 import ProductDetail from './ProductDetail.js';
-// import CustomSkimboards from './CustomSkimboards.js'; // Removed as it was unused and causing a warning
-// import Cart from './Cart.js'; // REMOVED: Confirmed no Cart.js file exists
+import CustomSkimboards from './CustomSkimboards.js';
+
 import CheckOut from './CheckOut.js';
 import Tryouts from './Tryouts.js';
 
-// Import Logout component
-import Logout from './Logout.js';
 
 // Import Admin Pages
+
+import PrivacyPolicy from './PrivacyPolicy.js';
+import TermsAndConditions from './TermsAndConditions.js';
+
+
 import Admin from './admin/AAdmin.js';
 import AdminProducts from './admin/AProducts.js';
 import AdminViewProducts from './admin/AViewProducts.js';
@@ -47,7 +56,6 @@ import AdminSettings from './admin/ASettings.js';
 
 
 function App() {
-
   // Global cart state
   const [cartItems, setCartItems] = useState([]);
 
@@ -86,10 +94,10 @@ function App() {
               />
               <Routes>
 
-
                 <Route path="/" element={<Homepage />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
+                <Route path="/faq" element={<FAQ />} />
 
                 <Route path="/login" element={<Login />} />
                 <Route path="/logout" element={<Logout />} />
@@ -136,34 +144,6 @@ function App() {
                   }
                 />
                 <Route path="/tryouts" element={<Tryouts />} />
-                {/* Pass setIsLoggedIn to Login component again */}
-                <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
-                <Route path="/register" element={<Register />} />
-                
-                {/* Protected /account route and its nested routes */}
-                {/* Profile component acts as the layout for all /account paths */}
-                <Route element={isLoggedIn ? <Profile /> : <Navigate to="/login" replace />}>
-                    {/* Index route for /account will render ProfileDefaultContent */}
-                    <Route path="/account" element={<ProfileDefaultContent />} />
-                    {/* Nested route for order history */}
-                    <Route path="/account/order-history" element={<CustomerOrderHistory />} />
-                </Route>
-
-                <Route path="/logout" element={<Logout handleLogout={handleLogout} />} />
-
-                {/* Admin Routes with Nested Structure */}
-                <Route path="/admin" element={<Admin />}>
-                    <Route index element={<AdminProducts />} />
-                    <Route path="products" element={<AdminProducts />} />
-                    <Route path="viewproducts" element={<AdminViewProducts />} />
-                    <Route path="addproduct" element={<AdminAddProduct />} />
-                    <Route path="editproducts/:id" element={<AdminEditProducts />} />
-                    <Route path="orders" element={<AdminOrders />} />
-                    <Route path="orderdetail/:id" element={<AdminOrderDetail />} />
-                    <Route path="customers" element={<AdminCustomers />} />
-                    <Route path="individualcustomer/:id" element={<AdminIndividualCustomer />} />
-                    <Route path="settings" element={<AdminSettings />} />
-                </Route>
 
                 <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
                 <Route
@@ -207,4 +187,3 @@ function App() {
 }
 
 export default App;
-

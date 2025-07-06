@@ -107,7 +107,7 @@ const Navbar = ({ cartItems, onQuantityChange, onRemoveItem }) => {
                   {user ? (
                     <>
                       <span style={{ padding: "0.5rem 1rem" }}>Logged in as <strong>{user.email}</strong></span>
-                      <Link to="/account">My Account</Link>
+                      <Link to="/myProfile">My Account</Link>
                       <Link to="/faq">FAQ</Link>
                       <hr />
                       <Link to="/logout">
