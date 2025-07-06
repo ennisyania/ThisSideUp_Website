@@ -1,3 +1,8 @@
+body, html {
+  overflow-x: hidden;
+  z-index: 2;
+}
+
 .homepage {
   font-family: 'Inter', sans-serif;
   color: #110f0f;
@@ -12,7 +17,7 @@
   position: absolute;
   width: 100%;
   top: 15%;
-  z-index: 1000;
+  z-index: 0;
 }
 
 .board-img {
@@ -21,7 +26,7 @@
   rotate: -30deg;
   height: 80vw;
   width: auto;
-  z-index: 10;
+  z-index: 0;
   pointer-events: none;
 }
 
@@ -31,7 +36,7 @@
 .image-overlay2 {
   position: absolute;
   width: 100%;
-  z-index: 1000;
+  z-index: 10;
 }
 
 .board-img2 {
@@ -39,7 +44,7 @@
   right: 90vw;
   height: 50vw;
   width: 30vw;
-  z-index: 1000;
+  z-index: 8;
   pointer-events: none;
   rotate: -10deg;
 }
@@ -47,7 +52,7 @@
 .image-overlay3 {
   position: absolute;
   width: 100%;
-  z-index: 1000;
+  z-index: 10;
 }
 
 .board-img3 {
@@ -123,7 +128,7 @@
   font-weight: 900;
   font-size: 64px;
   line-height: 77px;
-
+  z-index: 0;
 
   color: #F8FAF5;
   text-shadow: 0px 4px 4px #4D4A4E;

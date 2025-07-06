@@ -80,20 +80,8 @@ function App() {
     });
   };
 
-  const handleQuantityChange = (id, newQuantity) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id
-          ? { ...item, quantity: Math.max(1, newQuantity) }
-          : item
-      )
-    );
-  };
 
-  const handleRemoveItem = (id) => {
-    setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
-  };
-
+  
   return (
     <Router>
       <Routes>
@@ -103,8 +91,6 @@ function App() {
             <>
               <Navbar
                 cartItems={cartItems}
-                onQuantityChange={handleQuantityChange}
-                onRemoveItem={handleRemoveItem}
               />
               <Routes>
 
@@ -147,18 +133,7 @@ function App() {
                   path="/customSkimboards"
                   element={<CustomSkimboards />}
                 />
-                <Route
-                  path="/cart"
-                  element={
-                    <PrivateRoute>
-                      <Cart
-                        cartItems={cartItems}
-                        onQuantityChange={handleQuantityChange}
-                        onRemoveItem={handleRemoveItem}
-                      />
-                    </PrivateRoute>
-                  }
-                />
+              
                 <Route
                   path="/checkout"
                   element={

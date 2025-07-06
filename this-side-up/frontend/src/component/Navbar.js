@@ -1,5 +1,4 @@
 import React, { useState, useContext } from "react";
-import React, { useState, useContext } from "react";
 import './Navbar.css';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -28,9 +27,6 @@ const Navbar = ({ cartItems, onQuantityChange, onRemoveItem }) => {
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   const { user, logout } = useContext(AuthContext);
-
-
-  const [isCartOpen, setIsCartOpen] = useState(false);
 
   const navigate = useNavigate();
 
