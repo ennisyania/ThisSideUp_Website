@@ -8,13 +8,87 @@ export default function AAdmin() {
     const isDashboardRoute = useMatch('/admin'); // Check if the current route is exactly /admin
 
     // Construct the image URLs using process.env.PUBLIC_URL
-    // Re-added AdminSidebar.png for the sidebar background via process.env.PUBLIC_URL
     const adminSidebarBgUrl = `${process.env.PUBLIC_URL}/images/AdminSidebar.png`;
     const logoWhiteUrl = `${process.env.PUBLIC_URL}/images/logowhite.png`;
 
+    // Icon URLs
+    const dashboardIcon = `${process.env.PUBLIC_URL}/images/Control Panel.png`;
+    const productIcon = `${process.env.PUBLIC_URL}/images/Product.png`;
+    const ordersIcon = `${process.env.PUBLIC_URL}/images/Purchase Order.png`;
+    const customersIcon = `${process.env.PUBLIC_URL}/images/User.png`;
+    const settingsIcon = `${process.env.PUBLIC_URL}/images/Gear.png`;
+
     return (
         <div className="admin-dashboard-container">
-            
+            {/* Admin Sidebar Navigation */}
+            <aside
+                className="admin-sidebar"
+                style={{
+                    backgroundImage: `url(${adminSidebarBgUrl})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat'
+                }}
+            >
+                <div className="admin-sidebar-header">
+                    <img src={logoWhiteUrl} alt="This Side Up Logo" className="admin-logo" />
+                </div>
+                <nav className="admin-nav">
+                    <ul>
+                        {/* Dashboard Link - Active only when path is exactly /admin */}
+                        <li>
+                            <Link
+                                to="/admin"
+                                className={location.pathname === '/admin' ? 'active' : ''}
+                            >
+                                <img src={dashboardIcon} alt="Dashboard Icon" className="sidebar-icon" />
+                                Dashboard
+                            </Link>
+                        </li>
+                        {/* Products Link - Active when path starts with /admin/products */}
+                        <li>
+                            <Link
+                                to="/admin/products"
+                                className={location.pathname.startsWith('/admin/products') ? 'active' : ''}
+                            >
+                                <img src={productIcon} alt="Products Icon" className="sidebar-icon" />
+                                Products
+                            </Link>
+                        </li>
+                        {/* Orders Link */}
+                        <li>
+                            <Link
+                                to="/admin/orders"
+                                className={location.pathname.startsWith('/admin/orders') || location.pathname.startsWith('/admin/orderdetail') ? 'active' : ''}
+                            >
+                                <img src={ordersIcon} alt="Orders Icon" className="sidebar-icon" />
+                                Orders
+                            </Link>
+                        </li>
+                        {/* Customers Link */}
+                        <li>
+                            <Link
+                                to="/admin/customers"
+                                className={location.pathname.startsWith('/admin/customers') || location.pathname.startsWith('/admin/individualcustomer') ? 'active' : ''}
+                            >
+                                <img src={customersIcon} alt="Customers Icon" className="sidebar-icon" />
+                                Customers
+                            </Link>
+                        </li>
+                        {/* Settings Link */}
+                        <li>
+                            <Link
+                                to="/admin/settings"
+                                className={location.pathname.startsWith('/admin/settings') ? 'active' : ''}
+                            >
+                                <img src={settingsIcon} alt="Settings Icon" className="sidebar-icon" />
+                                Settings
+                            </Link>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+
             {/* Main Content Area */}
             <main className="admin-main-content">
                 <header className="admin-main-header">

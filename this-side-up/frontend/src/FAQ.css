@@ -1,0 +1,203 @@
+/* src/FAQ.css */
+
+.faq-page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #F8FAF5; /* Light background for the page */
+    font-family: 'Inter', sans-serif;
+    color: #333;
+}
+
+.faq-content-grid {
+    display: grid;
+    /* Define two columns: one for the background image area (left), one for content (right) */
+    grid-template-columns: 50% 1fr; /* Increased left column width to provide more space for questions */
+    /* Define rows dynamically for each FAQ item + title */
+    grid-template-rows: auto repeat(5, auto); /* 1 row for title, 5 for questions/answers */
+    flex-grow: 1;
+    min-height: calc(100vh - var(--navbar-height, 80px) - var(--footer-height, 200px));
+    position: relative; /* For positioning elements within the grid */
+}
+
+.faq-left-background {
+    grid-column: 1 / 2; /* Spans the first column */
+    grid-row: 1 / -1; /* Spans all rows from start to end */
+    background-size: cover;
+    background-position: right center; /* Keep image aligned to the right within its column */
+    background-repeat: no-repeat;
+    position: relative; /* For its pseudo-element */
+    overflow: hidden;
+    background-color: #1A1A1A; /* Fallback */
+    z-index: 0; /* Ensure it's in the background */
+}
+
+/* Slanted pseudo-element for the right edge of the left background */
+.faq-left-background::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -250px; /* Adjust to cover the slant */
+    bottom: -150px; /* Adjust to cover the bottom */
+    width: 400px; /* Adjust width of the slant */
+    background-color: #F8FAF5; /* Match right section's background */
+    transform: skewX(-5deg);
+    transform-origin: top left;
+    z-index: 1;
+}
+
+.faq-title-overlay {
+    grid-column: 1 / 2; /* Place in the first column */
+    grid-row: 1 / 2; /* Place in the first row */
+    color: #FFFFFF;
+    padding-left: 80px; /* Padding from the left edge of the grid cell */
+    padding-top: 60px; /* Align with the start of the content */
+    z-index: 2;
+    position: relative;
+    width: auto; /* Allow width to be determined by content and padding */
+    max-width: none; /* Remove max-width constraint */
+    align-self: start; /* Align to the top of its grid row */
+}
+
+.faq-title-overlay h1 {
+    font-size: 3em;
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
+    margin-bottom: 40px;
+    margin-top: 0;
+}
+
+/* Styling for individual FAQ questions */
+.faq-question-text {
+    grid-column: 1 / 2; /* Place in the first grid column (left side) */
+    color: #FFFFFF; /* White text for questions */
+    font-family: 'Inter', sans-serif;
+    font-weight: bold;
+    font-size: 1.5em;
+    line-height: 1.3;
+    text-align: left; /* Align text to the left within its grid cell */
+    padding-left: 80px; /* Align with FAQ title */
+    padding-right: 20px; /* Space from the right edge of the text area */
+    margin-bottom: 40px; /* Space between questions */
+    align-self: start; /* Align to the top of its grid row */
+    z-index: 2; /* Ensure it's above the background image */
+    position: relative; /* Needed for z-index and fine-tuning */
+    width: auto; /* Allow width to be determined by content and padding */
+    max-width: none; /* Remove max-width constraint */
+}
+
+/* Assign specific grid-row for each question to align with answers */
+.faq-question-text.faq-question-0 { grid-row: 2 / 3; }
+.faq-question-text.faq-question-1 { grid-row: 3 / 4; }
+.faq-question-text.faq-question-2 { grid-row: 4 / 5; }
+.faq-question-text.faq-question-3 { grid-row: 5 / 6; }
+.faq-question-text.faq-question-4 { grid-row: 6 / 7; }
+
+
+/* Styling for individual FAQ answers */
+.faq-answer-column {
+    grid-column: 2 / 3; /* Place in the second grid column (right side) */
+    background-color: transparent; /* No fill */
+    border-radius: 0; /* Sharp corners */
+    box-shadow: none; /* Removed box shadow */
+    padding: 25px 30px;
+    border: 2px solid #000000; /* Black border, now thicker */
+    margin-bottom: 20px; /* Space between answer boxes */
+    align-self: start; /* Align to the top of its grid row */
+    z-index: 2; /* Ensure it's above the background image */
+    position: relative; /* Needed for z-index and fine-tuning */
+    margin-left: 0; /* Ensure no unwanted margin */
+}
+
+/* Assign specific grid-row for each answer to align with questions */
+.faq-answer-column.faq-answer-0 { grid-row: 2 / 3; }
+.faq-answer-column.faq-answer-1 { grid-row: 3 / 4; }
+.faq-answer-column.faq-answer-2 { grid-row: 4 / 5; }
+.faq-answer-column.faq-answer-3 { grid-row: 5 / 6; }
+.faq-answer-column.faq-answer-4 { grid-row: 6 / 7; }
+
+
+.faq-answer-column p {
+    font-size: 1em;
+    color: #000000; /* Black text */
+    line-height: 1.6;
+    margin: 0; /* Remove default paragraph margins */
+    font-family: 'Inter', sans-serif; /* Ensure Inter font */
+    font-style: italic; /* Italic wording */
+    font-weight: 500; /* Medium weight for italic text */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+    .faq-content-grid {
+        grid-template-columns: 1fr; /* Stack columns on smaller screens */
+        grid-template-rows: auto auto repeat(5, auto); /* Title row, then questions/answers */
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-top: 20px; /* Adjust overall top padding for mobile */
+    }
+
+    .faq-left-background {
+        grid-column: 1 / -1; /* Span full width */
+        grid-row: 1 / 2; /* Only span the first row for the background image */
+        height: 200px; /* Fixed height for mobile image */
+        padding-top: 0; /* Remove top padding */
+        align-items: center; /* Center title vertically */
+        justify-content: center; /* Center title horizontally */
+    }
+
+    .faq-title-overlay {
+        grid-column: 1 / -1; /* Span full width */
+        grid-row: 1 / 2; /* Stay in the first row */
+        padding-left: 0;
+        text-align: center;
+        max-width: none;
+        padding-top: 0; /* Remove top padding on mobile */
+    }
+
+    .faq-left-background::after {
+        right: -20px;
+        transform: skewX(-3deg);
+    }
+
+    .faq-question-text {
+        grid-column: 1 / -1; /* Span full width when stacked */
+        color: #333; /* Change question color for readability on light background */
+        text-align: left; /* Align left when stacked */
+        padding-right: 0;
+        padding-left: 0;
+        margin-bottom: 10px; /* Smaller margin when stacked */
+        font-size: 1.3em;
+        /* Adjust grid-row for questions on mobile to follow the title */
+        &.faq-question-0 { grid-row: 2 / 3; }
+        &.faq-question-1 { grid-row: 3 / 4; }
+        &.faq-question-2 { grid-row: 4 / 5; }
+        &.faq-question-3 { grid-row: 5 / 6; }
+        &.faq-question-4 { grid-row: 6 / 7; }
+    }
+
+    .faq-answer-column {
+        grid-column: 1 / -1; /* Span full width when stacked */
+        padding: 20px 25px;
+        /* Adjust grid-row for answers on mobile to follow questions */
+        &.faq-answer-0 { grid-row: 2 / 3; } /* Answers will now stack directly below questions */
+        &.faq-answer-1 { grid-row: 3 / 4; }
+        &.faq-answer-2 { grid-row: 4 / 5; }
+        &.faq-answer-3 { grid-row: 5 / 6; }
+        &.faq-answer-4 { grid-row: 6 / 7; }
+    }
+}
+
+@media (max-width: 768px) {
+    .faq-content-grid {
+        padding: 30px 20px;
+    }
+
+    .faq-title-overlay h1 {
+        font-size: 2em;
+    }
+
+    .faq-question-text {
+        font-size: 1.2em;
+    }
+}
