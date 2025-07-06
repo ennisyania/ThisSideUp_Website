@@ -47,84 +47,94 @@ import AdminSettings from './admin/ASettings.js';
 
 
 function App() {
-    const [cartItems, setCartItems] = useState([]);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-    // Check login status on component mount (e.g., from local storage)
-    useEffect(() => {
-        const loggedInStatus = localStorage.getItem('isLoggedIn');
-        if (loggedInStatus === 'true') {
-            setIsLoggedIn(true);
-        }
-    }, []);
+  // Global cart state
+  const [cartItems, setCartItems] = useState([]);
 
-    // Update local storage when isLoggedIn changes
-    useEffect(() => {
-        localStorage.setItem('isLoggedIn', isLoggedIn);
-    }, [isLoggedIn]);
+  const handleAddToCart = (productToAdd) => {
+    setCartItems((prevItems) => {
+      const existingItem = prevItems.find(
+        (item) =>
+          item.id === productToAdd.id &&
+          item.variant === productToAdd.variant
+      );
 
-    const handleAddToCart = (product, variant = 'Default') => {
-        setCartItems((prevItems) => {
-            const existingItemIndex = prevItems.findIndex(
-                (item) => item.id === product.id && item.variant === variant
-            );
+      if (existingItem) {
+        return prevItems.map((item) =>
+          item.id === productToAdd.id &&
+          item.variant === productToAdd.variant
+            ? { ...item, quantity: item.quantity + productToAdd.quantity }
+            : item
+        );
+      } else {
+        return [...prevItems, productToAdd];
+      }
+    });
+  };
 
-            if (existingItemIndex > -1) {
-                const updatedItems = [...prevItems];
-                updatedItems[existingItemIndex] = {
-                    ...updatedItems[existingItemIndex],
-                    quantity: updatedItems[existingItemIndex].quantity + 1,
-                };
-                return updatedItems;
-            } else {
-                const itemPrice = typeof product.price === 'string'
-                    ? parseFloat(product.price.replace(/[^0-9.-]+/g, ""))
-                    : product.price;
 
-                return [...prevItems, { ...product, price: itemPrice, quantity: 1, variant }];
-            }
-        });
-    };
+  
+  return (
+    <Router>
+      <Routes>
+        <Route
+          path="*"
+          element={
+            <>
+              <Navbar
+                cartItems={cartItems}
+              />
+              <Routes>
 
-    const handlePlaceOrder = () => {
-        console.log("Placing order with items:", cartItems);
-        alert('Order Placed Successfully!');
-        setCartItems([]);
-    };
 
-    const handleLogout = () => {
-        setIsLoggedIn(false);
-        alert('You have been logged out.');
-    };
-
-    const totalCartItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
-
-    return (
-        <Router>
-            <Navbar cartItemCount={totalCartItems} isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
-            <Routes>
                 <Route path="/" element={<Homepage />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
 
-                <Route path="/skimboards" element={<Skimboards onAddToCart={handleAddToCart} />} />
-                <Route path="/boardshorts" element={<Boardshorts onAddToCart={handleAddToCart} />} />
-                <Route path="/accessories" element={<Accessories onAddToCart={handleAddToCart} />} />
-                <Route path="/tshirt" element={<Tshirt onAddToCart={handleAddToCart} />} />
-                <Route path="/jackets" element={<Jackets onAddToCart={handleAddToCart} />} />
-
-                <Route path="/productdetail/:id" element={<ProductDetail onAddToCart={handleAddToCart} />} />
-                <Route path="/productdetail" element={<ProductDetail onAddToCart={handleAddToCart} />} />
-
-                <Route path="/faq" element={<FAQ />} />
-                {/* REMOVED: Cart route as Cart.js file does not exist */}
-                {/* <Route path="/cart" element={<Cart cartItems={cartItems} setCartItems={setCartItems} />} /> */}
-
+                <Route path="/login" element={<Login />} />
+                <Route path="/logout" element={<Logout />} />
+                <Route path="/register" element={<Register />} />
                 <Route
-                    path="/checkout"
-                    element={<CheckOut cartItems={cartItems} handlePlaceOrder={handlePlaceOrder} />}
+                  path="/myProfile"
+                  element={
+                    <PrivateRoute>
+                      <Profile />
+                    </PrivateRoute>
+                  }
                 />
-                
+                <Route
+                  path="/orderhistory"
+                  element={
+                    <PrivateRoute>
+                      <CustomerOrderHistory />
+                    </PrivateRoute>
+                  }
+                />
+                <Route path="/skimboards" element={<Skimboards />} />
+                <Route path="/boardshorts" element={<Boardshorts />} />
+                <Route path="/accessories" element={<Accessories />} />
+                <Route path="/tshirt" element={<Tshirt />} />
+                <Route path="/jackets" element={<Jackets />} />
+                <Route
+                  path="/productdetail/:productId"
+                  element={
+                    <ProductDetail onAddToCart={handleAddToCart} />
+                  }
+                />
+                <Route
+                  path="/customSkimboards"
+                  element={<CustomSkimboards />}
+                />
+              
+                <Route
+                  path="/checkout"
+                  element={
+                    <PrivateRoute>
+                      <CheckOut cartItems={cartItems || []} handlePlaceOrder={() => { /* implement place order logic here */ }} />
+
+                    </PrivateRoute>
+                  }
+                />
                 <Route path="/tryouts" element={<Tryouts />} />
                 {/* Pass setIsLoggedIn to Login component again */}
                 <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
@@ -155,11 +165,46 @@ function App() {
                     <Route path="settings" element={<AdminSettings />} />
                 </Route>
 
+                <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
+                <Route
+                  path="/termsAndConditions"
+                  element={<TermsAndConditions />}
+                />
                 <Route path="*" element={<NotFound />} />
-            </Routes>
-            <Footer />
-        </Router>
-    );
+              </Routes>
+              <Footer />
+            </>
+          }
+        />
+
+        {/* Admin Routes (no Navbar or Footer) */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedAdminRoute>
+              <AdminLayout />
+            </ProtectedAdminRoute>
+          }
+        >
+          <Route index element={<Admin />} />
+          <Route path="products" element={<AdminProducts />} />
+          <Route path="viewproducts" element={<AdminViewProducts />} />
+          <Route path="addproduct" element={<AdminAddProduct />} />
+          <Route path="editproducts/:id" element={<AdminEditProducts />} />
+          <Route path="orders" element={<AdminOrders />} />
+          <Route path="orderdetail/:id" element={<AdminOrderDetail />} />
+          <Route path="customers" element={<AdminCustomers />} />
+          <Route
+            path="individualcustomer/:id"
+            element={<AdminIndividualCustomer />}
+          />
+          <Route path="settings" element={<AdminSettings />} />
+        </Route>
+      </Routes>
+    </Router>
+  );
+
 }
 
 export default App;
+
