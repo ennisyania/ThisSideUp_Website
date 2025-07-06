@@ -45,9 +45,7 @@ function Homepage() {
             <button onClick={() => navigate('/accessories')}>Accessories</button>
             <button onClick={() => navigate('/jackets')}>Jackets</button>
             <button onClick={() => navigate('/tshirt')}>T-Shirt</button>
-            <button onClick={() => navigate('/boardshorts')}>Boardshorts</button>
-            <button onClick={() => navigate('/checkout')}>checkout</button>
-          </div>
+            <button onClick={() => navigate('/boardshorts')}>Boardshorts</button>          </div>
         </div>
         
       </section>
