@@ -17,7 +17,7 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/api/user/login`, {
+      const res = await fetch('http://localhost:5000/api/user/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
