@@ -138,8 +138,7 @@ function App() {
                   path="/checkout"
                   element={
                     <PrivateRoute>
-                      <CheckOut cartItems={cartItems || []} handlePlaceOrder={() => { /* implement place order logic here */ }} />
-
+                      <CheckOut />
                     </PrivateRoute>
                   }
                 />

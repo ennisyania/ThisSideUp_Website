@@ -1,9 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthContext from './context/AuthContext';
-import { GoogleLogin } from '@react-oauth/google';
-import { jwtDecode } from 'jwt-decode';
-
 
 import './component/AuthForm.css';
 
@@ -68,15 +65,6 @@ export default function Login() {
           <Link to="/forgot-password" className="forgot-password-link">
             Forgot your password?
           </Link>
-          <GoogleLogin
-            onSuccess={(credentialResponse) => {
-              const userData = jwtDecode(credentialResponse.credential); console.log("Decoded Google user:", userData);
-              login(userData, credentialResponse.credential);
-              navigate('/');
-            }}
-            onError={() => console.log("Login Failed")}
-            auto_select={true}
-          />
           <button type="submit" className="auth-button">
             <span>Log In</span>
           </button>
