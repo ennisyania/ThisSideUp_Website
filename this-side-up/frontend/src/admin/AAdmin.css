@@ -22,6 +22,11 @@
     --admin-info-color: #007bff; /* Blue for info */
 }
 
+/* Ensure html and body take full height */
+html, body {
+    height: 100%;
+}
+
 /* Base Styles for Admin Pages */
 body {
     margin: 0;
@@ -29,11 +34,12 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background-color: var(--admin-main-bg); /* Ensure body matches admin main background */
+    overflow-x: hidden; /* Prevents horizontal scrollbar on body */
 }
 
 .admin-dashboard-container {
     display: flex;
-    min-height: 100vh;
+    min-height: 100vh; /* Ensures container takes full viewport height */
     font-family: 'Inter', sans-serif;
     background-color: var(--admin-main-bg); /* Overall background */
 }
@@ -41,17 +47,21 @@ body {
 /* Admin Sidebar Styling */
 .admin-sidebar {
     width: 250px; /* Fixed width for sidebar */
+    height: 100%; /* Ensure sidebar takes full height of its flex parent */
     background-color: var(--admin-sidebar-bg); /* Dark background color */
-    /* Removed background-image from CSS, as it's handled in AAdmin.js */
     background-repeat: no-repeat;
     background-size: cover;
-    background-position: center;
+    background-position: right center; /* Aligned to the right to prevent extra strip, and vertically centered */
     color: var(--admin-sidebar-text);
-    padding: 20px; /* Keep consistent padding */
+    padding: 20px;
     display: flex;
     flex-direction: column;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
     flex-shrink: 0; /* Prevent sidebar from shrinking */
+    z-index: 0; /* Lowered z-index to ensure navbar dropdown is on top */
+    transform: skewX(0deg); /* Removed slant from the sidebar */
+    transform-origin: top left; /* Adjusted pivot point for no transformation */
+    overflow: hidden; /* Hide overflow from skew */
 }
 
 .admin-sidebar-header {
@@ -61,6 +71,8 @@ body {
     margin-bottom: 30px;
     padding-bottom: 20px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transform: skewX(0deg); /* Removed counter-skew for header content */
+    transform-origin: top left; /* Adjusted pivot point */
 }
 
 .admin-logo {
@@ -96,6 +108,8 @@ body {
     font-size: 1.1em;
     border-radius: 8px;
     transition: background-color 0.3s ease, color 0.3s ease, font-weight 0.3s ease; /* Added font-weight transition */
+    transform: skewX(0deg); /* Removed counter-skew for nav links */
+    transform-origin: top left; /* Adjusted pivot point */
 }
 
 /* Styling for sidebar image icons */
@@ -124,9 +138,13 @@ body {
 /* Main Content Area Styling */
 .admin-main-content {
     flex-grow: 1;
-    padding: 30px;
+    padding: 30px; /* Reverted padding to give more space */
     background-color: var(--admin-main-bg);
     overflow-y: auto; /* Enable scrolling for content if it overflows */
+    position: relative; /* Ensure z-index works */
+    z-index: 1; /* Lower z-index than navbar */
+    max-width: 1000px; /* Adjusted max-width to fit the reference image */
+    margin: 0 auto; /* Center the main content area */
 }
 
 .admin-main-header {
@@ -157,7 +175,7 @@ body {
 /* Dashboard Specific Cards */
 .dashboard-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Adjusted minmax to match image size */
     gap: 25px;
     margin-bottom: 30px;
 }
@@ -188,7 +206,7 @@ body {
 }
 
 .card-value {
-    font-size: 2.2em;
+    font-size: 2.2em; /* Reverted font size for card values */
     font-weight: 700;
     color: var(--admin-text-dark);
     margin-bottom: 5px;
@@ -486,12 +504,19 @@ body {
     }
     .admin-sidebar {
         width: 100%;
-        height: auto;
+        height: auto; /* Allow sidebar to adjust height based on content */
         padding: 15px 20px;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        transform: skewX(0deg); /* Remove skew on smaller screens */
+        transform-origin: center;
+    }
+    .admin-sidebar-header,
+    .admin-nav a {
+        transform: skewX(0deg); /* Remove counter-skew on smaller screens */
+        transform-origin: center;
     }
     .admin-sidebar-header {
         margin-bottom: 0;
@@ -512,12 +537,12 @@ body {
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 50x) {
     .admin-main-header h1 {
         font-size: 2em;
     }
     .admin-card {
-        padding: 20px;
+        padding: 15px;
     }
     .card-value {
         font-size: 1.8em;

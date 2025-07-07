@@ -1,5 +1,16 @@
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.admin-layout {
+  display: flex;
+  height: 100vh; /* THIS is what was missing */
+}
+
 .admin-sidebar {
-  position: fixed;
+  position: relative;
   top: 0;
   left: 0;
   width: 18%;
@@ -13,7 +24,7 @@
 /* Background image styling */
 .sidebar-bg {
   position: absolute;
-  top: -10%; /* adjust this value to crop the top */
+  height: 100%;
   left: 0;
   width: 100%; /* make it slightly larger */
   object-fit: cover;
@@ -61,3 +72,4 @@
   width: 3vw;
   height: 6vh;
 }
+
