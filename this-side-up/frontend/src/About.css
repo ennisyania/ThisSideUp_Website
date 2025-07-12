@@ -1,0 +1,110 @@
+.about-page {
+  display: flex;
+  color: #111;
+  padding: 2rem;
+}
+
+.sidebar {
+  width: 5%;
+  padding-right: 2rem;
+  font-size: 1rem;
+  font-weight: bold;
+  padding-top: 5rem;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+}
+
+.about-text-section {
+  flex: 1;
+  padding-left: 3rem;
+}
+
+.about-text-section h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.about-text-section p {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.quote-image-section {
+  display: flex;
+  gap: 3rem;
+  align-items: center;
+}
+
+.quote {
+  flex: 1;
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.quote span {
+  display: block;
+  font-size: 1rem;
+  font-weight: normal;
+  margin-top: 0.5rem;
+}
+
+.angled-image.top-right img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.team-section {
+  display: flex;
+  gap: 3rem;
+  align-items: center;
+}
+
+.image-overlap-wrapper {
+  position: relative;
+  width: 50%;
+  max-width: 30%;
+  height: 500px;
+}
+
+.overlap-image {
+  position: absolute;
+  width: 60%;
+  height: auto;
+  object-fit: cover;
+}
+
+.overlap-image.first {
+  left: 0;
+  top: 0;
+  z-index: 1;
+}
+
+.overlap-image.second {
+  left: 35%;
+  top: 40px;
+  z-index: 2;
+}
+
+.team-text-column {
+  flex: 1;
+}
+
+.team-text-column h2 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.team-description {
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
