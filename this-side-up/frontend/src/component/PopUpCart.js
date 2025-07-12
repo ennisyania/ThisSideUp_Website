@@ -103,7 +103,7 @@ export default function PopUpCart({ isOpen, onClose, cartItems, onQuantityChange
             <div className="cart-total">Total: ${totalPrice.toFixed(2)}</div>
 
             <Link
-              to="/cart"
+              to="/checkout"
               className="checkout-btn"
               onClick={onClose}
             >
