@@ -1,5 +1,4 @@
 body, html {
-  overflow-x: hidden;
   z-index: 2;
 }
 
@@ -21,7 +20,7 @@ body, html {
 }
 
 .board-img {
-  position: absolute;
+  position: relative ;
   left: 90vw;
   rotate: -30deg;
   height: 80vw;
