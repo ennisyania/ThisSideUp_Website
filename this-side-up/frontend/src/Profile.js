@@ -69,14 +69,6 @@ export default function Profile() {
                                 </li>
                                 <li>
                                     <Link
-                                        to="/orderhistory/completed" // Updated path
-                                        className={location.pathname === '/orderhistory/completed' ? 'active' : ''} // Updated path
-                                    >
-                                        Completed
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link
                                         to="/orderhistory/cancelled" // Updated path
                                         className={location.pathname === '/orderhistory/cancelled' ? 'active' : ''} // Updated path
                                     >
