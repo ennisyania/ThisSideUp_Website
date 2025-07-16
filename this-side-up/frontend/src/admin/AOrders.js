@@ -1,12 +1,5 @@
+// src/admin/AOrders.js
 import React, { useState, useEffect } from 'react';
-import {
-  Package,
-  TrendingUp,
-  DollarSign,
-  RefreshCw,
-  Calendar as CalendarIcon,
-  Filter as FilterIcon
-} from 'lucide-react';
 import './AAdmin.css';
 
 export default function AOrders() {
@@ -64,40 +57,38 @@ export default function AOrders() {
 
   return (
     <div className="admin-page orders-page">
-      <h1 className="page-title">
-        <Package className="page-icon" /> Orders
-      </h1>
+      <h1 className="page-title">📦 Orders</h1>
 
       {loading && (
         <div className="loading-overlay">
-          <RefreshCw className="spin" /> Loading orders…
+          <div className="spinner" /> Loading orders…
         </div>
       )}
 
       <div className="kpi-cards">
         <div className="kpi-card purple-border">
-          <div className="kpi-icon purple-bg"><Package /></div>
+          <div className="kpi-icon purple-bg">📦</div>
           <div>
             <h4>Total Orders</h4>
             <p>{total}</p>
           </div>
         </div>
         <div className="kpi-card purple-border">
-          <div className="kpi-icon purple-bg"><TrendingUp /></div>
+          <div className="kpi-icon purple-bg">📈</div>
           <div>
             <h4>Avg. Order Value</h4>
             <p>${avgValue}</p>
           </div>
         </div>
         <div className="kpi-card purple-border">
-          <div className="kpi-icon purple-bg"><CalendarIcon /></div>
+          <div className="kpi-icon purple-bg">⏳</div>
           <div>
             <h4>Pending</h4>
             <p>{pendingCount}</p>
           </div>
         </div>
         <div className="kpi-card purple-border">
-          <div className="kpi-icon purple-bg"><DollarSign /></div>
+          <div className="kpi-icon purple-bg">💵</div>
           <div>
             <h4>Refund Rate</h4>
             <p>{refundRate}</p>
@@ -106,7 +97,6 @@ export default function AOrders() {
       </div>
 
       <div className="filter-bar">
-        <FilterIcon className="filter-icon" />
         <select
           value={filters.status}
           onChange={e => setFilters({ ...filters, status: e.target.value })}
@@ -118,7 +108,6 @@ export default function AOrders() {
           <option value="Refunded">Refunded</option>
         </select>
 
-        <CalendarIcon className="filter-icon" />
         <select
           value={filters.dateRange}
           onChange={e => setFilters({ ...filters, dateRange: e.target.value })}
@@ -132,9 +121,7 @@ export default function AOrders() {
       <table className="orders-table">
         <thead>
           <tr>
-            {['ID','Customer','Date','Status','Total'].map(h => (
-              <th key={h}>{h}</th>
-            ))}
+            <th>ID</th><th>Customer</th><th>Date</th><th>Status</th><th>Total</th>
           </tr>
         </thead>
         <tbody>
@@ -153,10 +140,7 @@ export default function AOrders() {
       {selectedOrder && (
         <div className="modal-backdrop">
           <div className="modal-contentpurple">
-            <button
-              className="modal-close"
-              onClick={() => setSelectedOrder(null)}
-            >✕</button>
+            <button className="modal-close" onClick={() => setSelectedOrder(null)}>✕</button>
             <h2>Order {selectedOrder.id}</h2>
             <p><strong>Customer:</strong> {selectedOrder.customer}</p>
             <p><strong>Date:</strong> {selectedOrder.date}</p>
@@ -164,18 +148,12 @@ export default function AOrders() {
             <p><strong>Total:</strong> {selectedOrder.total}</p>
             <div className="modal-actions">
               {selectedOrder.status === 'Pending' && (
-                <button
-                  className="btn purple-btn"
-                  onClick={() => handleStatusUpdate(selectedOrder.id, 'Shipped')}
-                >
+                <button className="btn purple-btn" onClick={() => handleStatusUpdate(selectedOrder.id, 'Shipped')}>
                   Mark as Shipped
                 </button>
               )}
               {selectedOrder.status !== 'Refunded' && (
-                <button
-                  className="btn purple-outline-btn"
-                  onClick={() => handleRefund(selectedOrder.id)}
-                >
+                <button className="btn purple-outline-btn" onClick={() => handleRefund(selectedOrder.id)}>
                   Issue Refund
                 </button>
               )}
