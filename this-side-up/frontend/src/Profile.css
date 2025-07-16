@@ -341,11 +341,11 @@
     border-radius: 0; /* No border-radius */
     box-shadow: none; /* No shadow */
     padding: 0; /* No padding */
-    margin-bottom: 25px; /* Keep consistent margin below */
+    margin-bottom: 70px; /* Keep consistent margin below */
     border: none; /* No border */
     transform: none; /* No parallelogram transform */
-    width: 60%; /* Adjusted width to match image */
-    min-width: 500px; /* Ensure it's not too small */
+    width: 50%; /* Adjusted width to match image */
+    min-width: 1500px; /* Ensure it's not too small */
     box-sizing: border-box;
     margin: 0 auto; /* Center horizontally */
     z-index: 2;
@@ -402,7 +402,7 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 170px;
+    height: 150px;
     object-fit: cover;
     z-index: 0;
     pointer-events: none;
@@ -413,7 +413,7 @@
 
 
 /* Responsive Adjustments */
-@media (max-width: 1024px) {
+@media (max-width: 1080px) {
     .customer-profile-container {
         flex-direction: column;
     }

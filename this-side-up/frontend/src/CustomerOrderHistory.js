@@ -61,14 +61,6 @@ export default function CustomerOrderHistory() {
                 </li>
                 <li>
                   <Link
-                    to="/orderhistory/completed"
-                    className={location.pathname === '/orderhistory/completed' ? 'active' : ''}
-                  >
-                    Completed
-                  </Link>
-                </li>
-                <li>
-                  <Link
                     to="/orderhistory/cancelled"
                     className={location.pathname === '/orderhistory/cancelled' ? 'active' : ''}
                   >
