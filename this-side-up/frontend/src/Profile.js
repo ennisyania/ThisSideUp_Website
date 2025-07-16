@@ -91,21 +91,16 @@ export default function Profile() {
 
             {/* Main Content */}
             <main className="customer-profile-main-content">
-                {/* Wave overlay - Reverted to previous working styles */}
+                {/* Wave overlay - Using PNG with optimized positioning */}
                 <div
                     className="wave-background-overlay"
                     style={{
                         backgroundImage: `url(${wavesBgUrl})`,
                         backgroundRepeat: 'no-repeat',
-                        backgroundPosition: 'right -10px', // Reverted
-                        backgroundSize: '120% auto', // Reverted
-                        position: 'absolute',
-                        top: '-20px', // Reverted
-                        right: '0',
-                        width: '100%',
-                        height: '200px', // Reverted
-                        zIndex: 1,
-                        pointerEvents: 'none',
+                        backgroundPosition: 'center top',
+                        backgroundSize: 'cover',
+                        transform: 'scaleY(1.2)', // Stretch vertically for more curve
+                        transformOrigin: 'top center'
                     }}
                 ></div>
                 {renderContent()} {/* Render the selected content component */}

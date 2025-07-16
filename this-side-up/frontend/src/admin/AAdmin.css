@@ -565,3 +565,211 @@ body {
         width: 100%;
     }
 }
+
+/* ============================
+   Orders Page & Modal Styles
+   ============================ */
+.page-title {
+  display: flex;
+  align-items: center;
+  font-size: 1.75rem;
+  margin-bottom: 1rem;
+}
+.page-icon {
+  margin-right: 0.5rem;
+  color: var(--purple);
+}
+
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+.spin {
+  animation: spin 1s linear infinite;
+  margin-right: 0.5rem;
+}
+
+.kpi-cards {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.kpi-card {
+  flex: 1;
+  background: #fff;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  box-shadow: var(--shadow-soft);
+}
+.purple-border {
+  border: 2px solid var(--purple);
+}
+.kpi-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+}
+.purple-bg {
+  background: var(--purple);
+  color: #fff;
+}
+
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.filter-icon {
+  color: var(--purple);
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 2rem;
+}
+.orders-table th {
+  background: var(--purple-light);
+  color: var(--purple-dark);
+  padding: 0.75rem;
+  text-align: left;
+}
+.orders-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #eee;
+}
+.orders-table tr:hover {
+  background: var(--purple-fade);
+  cursor: pointer;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================
+   Modal Styles
+   ============================ */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-contentpurple {
+  position: relative;
+  background: #fff;
+  border-radius: 0.75rem;
+  padding: 2rem;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: var(--shadow-medium);
+}
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  color: var(--gray-600);
+  cursor: pointer;
+}
+.modal-actions {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 0.5rem;
+}
+.purple-btn {
+  background: var(--purple);
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+}
+.purple-outline-btn {
+  background: transparent;
+  border: 2px solid var(--purple);
+  color: var(--purple);
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+}
+
+/* ============================
+   Settings Page Styles
+   ============================ */
+.settings-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.settings-tabs button {
+  background: none;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+.settings-tabs .tab-active {
+  border-bottom-color: var(--purple);
+  font-weight: bold;
+}
+
+.settings-content {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: var(--shadow-soft);
+}
+
+.settings-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.settings-section label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+}
+.settings-section input,
+.settings-section select,
+.settings-section textarea {
+  margin-top: 0.25rem;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 0.25rem;
+}
+.inline-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.full-width {
+  width: 100%;
+}
+.banner-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.mt-4 {
+  margin-top: 1rem;
+}
+.ml-2 {
+  margin-left: 0.5rem;
+}
