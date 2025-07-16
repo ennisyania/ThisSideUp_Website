@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthContext from './context/AuthContext';
 import './Logout.css';
+import { googleLogout, GoogleLogout } from '@react-oauth/google';
 
 export default function Logout() {
     const navigate = useNavigate();
@@ -11,6 +12,7 @@ export default function Logout() {
     const confirmLogout = () => {
         setShowConfirm(false);
         logout(); // clear user
+        googleLogout();
         navigate('/'); // redirect
     };
 
