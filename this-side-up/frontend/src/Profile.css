@@ -1,497 +1,371 @@
 /* src/Profile.css */
 
-/* Variables (can reuse from Admin or define new ones) */
+/* ────────────────────────────────────────────────────────────
+   Variables
+   ──────────────────────────────────────────────────────────── */
 :root {
-    --profile-sidebar-bg: #1A1A1A; /* Dark background for sidebar */
-    --profile-sidebar-text: #F0F0F0; /* Light text for sidebar */
-    --profile-active-link: #E86540; /* Orange/Red for active links */
-    --profile-main-bg: #F8FAF5; /* Light background for main content */
-    --profile-card-bg: #FFFFFF; /* White background for cards */
-    --profile-text-dark: #333; /* Dark text for general content */
-    --profile-text-medium: #555; /* Medium text for labels/less important text */
-    --profile-text-light: #777; /* Light text for minor details */
-    --profile-border-color: #eee; /* Light border for general elements */
-    --profile-input-border: #ddd; /* Slightly darker border for inputs */
-    --profile-shadow: rgba(0, 0, 0, 0.1); /* Subtle shadow for cards */
-    --profile-success-color: #28a745; /* Green for success status */
-    --profile-danger-color: #dc3545; /* Red for danger status */
+  --profile-sidebar-bg: #1A1A1A;
+  --profile-sidebar-text: #F0F0F0;
+  --profile-active-link: #E86540;
+  --profile-main-bg: #F8FAF5;
+  --profile-card-bg: #FFFFFF;
+  --profile-text-dark: #333;
+  --profile-text-medium: #555;
+  --profile-shadow: rgba(0, 0, 0, 0.1);
 }
 
-/* Base Styles */
+/* ────────────────────────────────────────────────────────────
+   Layout: Container & Sidebar
+   ──────────────────────────────────────────────────────────── */
 .customer-profile-container {
-    display: flex;
-    min-height: 100vh;
-    font-family: 'Inter', sans-serif;
-    background-color: var(--profile-main-bg);
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--profile-main-bg);
+  font-family: 'Inter', sans-serif;
 }
 
-/* --- Sidebar --- */
 .customer-profile-sidebar {
-    width: 30vw; /* Adjusted width to be narrower */
-    min-width: 280px; /* Adjusted min-width */
-    max-width: 400px; /* Adjusted max-width */
-    background-color: var(--profile-sidebar-bg);
-    background-size: cover;
-    background-position: left center; /* Moved sidebar background image more to the left */
-    background-repeat: no-repeat;
-    color: var(--profile-sidebar-text);
-    padding: 40px 30px 0 40px;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-    flex-shrink: 0;
-    position: relative;
-    z-index: 2;
-    border-right: none; /* Removed border-right */
-    transform: skewX(-15deg); /* Slant the sidebar to the left (top-right leaning left) */
-    transform-origin: top right; /* Pivot point for transformation */
-    overflow: hidden; /* Hide overflow from skew */
+  width: 30vw;
+  min-width: 280px;
+  max-width: 400px;
+  background-color: var(--profile-sidebar-bg);
+  background-size: cover;
+  background-position: left center;
+  background-repeat: no-repeat;
+  color: var(--profile-sidebar-text);
+  padding: 40px 30px 0 40px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+  position: relative;
+  z-index: 2;
+  transform: skewX(-15deg);
+  transform-origin: top right;
+  overflow: hidden;
 }
 
-/* Remove the ::after pseudo-element that created the "black bar" */
 .customer-profile-sidebar::after {
-    display: none;
+  display: none;
 }
 
-/* Counter-skew for content inside the sidebar to make it straight */
 .customer-profile-sidebar .sidebar-header,
 .customer-profile-sidebar .profile-nav {
-    transform: skewX(15deg); /* Counter-skew for content */
-    transform-origin: top right; /* Match pivot point */
-    align-items: flex-start;
+  transform: skewX(15deg);
+  transform-origin: top right;
+  align-items: flex-start;
 }
 
 .customer-profile-sidebar .sidebar-header {
-    margin-bottom: 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  flex-direction: column;
 }
 
 .customer-profile-sidebar .sidebar-header h2 {
-    font-size: 2.2em;
-    font-weight: 700;
-    margin-bottom: 8px;
+  font-size: 2.2em;
+  font-weight: 700;
+  margin-bottom: 8px;
 }
 
 .customer-profile-sidebar .logout-link {
-    margin-bottom: 30px;
-    color: #FFFFFF;
-    text-decoration: none;
-    font-size: 0.9em;
-    font-weight: 500;
-    transition: color 0.2s ease;
+  color: #FFF;
+  font-size: 0.9em;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  margin-bottom: 30px;
 }
 
 .customer-profile-sidebar .logout-link:hover {
-    color: #ff8c66;
+  color: #ff8c66;
 }
 
 .profile-nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .profile-nav li {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .profile-nav a {
-    display: block;
-    padding: 12px 80px; /* Increased padding-left to move text further right */
-    color: var(--profile-sidebar-text);
-    text-decoration: none;
-    font-size: 1.1em;
-    border-radius: 8px;
-    transition: background-color 0.3s ease, color 0.3s ease;
+  display: block;
+  padding: 12px 80px;
+  color: var(--profile-sidebar-text);
+  text-decoration: none;
+  font-size: 1.1em;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .profile-nav a:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255,255,255,0.1);
 }
 
 .profile-nav a.active {
-    background-color: transparent;
-    color: #fff;
-    font-weight: 600;
-    box-shadow: none;
+  color: #FFF;
+  font-weight: 600;
 }
 
-/* Nested links for Order History */
-.order-history-subnav {
-    list-style: none;
-    padding-left: 1; /* Increased padding-left even more to move sub-links further right */
-    margin-top: 5px;
-}
-
-.order-history-subnav li {
-    margin-bottom: 2px;
-    padding-left: 10;
-}
-
-.order-history-subnav a {
-    font-size: 0.95em;
-    color: #d6cfcf;
-    padding-left: 10;
-}
-
-.order-history-subnav a.active {
-    color: var(--profile-active-link);
-    font-weight: 600;
-    background-color: transparent;
-    padding-left: 10;
-}
-
-
-/* --- Main Content --- */
+/* ────────────────────────────────────────────────────────────
+   Main Content & Wave
+   ──────────────────────────────────────────────────────────── */
 .customer-profile-main-content {
-    flex-grow: 1;
-    padding: 60px 40px 40px 40px; /* Adjusted padding to move content right */
-    background-color: var(--profile-main-bg);
-    position: relative;
-    z-index: 1;
-    background: var(--profile-main-bg);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Center cards horizontally */
-    overflow-x: hidden;
-    /* Removed margin-left and padding-left that compensated for sidebar skew */
-    padding-left: 40px; /* Standard padding */
-    margin-left: 0; /* No negative margin */
+  position: relative;
+  flex-grow: 1;
+  padding: 200px 40px 40px 40px;
+  background: var(--profile-main-bg);
+  overflow-x: hidden;
+  min-height: 100vh;
 }
 
-/* New styling for titles outside the cards */
+.wave-img {
+  position: absolute;
+  top: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0.95;
+  z-index: 0;
+}
+
+/* ────────────────────────────────────────────────────────────
+   Section Titles
+   ──────────────────────────────────────────────────────────── */
 .profile-section-title {
-    font-size: 1.5em;
-    color: var(--profile-text-dark);
-    margin-bottom: 10px;
-    font-weight: 600;
-    transform: skewX(10deg); /* Match card's skew direction */
-    transform-origin: left center;
-    padding-left: 5px;
-    width: 45%;
-    min-width: 280px;
-    box-sizing: border-box;
-    text-align: left;
-    margin: 0 auto 10px auto; /* Center horizontally with auto margins */
+  font-size: 50px;
+  color: var(--profile-text-dark);
+  font-weight: 1000;
+  text-align: center;
+  margin: 2rem auto 1rem auto;
 }
 
-
-.profile-card { /* General styling for profile cards */
-    background-color: var(--profile-card-bg);
-    border-radius: 0;
-    box-shadow: 0 4px 15px var(--profile-shadow);
-    padding: 10px 25px;
-    margin-bottom: 25px;
-    border: 3px solid #000;
-    transform: skewX(10deg); /* Parallelogram leaning right */
-    transform-origin: top left; /* Pivot for correct slant */
-    position: relative;
-    overflow: hidden;
-    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.18);
-    width: 45%;
-    min-width: 350px;
-    max-width: 700px;
-    box-sizing: border-box;
-    margin: 0 auto 25px auto; /* Center horizontally */
-    z-index: 2;
+/* ────────────────────────────────────────────────────────────
+   Parallelogram Cards (skew method)
+   ──────────────────────────────────────────────────────────── */
+.profile-card {
+  transform: skewX(10deg);
+  transform-origin: top left;
+  background: var(--profile-card-bg);
+  border: 3px solid #000;
+  box-shadow: 5px 5px 15px rgba(0,0,0,0.18);
+  padding: 1.5rem;
+  margin: 0 auto 2rem auto;
+  max-width: 700px;
+  width: 90%;
+  position: relative;
+  overflow: visible;
+  z-index: 1;
 }
 
-/* Counter-skew for content inside the parallelogram cards */
 .profile-card > * {
-    transform: skewX(-10deg); /* Counter-skew for content */
-    transform-origin: top left; /* Match pivot for counter-skew */
+  transform: skewX(-10deg);
+  transform-origin: top left;
 }
 
-/* Remove h3 styling from inside the card as it's now outside */
-.profile-card h3 {
-    display: none;
+/* ────────────────────────────────────────────────────────────
+   Contact Card + Edit Button
+   ──────────────────────────────────────────────────────────── */
+.contact-wrapper {
+  position: relative;
+  width: 90%;
+  max-width: 700px;
+  margin: 0 auto 2rem auto;
 }
 
-/* Form Group Styling */
-.form-group {
-    margin-bottom: 4px;
+.contact-wrapper .contact-card {
+  margin: 0; /* override .profile-card auto-margins */
 }
 
-.form-group label {
-    display: block;
-    font-size: 0.8em;
-    color: var(--profile-text-medium);
-    margin-bottom: 2px;
+.edit-contact-button {
+  position: absolute;
+  top: 80%;
+  right: -80px;
+  transform: translateY(-50%);
+}
+/* ────────────────────────────────────────────────────────────
+   Parallelogram “Edit” button under Contact Info
+   ──────────────────────────────────────────────────────────── */
+.contact-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto 4rem auto;   /* extra bottom margin for spacing */
+  padding-bottom: 2.5rem;     /* room for the Edit button */
 }
 
-.form-group input[type="text"],
-.form-group input[type="email"] {
-    width: 100%;
-    padding: 4px 6px;
-    border: 1px solid var(--profile-input-border);
-    border-radius: 6px;
-    font-size: 0.9em;
-    color: var(--profile-text-dark);
-    background-color: var(--profile-card-bg);
-    box-sizing: border-box;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+.contact-wrapper .contact-card {
+  margin: 0;
 }
 
-.form-group input:focus {
-    border-color: var(--profile-active-link);
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(232, 101, 64, 0.2);
+.edit-contact-button {
+  position: absolute;
+  bottom: 0;               /* flush with wrapper’s bottom padding */
+  right: 2rem;             /* nudge in from the card’s right edge */
+  transform: skewX(20deg);
+  transform-origin: top left;
+
+  /* styling */
+  background-color: var(--profile-active-link);
+  padding:  5px 50px;
+  border: none;
+  box-shadow: 3px 3px 10px rgba(0,0,0,0.2);
+  cursor: pointer;
+  z-index: 2;
 }
 
-.change-password-link {
-    color: var(--profile-active-link);
-    text-decoration: none;
-    font-size: 0.85em;
-    font-weight: 500;
-    transition: color 0.2s ease;
+/* Counter-skew the text inside so it reads normally */
+.edit-contact-button span {
+  display: inline-block;
+  transform: skewX(-10deg);
+  font-weight: 300;
+  color: #000;
+  font-size: 20px;
+  user-select: none;
 }
 
-.change-password-link:hover {
-    color: #ff8c66;
+
+.profile-text-link {
+  display: inline-block;
+  margin-top: 1rem;
+  color: var(--profile-text-medium);
+  text-decoration: underline;
+  font-size: 0.9em;
+  cursor: pointer;
 }
 
-.card-actions {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 5px;
+/* ────────────────────────────────────────────────────────────
+   Address Book Single Card
+   ──────────────────────────────────────────────────────────── */
+.address-card {
+  padding-bottom: 2.5rem; /* room for “Edit Address” link */
 }
 
-.profile-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 5px 12px;
-    border-radius: 0;
-    font-size: 0.9em;
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: none;
-    transition: background-color 0.3s ease, box-shadow 0.2s ease;
-    white-space: nowrap;
-    border: none;
-    transform: skewX(10deg); /* Apply parallelogram shape to button (matching card) */
-    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+.address-pair {
+  display: flex;
+  gap: 2rem;
+  justify-content: space-between;
 }
 
-.profile-button span {
-    transform: skewX(-10deg); /* Counter-skew text inside button */
-    display: block;
-    color: #000;
+.address-block {
+  flex: 1 1 45%;
 }
 
-.profile-button.primary {
-    background-color: var(--profile-active-link);
-    color: #fff;
+.address-card .profile-text-link {
+  margin-top: 1rem;
 }
 
-.profile-button.primary:hover {
-    background-color: #d45c36;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-}
 
-/* Address Book Styling */
-.address-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 8px;
+.order-history-card {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  margin-bottom: 70px;
+  padding: 0;
+  transform: none;
+  width: 50%;
+  min-width: 1500px;
+  margin: 0 auto;
 }
-
-.address-box {
-    border: 1px solid var(--profile-border-color);
-    border-radius: 8px;
-    padding: 10px;
-    background-color: #f9f9f9;
-}
-
-.address-box h4 {
-    font-size: 0.95em;
-    color: var(--profile-text-dark);
-    margin-top: 0;
-    margin-bottom: 5px;
-    font-weight: 600;
-}
-
-.address-box p {
-    font-size: 0.85em;
-    color: var(--profile-text-medium);
-    line-height: 1.2;
-    margin-bottom: 8px;
-}
-
-.edit-address-link {
-    color: var(--profile-active-link);
-    text-decoration: none;
-    font-size: 0.8em;
-    font-weight: 500;
-    transition: color 0.2s ease;
-}
-
-.edit-address-link:hover {
-    color: #ff8c66;
-}
-
-/* Order History Table Styling - Removed card styling and adjusted spacing */
-.order-history-card { /* This class is applied to the wrapper div in CustomerOrderHistory.js */
-    background-color: transparent; /* No background */
-    border-radius: 0; /* No border-radius */
-    box-shadow: none; /* No shadow */
-    padding: 0; /* No padding */
-    margin-bottom: 70px; /* Keep consistent margin below */
-    border: none; /* No border */
-    transform: none; /* No parallelogram transform */
-    width: 50%; /* Adjusted width to match image */
-    min-width: 1500px; /* Ensure it's not too small */
-    box-sizing: border-box;
-    margin: 0 auto; /* Center horizontally */
-    z-index: 2;
-}
-
-.order-history-card > * { /* Content inside the order history card (the table) */
-    transform: none; /* No counter-skew for the table */
-}
-
 
 .order-history-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.95em;
-    margin-top: 0; /* No top margin here, handled by wrapper */
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95em;
 }
 
 .order-history-table th,
 .order-history-table td {
-    padding: 15px 10px; /* Increased vertical padding for more spacing */
-    text-align: left;
-    border-bottom: 1px solid var(--profile-border-color);
+  padding: 15px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--profile-border-color);
 }
 
 .order-history-table th {
-    color: var(--profile-text-dark);
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 0.8em;
-    background-color: transparent;
-    border-bottom: 2px solid #000;
+  color: var(--profile-text-dark);
+  font-weight: 600;
+  font-size: 0.8em;
+  text-transform: uppercase;
+  border-bottom: 2px solid #000;
 }
 
 .order-history-table tbody tr:hover {
-    background-color: #f5f5f5;
+  background-color: #f5f5f5;
 }
 
 .status-badge {
-    padding: 10px 5px;
-    border-radius: 5px;
-    font-size: 0.8em;
-    font-weight: 600;
-    white-space: nowrap;
+  padding: 10px 5px;
+  border-radius: 5px;
+  font-size: 0.8em;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
-.status-badge.delivered { background-color: #e6ffe6; color: var(--profile-success-color); }
-.status-badge.shipped { background-color: #e0f2f7; color: #2196f3; }
-.status-badge.processing { background-color: #fff3cd; color: #ffc107; }
-.status-badge.cancelled { background-color: #ffe6e6; color: var(--profile-danger-color); }
+.status-badge.delivered  { background: #e6ffe6; color: #28a745; }
+.status-badge.shipped    { background: #e0f2f7; color: #2196f3; }
+.status-badge.processing{ background: #fff3cd; color: #ffc107; }
+.status-badge.cancelled  { background: #ffe6e6; color: #dc3545; }
 
-
-/* --- Wave Overlay --- */
-.wave-background-overlay { /* Using this class for the div in Profile.js */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-    z-index: 0;
-    pointer-events: none;
-    user-select: none;
-    opacity: 0.95;
-    /* Styles from Profile.js will override these if inline */
-}
-
-
-/* Responsive Adjustments */
+/* ────────────────────────────────────────────────────────────
+   Responsive Adjustments
+   ──────────────────────────────────────────────────────────── */
 @media (max-width: 1080px) {
-    .customer-profile-container {
-        flex-direction: column;
-    }
-    .customer-profile-sidebar {
-        width: 100vw;
-        min-width: unset;
-        max-width: unset;
-        border-right: none;
-        border-bottom: 1px solid rgba(255,255,255,0.08);
-        padding: 30px 20px 10px 20px;
-        transform: skewX(0deg); /* Remove skew on smaller screens */
-        transform-origin: center;
-    }
-    /* Remove counter-skew for sidebar content on smaller screens */
-    .customer-profile-sidebar .sidebar-header,
-    .customer-profile-sidebar .profile-nav {
-        transform: skewX(0deg);
-        transform-origin: center;
-    }
-    .customer-profile-main-content {
-        padding: 30px 10px 20px 10px;
-        align-items: center;
-    }
-    .wave-background-overlay { /* Adjusted for smaller screens */
-        width: 100vw;
-        height: 100px;
-        background-position: center top !important; /* Center on smaller screens */
-        background-size: cover !important; /* Ensure it covers */
-    }
-    .profile-card,
-    .order-history-card {
-        width: 98vw;
-        min-width: unset;
-        max-width: unset;
-        padding: 10px 8px;
-        transform: skewX(0deg); /* Remove skew on smaller screens */
-        border-radius: 12px; /* Restore border-radius on small screens */
-        border: 1px solid #000; /* Adjust border thickness for smaller screens */
-        margin-left: auto; /* Ensure centering on smaller screens */
-        margin-right: auto; /* Ensure centering on smaller screens */
-    }
-    .profile-card > *,
-    .order-history-card > * {
-        transform: skewX(0deg); /* Remove counter-skew on small screens */
-    }
-    .profile-button {
-        transform: skewX(0deg); /* Remove skew for button on small screens */
-        border-radius: 8px; /* Restore border-radius for button */
-    }
-    .profile-button span {
-        color: #000; /* Ensure button text is black on small screens */
-        transform: skewX(0deg); /* Remove counter-skew for button text */
-    }
-    .profile-section-title { /* Adjust title for smaller screens */
-        transform: skewX(0deg);
-        width: 100%;
-        text-align: center;
-        padding-left: 0;
-        margin-left: auto;
-        margin-right: auto;
-    }
+  .customer-profile-container { flex-direction: column; }
+  .customer-profile-sidebar {
+    width: 100vw;
+    transform: skewX(0);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 30px 20px 10px;
+  }
+  .customer-profile-sidebar .sidebar-header,
+  .customer-profile-sidebar .profile-nav {
+    transform: skewX(0);
+  }
+  .customer-profile-main-content {
+    padding: 30px 10px 20px 10px;
+  }
+  .contact-wrapper, .address-card {
+    width: 98vw;
+    margin: 0 auto 1.5rem auto;
+  }
+  .edit-contact-button {
+    right: -60px;
+  }
+  .address-pair { flex-direction: column; gap: 1rem; }
 }
 
 @media (max-width: 768px) {
-    .customer-profile-main-content {
-        padding: 15px;
-    }
-    .profile-card {
-        padding: 20px;
-    }
-    .profile-card h3 {
-        font-size: 1.3em;
-    }
-    .order-history-table {
-        font-size: 0.85em;
-    }
-    .order-history-table th,
-    .order-history-table td {
-        padding: 10px;
-    }
+  .profile-button, .edit-contact-button {
+    right: 10px;
+    top: auto;
+    bottom: -40px;
+    transform: none;
+  }
+  .profile-card { padding: 1rem; }
+}
+
+.profile-text-link,
+.edit-address-text {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0;
+  /* keep your underline/cursor */
+  text-decoration: underline;
+  cursor: pointer;
+  display: inline;
+}
+
+/* also remove focus outline if you like */
+.profile-text-link:focus,
+.edit-address-text:focus {
+  outline: none;
 }

@@ -1,102 +1,101 @@
 // src/Profile.js
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import ProfileDefaultContent from './ProfileDefaultContent'; // Import ProfileDefaultContent
-import CustomerOrderHistory from './CustomerOrderHistory'; // Import CustomerOrderHistory
+
+import ProfileDefaultContent from './ProfileDefaultContent';
+import CustomerOrderHistory  from './CustomerOrderHistory';
+
+
 import './Profile.css';
 
 export default function Profile() {
-    const location = useLocation();
+  const location = useLocation();
+  const path = location.pathname; // e.g. "/myProfile", "/orderhistory", etc.
 
-    // Image URLs
-    const sidebarBgUrl = `${process.env.PUBLIC_URL}/images/AdminSidebar.png`;
-    const wavesBgUrl = `${process.env.PUBLIC_URL}/images/waves.png`;
+  // Decide which panel to show
+  let content;
+  if (path.startsWith('/orderhistory/cancelled')) {
+    content = <CustomerOrderHistory filter="Cancelled" />;
+  } else if (path.startsWith('/orderhistory/pending')) {
+    content = <CustomerOrderHistory filter="Pending" />;
+  } else if (path.startsWith('/orderhistory')) {
+    content = <CustomerOrderHistory />;
+  } else {
+    content = <ProfileDefaultContent />;
+  }
 
-    // Determine which content component to render based on the current path
-    const renderContent = () => {
-        if (location.pathname.startsWith('/orderhistory')) { // Updated path
-            return <CustomerOrderHistory />;
-        } else {
-            // Default to ProfileDefaultContent for /account or any other sub-path not explicitly handled
-            return <ProfileDefaultContent />;
-        }
-    };
+  // Public URLs for images (in your public/images folder)
+  const sidebarBgUrl = `${process.env.PUBLIC_URL}/images/AdminSidebar.png`;
+  const wavesBgUrl   = `${process.env.PUBLIC_URL}/images/waves.png`;
 
-    return (
-        <div className="customer-profile-container">
-            {/* Sidebar */}
-            <aside
-                className="customer-profile-sidebar"
-                style={{
-                    backgroundImage: `url(${sidebarBgUrl})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center', // This will be overridden by CSS if defined
-                    backgroundRepeat: 'no-repeat'
-                }}
-            >
-                <div className="sidebar-header">
-                    <h2>My Account</h2>
-                    <Link to="/logout" className="logout-link">Log out</Link>
-                </div>
-                <nav className="profile-nav">
-                    <ul>
-                        <li>
-                            {/* Link to the main profile page (Contact Info & Address Book) */}
-                            <Link
-                                to="/account" // This should be the base path for My Account content
-                                className={location.pathname === '/account' ? 'active' : ''}
-                            >
-                                My Account
-                            </Link>
-                        </li>
-                        <li>
-                            {/* Link to the Order History main route */}
-                            <Link
-                                to="/orderhistory" // Updated path
-                                className={location.pathname.startsWith('/orderhistory') ? 'active' : ''} // Updated path
-                            >
-                                Order History
-                            </Link>
-                            {/* Nested links for Order History sub-sections */}
-                            <ul className="order-history-subnav">
-                                <li>
-                                    <Link
-                                        to="/orderhistory/pending" // Updated path
-                                        className={location.pathname === '/orderhistory/pending' ? 'active' : ''} // Updated path
-                                    >
-                                        Pending
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link
-                                        to="/orderhistory/cancelled" // Updated path
-                                        className={location.pathname === '/orderhistory/cancelled' ? 'active' : ''} // Updated path
-                                    >
-                                        Cancelled
-                                    </Link>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </nav>
-            </aside>
-
-            {/* Main Content */}
-            <main className="customer-profile-main-content">
-                {/* Wave overlay - Using PNG with optimized positioning */}
-                <div
-                    className="wave-background-overlay"
-                    style={{
-                        backgroundImage: `url(${wavesBgUrl})`,
-                        backgroundRepeat: 'no-repeat',
-                        backgroundPosition: 'center top',
-                        backgroundSize: 'cover',
-                        transform: 'scaleY(1.2)', // Stretch vertically for more curve
-                        transformOrigin: 'top center'
-                    }}
-                ></div>
-                {renderContent()} {/* Render the selected content component */}
-            </main>
+  return (
+    <div className="customer-profile-container">
+      {/* Sidebar */}
+      <aside
+        className="customer-profile-sidebar"
+        style={{
+          backgroundImage: `url(${sidebarBgUrl})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        <div className="sidebar-header">
+          <h2>My Account</h2>
+          <Link to="/logout" className="logout-link">Log out</Link>
         </div>
-    );
+        <nav className="profile-nav">
+          <ul>
+            <li>
+              <Link
+                to="/myProfile"
+                className={path === '/myProfile' ? 'active' : ''}
+              >
+                My Account
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/orderhistory"
+                className={path.startsWith('/orderhistory') ? 'active' : ''}
+              >
+                Order History
+              </Link>
+              <ul className="order-history-subnav">
+                <li>
+                  <Link
+                    to="/orderhistory/pending"
+                    className={path === '/orderhistory/pending' ? 'active' : ''}
+                  >
+                    Pending
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/orderhistory/cancelled"
+                    className={path === '/orderhistory/cancelled' ? 'active' : ''}
+                  >
+                    Cancelled
+                  </Link>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      {/* Main Content */}
+      <main className="customer-profile-main-content">
+        {/* Half‐wave overlay */}
+        <img
+        src={wavesBgUrl}
+        alt=""
+        className="wave-img"
+        />
+
+
+        {content}
+      </main>
+    </div>
+  );
 }
