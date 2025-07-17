@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 
 import ProfileDefaultContent from './ProfileDefaultContent';
 import CustomerOrderHistory  from './CustomerOrderHistory';
+import OrderCancelled from './Ordercancelled.js';
 
 
 import './Profile.css';
@@ -11,11 +12,11 @@ import './Profile.css';
 export default function Profile() {
   const location = useLocation();
   const path = location.pathname; // e.g. "/myProfile", "/orderhistory", etc.
-
+  
   // Decide which panel to show
   let content;
   if (path.startsWith('/orderhistory/cancelled')) {
-    content = <CustomerOrderHistory filter="Cancelled" />;
+    content = <OrderCancelled />
   } else if (path.startsWith('/orderhistory/pending')) {
     content = <CustomerOrderHistory filter="Pending" />;
   } else if (path.startsWith('/orderhistory')) {
