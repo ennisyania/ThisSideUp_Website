@@ -1,168 +1,196 @@
-// src/admin/ASettings.js
-import React, { useState } from 'react';
-import './AAdmin.css';
+// src/admin/AAdmin.js
+import React from 'react';
+import { Link, Outlet, useLocation, useMatch } from 'react-router-dom'; // Import useMatch
+import './AAdmin.css'; // Import the CSS for AAdmin
 
-export default function ASettings() {
-  const [active, setActive] = useState('General');
+export default function AAdmin() {
+    const location = useLocation(); // Get current location to highlight active link
+    const isDashboardRoute = useMatch('/admin'); // Check if the current route is exactly /admin
 
-  return (
-    <div className="admin-page settings-page">
-      <h1 className="page-title">⚙️ Site Settings</h1>
+    // Construct the image URLs using process.env.PUBLIC_URL
+    const adminSidebarBgUrl = `${process.env.PUBLIC_URL}/images/AdminSidebar.png`;
+    const logoWhiteUrl = `${process.env.PUBLIC_URL}/images/logowhite.png`;
 
-      <nav className="settings-tabs">
-        {['General','Branding','Homepage','Emails'].map(tab => (
-          <button
-            key={tab}
-            onClick={() => setActive(tab)}
-            className={active === tab ? 'tab-active' : ''}
-          >
-            {tab}
-          </button>
-        ))}
-      </nav>
+    // Icon URLs
+    const dashboardIcon = `${process.env.PUBLIC_URL}/images/Control Panel.png`;
+    const productIcon = `${process.env.PUBLIC_URL}/images/Product.png`;
+    const ordersIcon = `${process.env.PUBLIC_URL}/images/Purchase Order.png`;
+    const customersIcon = `${process.env.PUBLIC_URL}/images/User.png`;
+    const settingsIcon = `${process.env.PUBLIC_URL}/images/Gear.png`;
 
-      <div className="settings-content">
-        {active === 'General'  && <GeneralForm />}
-        {active === 'Branding' && <BrandingForm />}
-        {active === 'Homepage' && <HomepageForm />}
-        {active === 'Emails'   && <EmailTemplatesForm />}
-      </div>
-    </div>
-  );
-}
+    return (
+        <div className="admin-dashboard-container">
+            {/* Admin Sidebar Navigation */}
 
-// -- Sub‐forms --
+            {/* Main Content Area */}
+            <main className="admin-main-content">
+                <header className="admin-main-header">
+                    <h1>Dashboard</h1>
+                    <p>Here's your analytic details</p>
+                </header>
 
-function GeneralForm() {
-  const [siteName, setSiteName] = useState('This Side Up');
-  const [tagline,  setTagline]  = useState('Ride the wave');
-  const [currency, setCurrency] = useState('USD');
+                {/* Conditionally render dashboard content or Outlet based on route */}
+                {isDashboardRoute ? (
+                    <div className="admin-dashboard-content">
+                        {/* Dashboard Cards */}
+                        <div className="dashboard-cards">
+                            {/* Total Sales Card */}
+                            <div className="admin-card dashboard-card">
+                                <div className="card-header">
+                                    <h3>Total Sales</h3>
+                                    <i className="fa-solid fa-ellipsis-vertical menu-icon"></i>
+                                </div>
+                                <div className="card-value">$120,784.20</div>
+                                <div className="card-change">+12.4% <span style={{color: 'var(--admin-success-color)'}}>+1,436 Today</span></div>
+                                <div className="card-footer">
+                                    <a href="javascript:void(0);" className="view-report-button">View Report <i className="fa-solid fa-arrow-right"></i></a>
+                                </div>
+                            </div>
 
-  return (
-    <section className="settings-section">
-      <label>Site Name
-        <input value={siteName} onChange={e=>setSiteName(e.target.value)} />
-      </label>
-      <label>Tagline
-        <input value={tagline} onChange={e=>setTagline(e.target.value)} />
-      </label>
-      <label>Currency
-        <select value={currency} onChange={e=>setCurrency(e.target.value)}>
-          <option>USD</option><option>EUR</option><option>SGD</option>
-        </select>
-      </label>
-      <button className="btn purple-btn" onClick={()=>alert('General saved')}>
-        Save General
-      </button>
-    </section>
-  );
-}
+                            {/* Total Orders Card */}
+                            <div className="admin-card dashboard-card">
+                                <div className="card-header">
+                                    <h3>Total Orders</h3>
+                                    <i className="fa-solid fa-ellipsis-vertical menu-icon"></i>
+                                </div>
+                                <div className="card-value">28,834</div>
+                                <div className="card-change">+20.1% <span style={{color: 'var(--admin-success-color)'}}>+2,676 Today</span></div>
+                                <div className="card-footer">
+                                    <a href="javascript:void(0);" className="view-report-button">View Report <i className="fa-solid fa-arrow-right"></i></a>
+                                </div>
+                            </div>
 
-function BrandingForm() {
-  const [logo, setLogo]       = useState(null);
-  const [favicon, setFavicon] = useState(null);
+                            {/* Revenue Chart Card */}
+                            <div className="admin-card dashboard-card revenue-chart-card">
+                                <div className="card-header">
+                                    <h3>Revenue</h3>
+                                    <select className="revenue-time-filter">
+                                        <option>Month</option>
+                                        <option>Quarter</option>
+                                        <option>Year</option>
+                                    </select>
+                                </div>
+                                <div className="card-value">$120,784.20 <span style={{color: 'var(--admin-success-color)', fontSize: '0.7em'}}>10%</span></div>
+                                <div className="revenue-chart-placeholder">
+                                    {/* Placeholder for a bar chart - using a placeholder image for visual representation */}
+                                    <img src="https://placehold.co/300x150/8A2BE2/FFFFFF?text=Revenue+Chart" alt="Revenue Chart Placeholder" style={{width: '100%', height: '100%', borderRadius: '8px'}} />
+                                </div>
+                                <div className="revenue-chart-legend">
+                                    <span style={{backgroundColor: 'var(--admin-purple-chart)', width: '10px', height: '10px', borderRadius: '50%', display: 'inline-block', marginRight: '5px'}}></span> Profit
+                                    <span style={{backgroundColor: 'var(--admin-light-purple-chart)', width: '10px', height: '10px', borderRadius: '50%', display: 'inline-block', marginLeft: '15px', marginRight: '5px'}}></span> Loss
+                                </div>
+                            </div>
 
-  return (
-    <section className="settings-section">
-      <label>Logo Upload
-        <input type="file" accept="image/*" onChange={e=>setLogo(e.target.files[0])} />
-      </label>
-      <label>Favicon Upload
-        <input type="file" accept="image/*" onChange={e=>setFavicon(e.target.files[0])} />
-      </label>
-      <button className="btn purple-btn" onClick={()=>alert('Branding saved')}>
-        Save Branding
-      </button>
-    </section>
-  );
-}
+                            {/* Visitors Card */}
+                            <div className="admin-card dashboard-card">
+                                <div className="card-header">
+                                    <h3>Visitors</h3>
+                                    <i className="fa-solid fa-ellipsis-vertical menu-icon"></i>
+                                </div>
+                                <div className="card-value">18,893</div>
+                                <div className="card-change negative">-5.6% <span style={{color: 'var(--admin-danger-color)'}}>-876 Today</span></div>
+                                <div className="card-footer">
+                                    <a href="javascript:void(0);" className="view-report-button">View Report <i className="fa-solid fa-arrow-right"></i></a>
+                                </div>
+                            </div>
 
-function HomepageForm() {
-  const [banners, setBanners]           = useState([{ id:1, text:'Summer Sale', link:'#' }]);
-  const [announcement, setAnnouncement] = useState('Free shipping over $50!');
-  const [showAnn, setShowAnn]          = useState(true);
+                            {/* Refunded Card */}
+                            <div className="admin-card dashboard-card">
+                                <div className="card-header">
+                                    <h3>Refunded</h3>
+                                    <i className="fa-solid fa-ellipsis-vertical menu-icon"></i>
+                                </div>
+                                <div className="card-value">$2,876</div>
+                                <div className="card-change">+3% <span style={{color: 'var(--admin-success-color)'}}>+$34 Today</span></div>
+                                <div className="card-footer">
+                                    <a href="javascript:void(0);" className="view-report-button">View Report <i className="fa-solid fa-arrow-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
 
-  const add    = ()=> setBanners(bs=>[...bs,{id:Date.now(),text:'',link:''}]);
-  const upd    = (id,f,val)=> setBanners(bs=>bs.map(b=>b.id===id?{...b,[f]:val}:b));
-  const remove = id=> setBanners(bs=>bs.filter(b=>b.id!==id));
+                        {/* Recent Activity Table */}
+                        <div className="admin-card recent-activity-card">
+                            <h3>Recent activity</h3>
+                            <table className="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Customer</th>
+                                        <th>Status</th>
+                                        <th>Customer ID</th>
+                                        <th>Retained</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Ronald Richards</td>
+                                        <td><span className="status-badge member">Member</span></td>
+                                        <td>#745663</td>
+                                        <td>5 min ago</td>
+                                        <td>$12,408.90</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Donell Steward</td>
+                                        <td><span className="status-badge signed-up">Signed Up</span></td>
+                                        <td>#643291</td>
+                                        <td>10 min ago</td>
+                                        <td>$201.50</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Marvin Mckenny</td>
+                                        <td><span className="status-badge new">New</span></td>
+                                        <td>#899578</td>
+                                        <td>15 min ago</td>
+                                        <td>$105.70</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Spongebob</td>
+                                        <td><span className="status-badge member">Member</span></td>
+                                        <td>#156782</td>
+                                        <td>20 min ago</td>
+                                        <td>$3,543.30</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Escander</td>
+                                        <td><span className="status-badge member">Member</span></td>
+                                        <td>#444781</td>
+                                        <td>25 min ago</td>
+                                        <td>$4,562.72</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
 
-  return (
-    <section className="settings-section">
-      <h3>Banner Carousel</h3>
-      {banners.map(b=>(
-        <div key={b.id} className="banner-row">
-          <input
-            placeholder="Text" value={b.text}
-            onChange={e=>upd(b.id,'text',e.target.value)}
-          />
-          <input
-            placeholder="Link" value={b.link}
-            onChange={e=>upd(b.id,'link',e.target.value)}
-          />
-          <button onClick={()=>remove(b.id)}>Remove</button>
+                        {/* Traffic Channel Chart */}
+                        <div className="admin-card traffic-channel-card">
+                            <div className="card-header">
+                                <h3>Traffic Channel</h3>
+                                <select className="traffic-time-filter">
+                                    <option>All time</option>
+                                    <option>Last 7 days</option>
+                                    <option>Last 30 days</option>
+                                </select>
+                            </div>
+                            <div className="traffic-channel-chart-container">
+                                {/* Placeholder for a simple SVG pie chart */}
+                                <svg viewBox="0 0 100 100" className="pie-chart-svg">
+                                    <circle r="30" cx="50" cy="50" fill="transparent" strokeDasharray="19 100" className="slice1"></circle>
+                                    <circle r="30" cx="50" cy="50" fill="transparent" strokeDasharray="50.5 100" strokeDashoffset="-19" className="slice2"></circle>
+                                    <circle r="30" cx="50" cy="50" fill="transparent" strokeDasharray="30.5 100" strokeDashoffset="-69.5" className="slice3"></circle>
+                                </svg>
+                            </div>
+                            <div className="pie-chart-legend">
+                                <div className="legend-item"><span className="legend-color-box purple"></span> Direct (19%)</div>
+                                <div className="legend-item"><span className="legend-color-box light-purple"></span> Organic (50.5%)</div>
+                                <div className="legend-item"><span className="legend-color-box grey"></span> Referral (30.5%)</div>
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    // Outlet for nested routes (e.g., AProducts, AOrders)
+                    <Outlet />
+                )}
+            </main>
         </div>
-      ))}
-      <button className="btn purple-outline-btn" onClick={add}>Add Banner</button>
-
-      <h3 className="mt-4">Announcement Bar</h3>
-      <label className="inline-label">
-        <input type="checkbox" checked={showAnn} onChange={e=>setShowAnn(e.target.checked)} />
-        Enable Announcement
-      </label>
-      {showAnn && (
-        <textarea
-          rows={2}
-          value={announcement}
-          onChange={e=>setAnnouncement(e.target.value)}
-          className="full-width"
-        />
-      )}
-      <button className="btn purple-btn" onClick={()=>alert('Homepage saved')}>
-        Save Homepage
-      </button>
-    </section>
-  );
-}
-
-function EmailTemplatesForm() {
-  const [tpls, setTpls]   = useState({
-    confirmation: 'Thanks for your order {{orderId}}!',
-    shipped:      'Your order {{orderId}} has shipped.',
-  });
-  const [testTo, setTestTo]= useState('');
-
-  const upd = (k,v)=> setTpls(ts=>({ ...ts, [k]: v }));
-
-  return (
-    <section className="settings-section">
-      <h3>Order Confirmation</h3>
-      <textarea
-        rows={3}
-        value={tpls.confirmation}
-        onChange={e=>upd('confirmation',e.target.value)}
-      />
-
-      <h3>Shipping Update</h3>
-      <textarea
-        rows={3}
-        value={tpls.shipped}
-        onChange={e=>upd('shipped',e.target.value)}
-      />
-
-      <label className="mt-3">
-        Test Email To:
-        <input
-          type="email"
-          value={testTo}
-          onChange={e=>setTestTo(e.target.value)}
-        />
-      </label>
-      <button className="btn purple-outline-btn" onClick={()=>alert(`Test sent to ${testTo}`)}>
-        Send Test
-      </button>
-      <button className="btn purple-btn ml-2" onClick={()=>alert('Emails saved')}>
-        Save Emails
-      </button>
-    </section>
-  );
+    );
 }
