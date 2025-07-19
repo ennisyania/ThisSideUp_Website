@@ -5,7 +5,7 @@ const orderSchema = new mongoose.Schema({
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: false, // or true if every order must be linked to a user
+      required: true, // or true if every order must be linked to a user
     },
     contactEmail: String,
     countryRegion: String,
@@ -28,7 +28,9 @@ const orderSchema = new mongoose.Schema({
     items: [
         {
             productId: String,
-            size: String
+            size: String,
+            quantity: Number,
+            _id: false
         }
     ],
     placedAt: {

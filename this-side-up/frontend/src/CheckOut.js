@@ -14,6 +14,7 @@ export default function CheckOut({ cartItems, handlePlaceOrder }) { // Receive c
     // State for form fields
     const navigate = useNavigate();
     const { user } = useContext(AuthContext);        // ✅ Correct usage
+    const { nanoid } = require('nanoid');
 
 
     const [contactEmail, setContactEmail] = useState('');
@@ -36,7 +37,7 @@ export default function CheckOut({ cartItems, handlePlaceOrder }) { // Receive c
     const [discountCode, setDiscountCode] = useState('');
     const [appliedDiscount, setAppliedDiscount] = useState(0); // Store discount amount
 
-    
+
     // Calculate subtotal - robust against undefined cartItems
     const calculateSubtotal = () => {
         if (!Array.isArray(cartItems)) {
@@ -78,6 +79,7 @@ export default function CheckOut({ cartItems, handlePlaceOrder }) { // Receive c
         }
 
         const orderPayload = {
+            orderId: `odr_${nanoid(6)}`,
             userId: user?.id, // Use userId from context
             contactEmail,
             countryRegion,
@@ -100,7 +102,8 @@ export default function CheckOut({ cartItems, handlePlaceOrder }) { // Receive c
             placedAt: new Date(),
             items: cartItems.map(item => ({
                 productId: item.id,
-                size: item.size || 'Default'
+                size: item.size || item.variant || 'Default',
+                quantity: item.quantity || 1
             }))
         };
 
@@ -110,7 +113,7 @@ export default function CheckOut({ cartItems, handlePlaceOrder }) { // Receive c
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(orderPayload),
             });
-            
+
 
             const data = await res.json();
 
