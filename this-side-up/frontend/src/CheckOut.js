@@ -91,9 +91,6 @@ export default function CheckOut({ cartItems, handlePlaceOrder }) { // Receive c
             phone,
             newsAndOffers,
             shippingMethod,
-            cardNumber, // ⚠️ Remove this in production!
-            expiryDate,
-            nameOnCard,
             discountCode,
             appliedDiscount,
             subtotal,

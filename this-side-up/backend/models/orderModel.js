@@ -5,7 +5,7 @@ const orderSchema = new mongoose.Schema({
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true, // or true if every order must be linked to a user
+      required: true, 
     },
     contactEmail: String,
     countryRegion: String,
@@ -17,9 +17,6 @@ const orderSchema = new mongoose.Schema({
     phone: String,
     newsAndOffers: Boolean,
     shippingMethod: String,
-    cardNumber: String,
-    expiryDate: String,
-    nameOnCard: String,
     discountCode: String,
     appliedDiscount: Number,
     subtotal: Number,
