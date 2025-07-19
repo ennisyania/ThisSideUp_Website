@@ -27,13 +27,6 @@ const userSchema = new Schema({
     country: String,
   },
   registeredDate: { type: Date, default: Date.now },
-  orders: [{ type: Schema.Types.ObjectId, ref: 'Order' }], // if you have an Order model
-  cart: [
-    {
-      productId: { type: Schema.Types.ObjectId, ref: 'Product' },
-      quantity: { type: Number, default: 1, min: 1 },
-    },
-  ],
   password: {
     type: String,
     required: true,

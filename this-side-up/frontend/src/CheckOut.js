@@ -1,15 +1,27 @@
 // src/CheckOut.js
-import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import React, { useState, useEffect, useContext } from 'react';
 import './CheckOut.css'; // Ensure this CSS file exists and is correctly linked
+
+import AuthContext from './context/AuthContext'; // ✅ Import the context, not the provider
+
+
+
+
 
 export default function CheckOut({ cartItems, handlePlaceOrder }) { // Receive cartItems and handlePlaceOrder as props
     // State for form fields
+    const navigate = useNavigate();
+    const { user } = useContext(AuthContext);        // ✅ Correct usage
+
+
     const [contactEmail, setContactEmail] = useState('');
     const [countryRegion, setCountryRegion] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [address, setAddress] = useState('');
-    const [aptSuiteEtc, setAptSuiteEt0] = useState('');
+    const [aptSuiteEtc, setAptSuiteEtc] = useState('');
     const [postalCode, setPostalCode] = useState('');
     const [phone, setPhone] = useState('');
     const [newsAndOffers, setNewsAndOffers] = useState(false); // State for the checkbox
@@ -24,6 +36,7 @@ export default function CheckOut({ cartItems, handlePlaceOrder }) { // Receive c
     const [discountCode, setDiscountCode] = useState('');
     const [appliedDiscount, setAppliedDiscount] = useState(0); // Store discount amount
 
+    
     // Calculate subtotal - robust against undefined cartItems
     const calculateSubtotal = () => {
         if (!Array.isArray(cartItems)) {
@@ -58,16 +71,64 @@ export default function CheckOut({ cartItems, handlePlaceOrder }) { // Receive c
     };
 
     // Handle Paynow button click
-    const handlePaynowClick = () => {
-        // Basic validation (you'd add more comprehensive validation here)
+    const handlePaynowClick = async () => {
         if (!contactEmail || !firstName || !lastName || !address || !postalCode || !phone || !cardNumber || !expiryDate || !securityCode || !nameOnCard) {
             alert('Please fill in all required fields for contact, delivery, and payment.');
             return;
         }
 
-        // Call the handlePlaceOrder prop from App.js to clear the cart and show alert
-        handlePlaceOrder();
+        const orderPayload = {
+            userId: user?.id, // Use userId from context
+            contactEmail,
+            countryRegion,
+            firstName,
+            lastName,
+            address,
+            aptSuiteEtc,
+            postalCode,
+            phone,
+            newsAndOffers,
+            shippingMethod,
+            cardNumber, // ⚠️ Remove this in production!
+            expiryDate,
+            nameOnCard,
+            discountCode,
+            appliedDiscount,
+            subtotal,
+            shippingCost,
+            total,
+            placedAt: new Date(),
+            items: cartItems.map(item => ({
+                productId: item.id,
+                size: item.size || 'Default'
+            }))
+        };
+
+        try {
+            const res = await fetch('http://localhost:5000/api/orders', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(orderPayload),
+            });
+            
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                console.error('❌ Backend responded with error:', data.message);
+                throw new Error('Failed to place order');
+            }
+
+            console.log('✅ Order success:', data);
+        } catch (error) {
+            console.error('❌ Order submission error:', error.message);
+        }
+        handlePlaceOrder(); // Call the parent function to clear cart and show success message
+        navigate('/orderhistory'); // Redirect to order history page
+
     };
+
+
 
     return (
         <div className="checkout-page-container">
@@ -137,7 +198,7 @@ export default function CheckOut({ cartItems, handlePlaceOrder }) { // Receive c
                                 id="aptSuiteEtc"
                                 placeholder="Apartment, suite, etc. (optional)"
                                 value={aptSuiteEtc}
-                                onChange={(e) => setAptSuiteEt0(e.target.value)}
+                                onChange={(e) => setAptSuiteEtc(e.target.value)}
                             />
                         </div>
                         <div className="form-group-row">
@@ -159,7 +220,7 @@ export default function CheckOut({ cartItems, handlePlaceOrder }) { // Receive c
                             />
                         </div>
                     </section>
-                    
+
                     {/* News and Offers Checkbox - MOVED HERE */}
                     <div className="checkbox-group" style={{ paddingLeft: '30px', paddingRight: '30px', marginBottom: '20px' }}>
                         <input
@@ -257,7 +318,7 @@ export default function CheckOut({ cartItems, handlePlaceOrder }) { // Receive c
                     <section className="order-summary-section">
                         <h2>Order Summary</h2>
                         <div className="order-items-list">
-                            {cartItems.length === 0 ? (
+                            {!Array.isArray(cartItems) || cartItems.length === 0 ? (
                                 <p>Your cart is empty.</p>
                             ) : (
                                 cartItems.map(item => (

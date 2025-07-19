@@ -3,6 +3,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const productsRoute = require('./routes/products');
 const userRoute = require('./routes/user');
+const orderRoute = require('./routes/orders');
 const MONGO_URI = process.env.MONGO_URI;
 
 require('dotenv').config();
@@ -24,7 +25,8 @@ app.use((err, req, res, next) => {
 app.use('/api/products', productsRoute);
 app.use('/api/user', userRoute);
 // app.use('/api/customSkimboard', customSkimboardRoute);
-// app.use('/api/orders', ordersRoute); // Uncomment if you have an orders route
+app.use('/api/orders', orderRoute); // Uncomment if you have an orders route
+
 
 
 const PORT = process.env.PORT || 5000;

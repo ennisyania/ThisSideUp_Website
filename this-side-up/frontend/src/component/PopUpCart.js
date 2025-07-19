@@ -43,7 +43,7 @@ export default function PopUpCart({ isOpen, onClose, cartItems, onQuantityChange
 
         <div><hr /></div>
 
-        {cartItems.length === 0 ? (
+        {!Array.isArray(cartItems) || cartItems.length === 0 ? (
           <div className="empty-cart">Your cart is empty.</div>
         ) : (
           <>

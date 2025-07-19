@@ -70,7 +70,7 @@ function App() {
       if (existingItem) {
         return prevItems.map((item) =>
           item.id === productToAdd.id &&
-          item.variant === productToAdd.variant
+            item.variant === productToAdd.variant
             ? { ...item, quantity: item.quantity + productToAdd.quantity }
             : item
         );
@@ -81,7 +81,7 @@ function App() {
   };
 
 
-  
+
   return (
     <Router>
       <Routes>
@@ -133,12 +133,19 @@ function App() {
                   path="/customSkimboards"
                   element={<CustomSkimboards />}
                 />
-              
+
                 <Route
                   path="/checkout"
                   element={
                     <PrivateRoute>
-                      <CheckOut />
+                      <CheckOut
+                        cartItems={cartItems}
+                        handlePlaceOrder={() => {
+                          setCartItems([]); 
+                          alert("Your order has been placed!");
+                          
+                        }}
+                      />
                     </PrivateRoute>
                   }
                 />

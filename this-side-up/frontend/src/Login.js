@@ -14,31 +14,32 @@ export default function Login() {
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
+  try {
+    const res = await fetch('http://localhost:5000/api/user/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
 
-    try {
-      const res = await fetch('http://localhost:5000/api/user/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Login failed');
 
-      const data = await res.json();
+    // ✅ Normalize the user object
+    const { user, token } = data;
+    login(user, token);
 
-      if (!res.ok) throw new Error(data.error || 'Login failed');
-
-      login(data.user, data.token);
-
-      // Redirect based on user role
-      if (data.user.role === 'admin') {
-        navigate('/admin');
-      } else {
-        navigate('/');
-      }
-    } catch (err) {
-      alert(err.message);
+    // Redirect
+    if (data.user.role === 'admin') {
+      navigate('/admin');
+    } else {
+      navigate('/');
     }
-  };
+  } catch (err) {
+    alert(err.message);
+  }
+};
+
 
   return (
     <div className="auth-page-container">

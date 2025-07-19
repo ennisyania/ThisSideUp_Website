@@ -38,8 +38,9 @@ const registerUser = async (req, res) => {
     res.status(200).json({
       email: user.email,
       user: {
-        id: user._id,
+        userId: user.userId,
         email: user.email,
+        role: user.role,
       },
       token,
       expiresIn: maxAge
@@ -80,9 +81,9 @@ const loginUser = async (req, res) => {
     res.status(200).json({
       email: user.email,
       user: {
-        id: user._id,
+        userId: user.userId,
         email: user.email,
-        role: user.role, 
+        role: user.role,
       },
       token,
       expiresIn: maxAge
