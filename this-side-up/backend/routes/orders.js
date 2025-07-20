@@ -1,19 +1,28 @@
-// routes/orderRoutes.js
-const express = require('express');
+import express from 'express';
+import Order from '../models/orderModel.js';
+import requireAuth from '../middlewares/requireAuth.js';
+
 const router = express.Router();
-const Order = require('../models/orderModel'); // Mongoose model
 
-router.post('/', async (req, res) => {
-    try {
-        const orderData = req.body;
-        const newOrder = new Order(orderData);
-        await newOrder.save();
-
-        res.status(201).json({ message: 'Order saved', orderId: newOrder._id });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Could not save order' });
+router.post('/', requireAuth, async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ error: 'User not found in request, authorization denied' });
     }
+
+    const userId = req.user._id;
+
+    const order = new Order({
+      ...req.body,
+      userId,
+    });
+
+    await order.save();
+    res.status(201).json({ message: 'Order saved', orderId: order._id });
+  } catch (error) {
+    console.error('Error saving order:', error);
+    res.status(500).json({ error: 'Failed to save order' });
+  }
 });
 
-module.exports = router;
+export default router;

@@ -1,18 +1,28 @@
-require('dotenv').config();
-const express = require('express');
-const { MongoClient } = require('mongodb');
+import dotenv from 'dotenv';
+import express from 'express';
+import { MongoClient } from 'mongodb';
+
+dotenv.config();
+
 const router = express.Router();
 
 const uri = process.env.MONGO_URI;
 const client = new MongoClient(uri);
 const dbName = 'ThisSideUp';
 
+// Helper function to get collection
+async function getCollection() {
+  if (!client.isConnected?.()) {
+    await client.connect();
+  }
+  const db = client.db(dbName);
+  return db.collection('products');
+}
+
 // Get skimboards
 router.get('/skimboards', async (req, res) => {
   try {
-    await client.connect();
-    const db = client.db(dbName);
-    const collection = db.collection('products');
+    const collection = await getCollection();
     const skimboards = await collection.find({ category: 'skimboard' }).toArray();
     res.json(skimboards);
   } catch (err) {
@@ -24,9 +34,7 @@ router.get('/skimboards', async (req, res) => {
 // Get t-shirts
 router.get('/tshirts', async (req, res) => {
   try {
-    await client.connect();
-    const db = client.db(dbName);
-    const collection = db.collection('products');
+    const collection = await getCollection();
     const tshirts = await collection.find({ category: 't-shirt' }).toArray();
     res.json(tshirts);
   } catch (err) {
@@ -38,9 +46,7 @@ router.get('/tshirts', async (req, res) => {
 // Get jackets
 router.get('/jackets', async (req, res) => {
   try {
-    await client.connect();
-    const db = client.db(dbName);
-    const collection = db.collection('products');
+    const collection = await getCollection();
     const jackets = await collection.find({ category: 'jacket' }).toArray();
     res.json(jackets);
   } catch (err) {
@@ -52,9 +58,7 @@ router.get('/jackets', async (req, res) => {
 // Get boardshorts
 router.get('/boardshorts', async (req, res) => {
   try {
-    await client.connect();
-    const db = client.db(dbName);
-    const collection = db.collection('products');
+    const collection = await getCollection();
     const boardshorts = await collection.find({ category: 'boardshort' }).toArray();
     res.json(boardshorts);
   } catch (err) {
@@ -66,9 +70,7 @@ router.get('/boardshorts', async (req, res) => {
 // Get assecsories
 router.get('/accessories', async (req, res) => {
   try {
-    await client.connect();
-    const db = client.db(dbName);
-    const collection = db.collection('products');
+    const collection = await getCollection();
     const accessories = await collection.find({ category: 'accessory' }).toArray();
     res.json(accessories);
   } catch (err) {
@@ -81,9 +83,8 @@ router.get('/accessories', async (req, res) => {
 router.get('/:productId', async (req, res) => {
   const { productId } = req.params;
   try {
-    await client.connect();
-    const db = client.db(dbName);
-    const product = await db.collection('products').findOne({ productId });
+    const collection = await getCollection();
+    const product = await collection.findOne({ productId });
 
     if (!product) {
       return res.status(404).json({ error: 'Product not found' });
@@ -96,4 +97,4 @@ router.get('/:productId', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

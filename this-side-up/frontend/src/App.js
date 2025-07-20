@@ -5,6 +5,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import PrivateRoute from './component/PrivateRoute.js';
 import ProtectedAdminRoute from './component/ProtectedAdminRoute.js';
 
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
+
 
 // Import Layout Components
 import Navbar from './component/Navbar.js';
@@ -53,6 +56,8 @@ import AdminOrderDetail from './admin/AOrderDetail.js';
 import AdminCustomers from './admin/ACustomers.js';
 import AdminIndividualCustomer from './admin/AIndividualCustomer.js';
 import AdminSettings from './admin/ASettings.js';
+
+const stripePromise = loadStripe('pk_test_51RmwlwRuckXf5vemNjbtW6va56XmNAWtu5QkaTVuuP84itTAQOFS7T5IOhxjV8WEtPxsIh18NATN5Zvt0NsvTXjK00qkuk3udr'); // Replace with your real Stripe publishable key
 
 
 function App() {
@@ -138,14 +143,16 @@ function App() {
                   path="/checkout"
                   element={
                     <PrivateRoute>
-                      <CheckOut
-                        cartItems={cartItems}
-                        handlePlaceOrder={() => {
-                          setCartItems([]); 
-                          alert("Your order has been placed!");
-                          
-                        }}
-                      />
+                      <Elements stripe={stripePromise}>
+                        <CheckOut
+                          cartItems={cartItems}
+                          handlePlaceOrder={() => {
+                            setCartItems([]);
+                            alert("Your order has been placed!");
+
+                          }}
+                        />
+                      </Elements>
                     </PrivateRoute>
                   }
                 />

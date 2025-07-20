@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-const { nanoid } = require('nanoid');
+import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
+import { nanoid } from 'nanoid';
 
 const Schema = mongoose.Schema;
 const userSchema = new Schema({
@@ -53,7 +53,7 @@ userSchema.statics.register = async function (email, password) {
   return user;
 };
 
-//Static login ethod
+// Static login method
 userSchema.statics.login = async function(email, password) {
   const user = await this.findOne({ email });
   if (!user) {
@@ -68,5 +68,4 @@ userSchema.statics.login = async function(email, password) {
   return user;
 };
 
-
-module.exports = mongoose.model('user', userSchema);
+export default mongoose.model('user', userSchema);

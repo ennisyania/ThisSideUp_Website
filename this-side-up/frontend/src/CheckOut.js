@@ -1,10 +1,15 @@
 // src/CheckOut.js
 import { useNavigate } from 'react-router-dom';
+import {
+    CardElement,
+    useStripe,
+    useElements,
+} from '@stripe/react-stripe-js';
+import React, { useState, useContext } from 'react';
+import './CheckOut.css';
 
-import React, { useState, useEffect, useContext } from 'react';
-import './CheckOut.css'; // Ensure this CSS file exists and is correctly linked
 
-import AuthContext from './context/AuthContext'; // ✅ Import the context, not the provider
+import AuthContext from './context/AuthContext'; // Import the context, not the provider
 
 
 
@@ -13,9 +18,9 @@ import AuthContext from './context/AuthContext'; // ✅ Import the context, not 
 export default function CheckOut({ cartItems, handlePlaceOrder }) { // Receive cartItems and handlePlaceOrder as props
     // State for form fields
     const navigate = useNavigate();
-    const { user } = useContext(AuthContext);        // ✅ Correct usage
+    const { user } = useContext(AuthContext);
     const { nanoid } = require('nanoid');
-
+    const { token } = useContext(AuthContext);
 
     const [contactEmail, setContactEmail] = useState('');
     const [countryRegion, setCountryRegion] = useState('');
@@ -29,10 +34,9 @@ export default function CheckOut({ cartItems, handlePlaceOrder }) { // Receive c
 
     const [shippingMethod, setShippingMethod] = useState('standard'); // 'standard' or 'express'
 
-    const [cardNumber, setCardNumber] = useState('');
-    const [expiryDate, setExpiryDate] = useState('');
-    const [securityCode, setSecurityCode] = useState('');
     const [nameOnCard, setNameOnCard] = useState('');
+    const stripe = useStripe();
+    const elements = useElements();
 
     const [discountCode, setDiscountCode] = useState('');
     const [appliedDiscount, setAppliedDiscount] = useState(0); // Store discount amount
@@ -71,62 +75,91 @@ export default function CheckOut({ cartItems, handlePlaceOrder }) { // Receive c
         }
     };
 
+
+
+
     // Handle Paynow button click
     const handlePaynowClick = async () => {
-        if (!contactEmail || !firstName || !lastName || !address || !postalCode || !phone || !cardNumber || !expiryDate || !securityCode || !nameOnCard) {
-            alert('Please fill in all required fields for contact, delivery, and payment.');
+        if (!stripe || !elements) return;
+
+        if (!contactEmail || !firstName || !lastName || !address || !postalCode || !phone || !nameOnCard) {
+            alert('Please fill in all required fields.');
             return;
         }
+        const res = await fetch('http://localhost:5000/api/create-payment-intent', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ amount: total * 100 }), // amount in cents
+        });
 
-        const orderPayload = {
-            orderId: `odr_${nanoid(6)}`,
-            userId: user?.id, // Use userId from context
-            contactEmail,
-            countryRegion,
-            firstName,
-            lastName,
-            address,
-            aptSuiteEtc,
-            postalCode,
-            phone,
-            newsAndOffers,
-            shippingMethod,
-            discountCode,
-            appliedDiscount,
-            subtotal,
-            shippingCost,
-            total,
-            placedAt: new Date(),
-            items: cartItems.map(item => ({
-                productId: item.id,
-                size: item.size || item.variant || 'Default',
-                quantity: item.quantity || 1
-            }))
-        };
+        const { clientSecret } = await res.json();
 
-        try {
-            const res = await fetch('http://localhost:5000/api/orders', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(orderPayload),
-            });
+        const result = await stripe.confirmCardPayment(clientSecret, {
+            payment_method: {
+                card: elements.getElement(CardElement),
+                billing_details: {
+                    name: nameOnCard,
+                    email: contactEmail,
+                },
+            },
+        });
+
+        if (result.error) {
+            alert(result.error.message);
+        } else if (result.paymentIntent.status === 'succeeded') {
+            const orderPayload = {
+                orderId: `odr_${nanoid(6)}`,
+                contactEmail,
+                countryRegion,
+                firstName,
+                lastName,
+                address,
+                aptSuiteEtc,
+                postalCode,
+                phone,
+                newsAndOffers,
+                shippingMethod,
+                discountCode,
+                appliedDiscount,
+                subtotal,
+                shippingCost,
+                total,
+                placedAt: new Date(),
+                items: cartItems.map(item => ({
+                    productId: item.id,
+                    size: item.size || item.variant || 'Default',
+                    quantity: item.quantity || 1
+                }))
+            };
+
+            try {
+                const res = await fetch('http://localhost:5000/api/orders', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json', 
+                        'Authorization': `Bearer ${token}`, 
+                    },
+                    body: JSON.stringify(orderPayload),
+                });
 
 
-            const data = await res.json();
+                const data = await res.json();
+                console.log('Order API response:', data);
 
-            if (!res.ok) {
-                console.error('❌ Backend responded with error:', data.message);
-                throw new Error('Failed to place order');
+                if (!res.ok) {
+                    console.error('Backend responded with error:', data.message || data.error || 'Unknown error');
+                    throw new Error(data.message || data.error || 'Failed to place order');
+                }
+
+                console.log('Order success:', data);
+            } catch (error) {
+                console.error('Order submission error:', error.message);
             }
-
-            console.log('✅ Order success:', data);
-        } catch (error) {
-            console.error('❌ Order submission error:', error.message);
+            handlePlaceOrder();
+            navigate('/orderhistory');
         }
-        handlePlaceOrder(); // Call the parent function to clear cart and show success message
-        navigate('/orderhistory'); // Redirect to order history page
-
     };
+
 
 
 
@@ -272,32 +305,15 @@ export default function CheckOut({ cartItems, handlePlaceOrder }) { // Receive c
                             <img src="/images/Payment.png" alt="Payment Methods" className="payment-methods-img" />
                         </div>
                         <div className="form-group">
-                            <input
-                                type="text"
-                                id="cardNumber"
-                                placeholder="Card number"
-                                value={cardNumber}
-                                onChange={(e) => setCardNumber(e.target.value)}
-                                required
-                            />
-                        </div>
-                        <div className="form-group-row">
-                            <input
-                                type="text"
-                                id="expiryDate"
-                                placeholder="Expiration date (MM/YY)"
-                                value={expiryDate}
-                                onChange={(e) => setExpiryDate(e.target.value)}
-                                required
-                            />
-                            <input
-                                type="text"
-                                id="securityCode"
-                                placeholder="Security code"
-                                value={securityCode}
-                                onChange={(e) => setSecurityCode(e.target.value)}
-                                required
-                            />
+                            <div className="form-group">
+                                <CardElement options={{
+                                    style: {
+                                        base: { fontSize: '16px', color: '#110F0F' },
+                                        invalid: { color: '#E86540' },
+                                    }
+                                }} />
+                            </div>
+
                         </div>
                         <div className="form-group">
                             <input
@@ -370,5 +386,6 @@ export default function CheckOut({ cartItems, handlePlaceOrder }) { // Receive c
                 </div>
             </div>
         </div>
+
     );
-}
+};
