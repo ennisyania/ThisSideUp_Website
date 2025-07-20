@@ -6,7 +6,7 @@ export default function Accessories() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/products/accessories')
+    fetch('https://thissideupbackend.vercel.app/api/products/accessories')
       .then(res => res.json())
       .then(data => {
         const formatted = data.map((item) => ({
