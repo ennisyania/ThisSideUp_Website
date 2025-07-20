@@ -7,7 +7,7 @@ function Homepage() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    fetch('https://thissideupbackend.vercel.app/api/products/skimboards')
+    fetch('http://localhost:5000/api/products/skimboards')
       .then(res => res.json())
       .then(data => {
         const formatted = data.map((item) => ({
