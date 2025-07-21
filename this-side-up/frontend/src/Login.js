@@ -1,10 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthContext from './context/AuthContext';
-import { GoogleLogin } from '@react-oauth/google';
-import { jwtDecode } from 'jwt-decode';
-
-
 import './component/AuthForm.css';
 
 export default function Login() {
@@ -14,32 +10,29 @@ export default function Login() {
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const res = await fetch('http://localhost:5000/api/user/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
+    e.preventDefault();
+    try {
+      const res = await fetch('http://localhost:5000/api/user/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
 
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Login failed');
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Login failed');
 
-    // ✅ Normalize the user object
-    const { user, token } = data;
-    login(user, token);
+      const { user, token } = data;
+      login(user, token);
 
-    // Redirect
-    if (data.user.role === 'admin') {
-      navigate('/admin');
-    } else {
-      navigate('/');
+      if (user.role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
+    } catch (err) {
+      alert(err.message);
     }
-  } catch (err) {
-    alert(err.message);
-  }
-};
-
+  };
 
   return (
     <div className="auth-page-container">
@@ -69,15 +62,6 @@ export default function Login() {
           <Link to="/forgot-password" className="forgot-password-link">
             Forgot your password?
           </Link>
-          <GoogleLogin
-            onSuccess={(credentialResponse) => {
-              const userData = jwtDecode(credentialResponse.credential); console.log("Decoded Google user:", userData);
-              login(userData, credentialResponse.credential);
-              navigate('/');
-            }}
-            onError={() => console.log("Login Failed")}
-            auto_select={true}
-          />
           <button type="submit" className="auth-button">
             <span>Log In</span>
           </button>

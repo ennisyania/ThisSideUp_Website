@@ -1,18 +1,36 @@
 // src/admin/AAdmin.js
 import React, { useEffect, useState } from 'react';
-import { Link, Outlet, useLocation, useMatch } from 'react-router-dom';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
+import { Link, Outlet, useLocation, useMatch, useNavigate } from 'react-router-dom';
 import './AAdmin.css';
 
 export default function AAdmin() {
+    const navigate = useNavigate();
     const location = useLocation();
     const isDashboardRoute = useMatch('/admin');
+    const [monthlyRevenue, setMonthlyRevenue] = useState([]);
 
     const [dashboardData, setDashboardData] = useState({
-        totalSales: 2,
+        totalSales: 0,
         totalOrders: 0,
         totalSalesToday: 0,
         totalOrdersToday: 0,
     });
+
+    useEffect(() => {
+        // Fetch monthly revenue
+        const fetchMonthlyRevenue = async () => {
+            try {
+                const res = await fetch('http://localhost:5000/api/admin/dashboard/revenue-monthly');
+                const data = await res.json();
+                setMonthlyRevenue(data);
+            } catch (err) {
+                console.error('Failed to fetch monthly revenue:', err);
+            }
+        };
+
+        fetchMonthlyRevenue();
+    }, []);
 
     useEffect(() => {
         const fetchDashboardData = async () => {
@@ -60,6 +78,26 @@ export default function AAdmin() {
     const salesPercentIncrease = getPercentIncrease(totalSalesToday, totalSales);
     const ordersPercentIncrease = getPercentIncrease(totalOrdersToday, totalOrders);
 
+    const [customerData, setCustomerData] = useState({
+        totalCustomers: 0,
+        newCustomersToday: 0,
+    });
+
+
+    useEffect(() => {
+        const fetchCustomerData = async () => {
+            try {
+                const res = await fetch('http://localhost:5000/api/admin/dashboard/customers');
+                const data = await res.json();
+                setCustomerData(data);
+            } catch (err) {
+                console.error('Failed to fetch customer data:', err);
+            }
+        };
+
+        fetchCustomerData();
+    }, []);
+
     return (
         <div className="admin-dashboard-container">
             <main className="admin-main-content">
@@ -82,7 +120,8 @@ export default function AAdmin() {
                                     +{salesPercentIncrease}% <span style={{ color: 'var(--admin-success-color)' }}>+${totalSalesToday.toLocaleString()} Today</span>
                                 </div>
                                 <div className="card-footer">
-                                    <a href="#" className="view-report-button">View Report <i className="fa-solid fa-arrow-right"></i></a>
+                                    <a href="#" onClick={() => navigate('/admin/orders')}
+                                        className="view-report-button">View Report <i className="fa-solid fa-arrow-right"></i></a>
                                 </div>
                             </div>
 
@@ -97,41 +136,43 @@ export default function AAdmin() {
                                     +{ordersPercentIncrease}% <span style={{ color: 'var(--admin-success-color)' }}>+{totalOrdersToday.toLocaleString()} Today</span>
                                 </div>
                                 <div className="card-footer">
-                                    <a href="#" className="view-report-button">View Report <i className="fa-solid fa-arrow-right"></i></a>
+                                    <a href="#" onClick={() => navigate('/admin/orders')} className="view-report-button">View Report <i className="fa-solid fa-arrow-right"></i></a>
                                 </div>
                             </div>
 
                             {/* Revenue Chart Card */}
                             <div className="admin-card dashboard-card revenue-chart-card">
                                 <div className="card-header">
-                                    <h3>Revenue</h3>
-                                    <select className="revenue-time-filter">
-                                        <option>Month</option>
-                                        <option>Quarter</option>
-                                        <option>Year</option>
-                                    </select>
+                                    <h3>Revenue (Monthly)</h3>
                                 </div>
-                                <div className="card-value">$120,784.20 <span style={{ color: 'var(--admin-success-color)', fontSize: '0.7em' }}>10%</span></div>
-                                <div className="revenue-chart-placeholder">
-                                    {/* Placeholder for a bar chart - using a placeholder image for visual representation */}
-                                    <img src="https://placehold.co/300x150/8A2BE2/FFFFFF?text=Revenue+Chart" alt="Revenue Chart Placeholder" style={{ width: '100%', height: '100%', borderRadius: '8px' }} />
-                                </div>
-                                <div className="revenue-chart-legend">
-                                    <span style={{ backgroundColor: 'var(--admin-purple-chart)', width: '10px', height: '10px', borderRadius: '50%', display: 'inline-block', marginRight: '5px' }}></span> Profit
-                                    <span style={{ backgroundColor: 'var(--admin-light-purple-chart)', width: '10px', height: '10px', borderRadius: '50%', display: 'inline-block', marginLeft: '15px', marginRight: '5px' }}></span> Loss
+
+                                <div style={{ width: '100%', height: 300 }}>
+                                    <ResponsiveContainer>
+                                        <BarChart data={monthlyRevenue} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                                            <CartesianGrid strokeDasharray="3 3" />
+                                            <XAxis dataKey="month" />
+                                            <YAxis />
+                                            <Tooltip formatter={(value) => `$${value.toFixed(2)}`} />
+                                            <Bar dataKey="revenue" fill="#8A2BE2" />
+                                        </BarChart>
+                                    </ResponsiveContainer>
                                 </div>
                             </div>
 
-                            {/* Visitors Card */}
+                            {/* Customers Card */}
                             <div className="admin-card dashboard-card">
                                 <div className="card-header">
-                                    <h3>Visitors</h3>
+                                    <h3>Customers</h3>
                                     <i className="fa-solid fa-ellipsis-vertical menu-icon"></i>
                                 </div>
-                                <div className="card-value">18,893</div>
-                                <div className="card-change negative">-5.6% <span style={{ color: 'var(--admin-danger-color)' }}>-876 Today</span></div>
+                                <div className="card-value">{(customerData.totalCustomers ?? 0).toLocaleString()}</div>
+                                <div className="card-change">
+                                    <span>{(customerData.newCustomersToday ?? 0).toLocaleString()} New Today</span>
+                                </div>
                                 <div className="card-footer">
-                                    <a href="javascript:void(0);" className="view-report-button">View Report <i className="fa-solid fa-arrow-right"></i></a>
+                                    <a href="#" onClick={() => navigate('/admin/customers')} className="view-report-button">
+                                        View Report <i className="fa-solid fa-arrow-right"></i>
+                                    </a>
                                 </div>
                             </div>
 
@@ -143,9 +184,6 @@ export default function AAdmin() {
                                 </div>
                                 <div className="card-value">$2,876</div>
                                 <div className="card-change">+3% <span style={{ color: 'var(--admin-success-color)' }}>+$34 Today</span></div>
-                                <div className="card-footer">
-                                    <a href="javascript:void(0);" className="view-report-button">View Report <i className="fa-solid fa-arrow-right"></i></a>
-                                </div>
                             </div>
                         </div>
 

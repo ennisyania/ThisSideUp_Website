@@ -8,11 +8,12 @@ import Stripe from 'stripe';
 import productsRoute from './routes/products.js';
 import userRoute from './routes/user.js';
 import orderRoute from './routes/orders.js';
-import adminStripeDataRoutes from './routes/adminStripeData.js';
+import adminStripeDataRoutes from './routes/adminData.js';
+
 
 dotenv.config();
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY); 
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const app = express();
 
 app.use(cors());
@@ -27,12 +28,15 @@ app.use((err, req, res, next) => {
 
 //Stripe Payment Intent Route
 app.post('/api/create-payment-intent', async (req, res) => {
-  const { amount } = req.body; // Amount in cents
+  const { amount, email } = req.body;
 
   try {
+    const customer = await stripe.customers.create({ email });
+
     const paymentIntent = await stripe.paymentIntents.create({
       amount,
-      currency: 'sgd', 
+      currency: 'sgd',
+      customer: customer.id,
     });
 
     res.send({
@@ -54,6 +58,7 @@ app.use('/api/products', productsRoute);
 app.use('/api/user', userRoute);
 app.use('/api/orders', orderRoute);
 app.use('/api/admin', adminStripeDataRoutes);
+
 
 
 const MONGO_URI = process.env.MONGO_URI;

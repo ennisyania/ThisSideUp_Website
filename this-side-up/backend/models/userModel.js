@@ -2,6 +2,9 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import { nanoid } from 'nanoid';
 
+
+
+
 const Schema = mongoose.Schema;
 const userSchema = new Schema({
   userId: {
@@ -36,7 +39,7 @@ const userSchema = new Schema({
     enum: ['user', 'admin'],
     default: 'user',
   }
-});
+}, { timestamps: true });
 
 // Static signup method
 userSchema.statics.register = async function (email, password) {
@@ -54,7 +57,7 @@ userSchema.statics.register = async function (email, password) {
 };
 
 // Static login method
-userSchema.statics.login = async function(email, password) {
+userSchema.statics.login = async function (email, password) {
   const user = await this.findOne({ email });
   if (!user) {
     throw Error('Incorrect email or password');

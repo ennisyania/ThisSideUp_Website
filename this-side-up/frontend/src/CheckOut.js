@@ -89,7 +89,7 @@ export default function CheckOut({ cartItems, handlePlaceOrder }) { // Receive c
         const res = await fetch('http://localhost:5000/api/create-payment-intent', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ amount: total * 100 }), // amount in cents
+            body: JSON.stringify({ amount: total * 100 , email:user.email}), // amount in cents
         });
 
         const { clientSecret } = await res.json();
