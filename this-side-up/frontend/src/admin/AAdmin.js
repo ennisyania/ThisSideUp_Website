@@ -1,38 +1,75 @@
 // src/admin/AAdmin.js
-import React from 'react';
-import { Link, Outlet, useLocation, useMatch } from 'react-router-dom'; // Import useMatch
-import './AAdmin.css'; // Import the CSS for AAdmin
+import React, { useEffect, useState } from 'react';
+import { Link, Outlet, useLocation, useMatch } from 'react-router-dom';
+import './AAdmin.css';
 
 export default function AAdmin() {
-    const location = useLocation(); // Get current location to highlight active link
-    const isDashboardRoute = useMatch('/admin'); // Check if the current route is exactly /admin
+    const location = useLocation();
+    const isDashboardRoute = useMatch('/admin');
 
-    // Construct the image URLs using process.env.PUBLIC_URL
-    const adminSidebarBgUrl = `${process.env.PUBLIC_URL}/images/AdminSidebar.png`;
-    const logoWhiteUrl = `${process.env.PUBLIC_URL}/images/logowhite.png`;
+    const [dashboardData, setDashboardData] = useState({
+        totalSales: 2,
+        totalOrders: 0,
+        totalSalesToday: 0,
+        totalOrdersToday: 0,
+    });
 
-    // Icon URLs
-    const dashboardIcon = `${process.env.PUBLIC_URL}/images/Control Panel.png`;
-    const productIcon = `${process.env.PUBLIC_URL}/images/Product.png`;
-    const ordersIcon = `${process.env.PUBLIC_URL}/images/Purchase Order.png`;
-    const customersIcon = `${process.env.PUBLIC_URL}/images/User.png`;
-    const settingsIcon = `${process.env.PUBLIC_URL}/images/Gear.png`;
+    useEffect(() => {
+        const fetchDashboardData = async () => {
+            try {
+                const res = await fetch('http://localhost:5000/api/admin/dashboard');
+                const text = await res.text();
+                console.log('Raw dashboard response:', text);
+
+                const allTimeData = JSON.parse(text);
+
+                const todayRes = await fetch('http://localhost:5000/api/admin/dashboard/today');
+                const todayText = await todayRes.text();
+                console.log('Raw today response:', todayText);
+
+                const todayData = JSON.parse(todayText);
+
+                setDashboardData({
+                    totalSales: allTimeData.totalSales,
+                    totalOrders: allTimeData.totalOrders,
+                    totalSalesToday: todayData.totalSalesToday,
+                    totalOrdersToday: todayData.totalOrdersToday,
+                });
+            } catch (err) {
+                console.error('Failed to fetch dashboard data:', err);
+            }
+        };
+
+
+        fetchDashboardData();
+    }, []);
+
+    // Calculate percentage increases
+    const getPercentIncrease = (today, total) => {
+        if (total === 0) return 0;
+        return ((today / (total - today)) * 100).toFixed(1);
+    };
+
+    const {
+        totalSales,
+        totalOrders,
+        totalSalesToday,
+        totalOrdersToday,
+    } = dashboardData;
+
+    const salesPercentIncrease = getPercentIncrease(totalSalesToday, totalSales);
+    const ordersPercentIncrease = getPercentIncrease(totalOrdersToday, totalOrders);
 
     return (
         <div className="admin-dashboard-container">
-            {/* Admin Sidebar Navigation */}
-
-            {/* Main Content Area */}
             <main className="admin-main-content">
                 <header className="admin-main-header">
                     <h1>Dashboard</h1>
                     <p>Here's your analytic details</p>
                 </header>
 
-                {/* Conditionally render dashboard content or Outlet based on route */}
                 {isDashboardRoute ? (
                     <div className="admin-dashboard-content">
-                        {/* Dashboard Cards */}
                         <div className="dashboard-cards">
                             {/* Total Sales Card */}
                             <div className="admin-card dashboard-card">
@@ -40,10 +77,12 @@ export default function AAdmin() {
                                     <h3>Total Sales</h3>
                                     <i className="fa-solid fa-ellipsis-vertical menu-icon"></i>
                                 </div>
-                                <div className="card-value">$120,784.20</div>
-                                <div className="card-change">+12.4% <span style={{color: 'var(--admin-success-color)'}}>+1,436 Today</span></div>
+                                <div className="card-value">${totalSales.toLocaleString()}</div>
+                                <div className="card-change">
+                                    +{salesPercentIncrease}% <span style={{ color: 'var(--admin-success-color)' }}>+${totalSalesToday.toLocaleString()} Today</span>
+                                </div>
                                 <div className="card-footer">
-                                    <a href="javascript:void(0);" className="view-report-button">View Report <i className="fa-solid fa-arrow-right"></i></a>
+                                    <a href="#" className="view-report-button">View Report <i className="fa-solid fa-arrow-right"></i></a>
                                 </div>
                             </div>
 
@@ -53,10 +92,12 @@ export default function AAdmin() {
                                     <h3>Total Orders</h3>
                                     <i className="fa-solid fa-ellipsis-vertical menu-icon"></i>
                                 </div>
-                                <div className="card-value">28,834</div>
-                                <div className="card-change">+20.1% <span style={{color: 'var(--admin-success-color)'}}>+2,676 Today</span></div>
+                                <div className="card-value">{totalOrders.toLocaleString()}</div>
+                                <div className="card-change">
+                                    +{ordersPercentIncrease}% <span style={{ color: 'var(--admin-success-color)' }}>+{totalOrdersToday.toLocaleString()} Today</span>
+                                </div>
                                 <div className="card-footer">
-                                    <a href="javascript:void(0);" className="view-report-button">View Report <i className="fa-solid fa-arrow-right"></i></a>
+                                    <a href="#" className="view-report-button">View Report <i className="fa-solid fa-arrow-right"></i></a>
                                 </div>
                             </div>
 
@@ -70,14 +111,14 @@ export default function AAdmin() {
                                         <option>Year</option>
                                     </select>
                                 </div>
-                                <div className="card-value">$120,784.20 <span style={{color: 'var(--admin-success-color)', fontSize: '0.7em'}}>10%</span></div>
+                                <div className="card-value">$120,784.20 <span style={{ color: 'var(--admin-success-color)', fontSize: '0.7em' }}>10%</span></div>
                                 <div className="revenue-chart-placeholder">
                                     {/* Placeholder for a bar chart - using a placeholder image for visual representation */}
-                                    <img src="https://placehold.co/300x150/8A2BE2/FFFFFF?text=Revenue+Chart" alt="Revenue Chart Placeholder" style={{width: '100%', height: '100%', borderRadius: '8px'}} />
+                                    <img src="https://placehold.co/300x150/8A2BE2/FFFFFF?text=Revenue+Chart" alt="Revenue Chart Placeholder" style={{ width: '100%', height: '100%', borderRadius: '8px' }} />
                                 </div>
                                 <div className="revenue-chart-legend">
-                                    <span style={{backgroundColor: 'var(--admin-purple-chart)', width: '10px', height: '10px', borderRadius: '50%', display: 'inline-block', marginRight: '5px'}}></span> Profit
-                                    <span style={{backgroundColor: 'var(--admin-light-purple-chart)', width: '10px', height: '10px', borderRadius: '50%', display: 'inline-block', marginLeft: '15px', marginRight: '5px'}}></span> Loss
+                                    <span style={{ backgroundColor: 'var(--admin-purple-chart)', width: '10px', height: '10px', borderRadius: '50%', display: 'inline-block', marginRight: '5px' }}></span> Profit
+                                    <span style={{ backgroundColor: 'var(--admin-light-purple-chart)', width: '10px', height: '10px', borderRadius: '50%', display: 'inline-block', marginLeft: '15px', marginRight: '5px' }}></span> Loss
                                 </div>
                             </div>
 
@@ -88,7 +129,7 @@ export default function AAdmin() {
                                     <i className="fa-solid fa-ellipsis-vertical menu-icon"></i>
                                 </div>
                                 <div className="card-value">18,893</div>
-                                <div className="card-change negative">-5.6% <span style={{color: 'var(--admin-danger-color)'}}>-876 Today</span></div>
+                                <div className="card-change negative">-5.6% <span style={{ color: 'var(--admin-danger-color)' }}>-876 Today</span></div>
                                 <div className="card-footer">
                                     <a href="javascript:void(0);" className="view-report-button">View Report <i className="fa-solid fa-arrow-right"></i></a>
                                 </div>
@@ -101,7 +142,7 @@ export default function AAdmin() {
                                     <i className="fa-solid fa-ellipsis-vertical menu-icon"></i>
                                 </div>
                                 <div className="card-value">$2,876</div>
-                                <div className="card-change">+3% <span style={{color: 'var(--admin-success-color)'}}>+$34 Today</span></div>
+                                <div className="card-change">+3% <span style={{ color: 'var(--admin-success-color)' }}>+$34 Today</span></div>
                                 <div className="card-footer">
                                     <a href="javascript:void(0);" className="view-report-button">View Report <i className="fa-solid fa-arrow-right"></i></a>
                                 </div>

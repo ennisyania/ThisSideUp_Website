@@ -8,6 +8,7 @@ import Stripe from 'stripe';
 import productsRoute from './routes/products.js';
 import userRoute from './routes/user.js';
 import orderRoute from './routes/orders.js';
+import adminStripeDataRoutes from './routes/adminStripeData.js';
 
 dotenv.config();
 
@@ -52,6 +53,7 @@ app.get('/', (req, res) => {
 app.use('/api/products', productsRoute);
 app.use('/api/user', userRoute);
 app.use('/api/orders', orderRoute);
+app.use('/api/admin', adminStripeDataRoutes);
 
 
 const MONGO_URI = process.env.MONGO_URI;
