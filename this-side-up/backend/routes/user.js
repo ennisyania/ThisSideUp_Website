@@ -22,59 +22,62 @@ router.get('/cart', requireAuth, getCart);
 
 // Get all users (for admin use)
 router.get('/admins', requireAuth, async (req, res) => {
-  try {
-    const admins = await User.find({ role: 'admin' }).select('email _id');
-    res.json(admins);
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch admins' });
-  }
+    try {
+        const admins = await User.find({ role: 'admin' }).select('email _id');
+        res.json(admins);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to fetch admins' });
+    }
 });
 
 // Promote existing user to admin
 router.put('/admins/promote', requireAuth, async (req, res) => {
-  const { email } = req.body;
+    const { email } = req.body;
 
-  if (!email) {
-    return res.status(400).json({ error: 'Email is required' });
-  }
-
-  try {
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+    if (!email) {
+        return res.status(400).json({ error: 'Email is required' });
     }
 
-    if (user.role === 'admin') {
-      return res.status(400).json({ error: 'User is already an admin' });
+    try {
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        if (user.role === 'admin') {
+            return res.status(400).json({ error: 'User is already an admin' });
+        }
+
+        user.role = 'admin';
+        await user.save();
+
+        res.json({ message: 'User promoted to admin', email: user.email });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to promote user' });
     }
-
-    user.role = 'admin';
-    await user.save();
-
-    res.json({ message: 'User promoted to admin', email: user.email });
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to promote user' });
-  }
 });
 
 
-// Remove admin
+// Remove admin (demote to user, do NOT delete user)
 router.delete('/admins/:id', requireAuth, async (req, res) => {
-  const { id } = req.params;
+    const { id } = req.params;
 
-  try {
-    const admin = await User.findById(id);
-    if (!admin || admin.role !== 'admin') {
-      return res.status(404).json({ error: 'Admin not found' });
+    try {
+        const user = await User.findById(id);
+        if (!user || user.role !== 'admin') {
+            return res.status(404).json({ error: 'Admin not found' });
+        }
+
+        user.role = 'user'; // demote role
+        await user.save();
+
+        res.json({ message: 'Admin demoted to user' });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to demote admin' });
     }
-
-    await User.findByIdAndDelete(id);
-    res.json({ message: 'Admin deleted' });
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to delete admin' });
-  }
 });
+
 
 
 
