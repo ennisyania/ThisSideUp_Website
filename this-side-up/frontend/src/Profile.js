@@ -43,8 +43,8 @@ export default function Profile() {
                         <li>
                             {/* Link to the main profile page (Contact Info & Address Book) */}
                             <Link
-                                to="/account" // This should be the base path for My Account content
-                                className={location.pathname === '/account' ? 'active' : ''}
+                                to="/myProfile" // This should be the base path for My Account content
+                                className={location.pathname === '/myProfile' ? 'active' : ''}
                             >
                                 My Account
                             </Link>
@@ -58,32 +58,7 @@ export default function Profile() {
                                 Order History
                             </Link>
                             {/* Nested links for Order History sub-sections */}
-                            <ul className="order-history-subnav">
-                                <li>
-                                    <Link
-                                        to="/orderhistory/pending" // Updated path
-                                        className={location.pathname === '/orderhistory/pending' ? 'active' : ''} // Updated path
-                                    >
-                                        Pending
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link
-                                        to="/orderhistory/completed" // Updated path
-                                        className={location.pathname === '/orderhistory/completed' ? 'active' : ''} // Updated path
-                                    >
-                                        Completed
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link
-                                        to="/orderhistory/cancelled" // Updated path
-                                        className={location.pathname === '/orderhistory/cancelled' ? 'active' : ''} // Updated path
-                                    >
-                                        Cancelled
-                                    </Link>
-                                </li>
-                            </ul>
+                            
                         </li>
                     </ul>
                 </nav>

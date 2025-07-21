@@ -1,21 +1,55 @@
-// src/CustomerOrderHistory.js
-import React from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import './Profile.css'; // your shared CSS
+import AuthContext from './context/AuthContext';
+import './Profile.css';
 
 const sidebarBgUrl = '/images/AdminSidebar.png';
-const wavesBgUrl   = '/images/waves.png';
+
+const statusMapping = {
+  pending: ['pending', 'shipped'],
+  completed: ['delivered'],
+  cancelled: ['refunded'],
+  all: [], // optional: no filter, show all
+};
 
 export default function CustomerOrderHistory() {
   const location = useLocation();
+  const { user, token } = useContext(AuthContext);
 
-  const orders = [
-    { id: '#KX0550', product: 'Blue Inferno',   payment: 'Credit',      status: 'Delivered',  total: '$275' },
-    { id: '#KX0551', product: 'Red Flash',      payment: 'PayPal',      status: 'Processing', total: '$300' },
-    { id: '#KX0552', product: 'Green Wave',     payment: 'Credit',      status: 'Shipped',    total: '$250' },
-    { id: '#KX0553', product: 'Yellow Sunset',  payment: 'Credit',      status: 'Delivered',  total: '$290' },
-    { id: '#KX0554', product: 'Purple Haze',    payment: 'Bank Transfer',status: 'Cancelled', total: '$220' },
-  ];
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filterStatus, setFilterStatus] = useState('all');  // Track current filter
+
+  useEffect(() => {
+    async function fetchOrders() {
+      try {
+        const res = await fetch('http://localhost:5000/api/orders/myorders', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error('Failed to fetch orders');
+        const data = await res.json();
+        setOrders(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    if (user && token) {
+      fetchOrders();
+    }
+  }, [user, token]);
+
+  // Filter orders based on selected filterStatus
+  const filteredOrders = React.useMemo(() => {
+    if (filterStatus === 'all') return orders;
+    const statuses = statusMapping[filterStatus];
+    return orders.filter(order => statuses.includes(order.status.toLowerCase()));
+  }, [orders, filterStatus]);
+
+  // Capitalize helper
+  const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
   return (
     <div className="customer-profile-container">
@@ -26,7 +60,7 @@ export default function CustomerOrderHistory() {
           backgroundImage: `url(${sidebarBgUrl})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
+          backgroundRepeat: 'no-repeat',
         }}
       >
         <div className="sidebar-header">
@@ -37,8 +71,8 @@ export default function CustomerOrderHistory() {
           <ul>
             <li>
               <Link
-                to="/account"
                 className={location.pathname === '/account' ? 'active' : ''}
+                to="/account"
               >
                 My Account
               </Link>
@@ -46,35 +80,30 @@ export default function CustomerOrderHistory() {
             <li>
               <Link
                 to="/orderhistory"
-                className={location.pathname.startsWith('/orderhistory') ? 'active' : ''}
+                className={filterStatus === 'all' ? 'active' : ''}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setFilterStatus('all');
+                }}
               >
                 Order History
               </Link>
               <ul className="order-history-subnav">
-                <li>
-                  <Link
-                    to="/orderhistory/pending"
-                    className={location.pathname === '/orderhistory/pending' ? 'active' : ''}
-                  >
-                    Pending
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/orderhistory/completed"
-                    className={location.pathname === '/orderhistory/completed' ? 'active' : ''}
-                  >
-                    Completed
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/orderhistory/cancelled"
-                    className={location.pathname === '/orderhistory/cancelled' ? 'active' : ''}
-                  >
-                    Cancelled
-                  </Link>
-                </li>
+                {['pending', 'completed', 'cancelled'].map((status) => (
+                  <li key={status}>
+                    <Link
+                      to="#"
+                      className={filterStatus === status ? 'active' : ''}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setFilterStatus(status);
+                      }}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      {capitalize(status)}
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </li>
           </ul>
@@ -83,34 +112,37 @@ export default function CustomerOrderHistory() {
 
       {/* Main Content */}
       <main className="customer-profile-main-content">
-        {/* Parallelogram wrapper around table */}
         <div className="profile-card order-history-card">
-          <table className="order-history-table">
-            <thead>
-              <tr>
-                <th>Id</th>
-                <th>Product Name</th>
-                <th>Payment</th>
-                <th>Status</th>
-                <th>Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.map((order, idx) => (
-                <tr key={idx}>
-                  <td>{order.id}</td>
-                  <td>{order.product}</td>
-                  <td>{order.payment}</td>
-                  <td>
-                    <span className={`status-badge ${order.status.toLowerCase()}`}>
-                      {order.status}
-                    </span>
-                  </td>
-                  <td>{order.total}</td>
+          {loading ? (
+            <p>Loading orders...</p>
+          ) : filteredOrders.length === 0 ? (
+            <p>No orders found.</p>
+          ) : (
+            <table className="order-history-table">
+              <thead>
+                <tr>
+                  <th>Id</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                  <th>Total</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {filteredOrders.map((order) => (
+                  <tr key={order.id}>
+                    <td>{order.id}</td>
+                    <td>
+                      <span className={`status-badge ${order.status.toLowerCase()}`}>
+                        {capitalize(order.status)}
+                      </span>
+                    </td>
+                    <td>{order.date}</td>
+                    <td>{order.total}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </main>
     </div>

@@ -118,4 +118,32 @@ router.post('/:id/refund', requireAuth, async (req, res) => {
   }
 });
 
+// GET /api/orders/myorders
+router.get('/myorders', requireAuth, async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    const userId = req.user._id;
+
+    const orders = await Order.find({ userId }).sort({ placedAt: -1 }).limit(100);
+
+    const formatted = orders.map(o => ({
+      id: o._id.toString(),
+      date: o.placedAt.toISOString().slice(0, 10),
+      status: o.orderStatus,
+      total: `$${(o.total || 0).toFixed(2)}`,
+      productName: o.productName,          // adjust these to your schema
+      paymentMethod: o.paymentMethod,
+      // add any other fields your frontend needs
+    }));
+
+    res.json(formatted);
+  } catch (error) {
+    console.error('Failed to fetch user orders:', error);
+    res.status(500).json({ error: 'Failed to fetch user orders' });
+  }
+});
+
+
 export default router;
