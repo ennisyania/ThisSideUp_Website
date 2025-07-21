@@ -98,6 +98,32 @@ export default function AAdmin() {
         fetchCustomerData();
     }, []);
 
+    const [refundData, setRefundData] = useState({
+        totalRefunded: 0,
+        refundedToday: 0,
+    });
+
+    // Fetch refund data
+    useEffect(() => {
+        const fetchRefundData = async () => {
+            try {
+                const res = await fetch('http://localhost:5000/api/admin/dashboard/refunded');
+                const data = await res.json();
+                setRefundData(data);
+            } catch (err) {
+                console.error('Failed to fetch refund data:', err);
+            }
+        };
+
+        fetchRefundData();
+    }, []);
+
+    const refundPercentIncrease = (() => {
+        const { totalRefunded, refundedToday } = refundData;
+        if (totalRefunded === 0) return 0;
+        return ((refundedToday / (totalRefunded - refundedToday)) * 100).toFixed(1);
+    })();
+
     return (
         <div className="admin-dashboard-container">
             <main className="admin-main-content">
@@ -182,9 +208,14 @@ export default function AAdmin() {
                                     <h3>Refunded</h3>
                                     <i className="fa-solid fa-ellipsis-vertical menu-icon"></i>
                                 </div>
-                                <div className="card-value">$2,876</div>
-                                <div className="card-change">+3% <span style={{ color: 'var(--admin-success-color)' }}>+$34 Today</span></div>
+                                <div className="card-value">${refundData.totalRefunded.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                                <div className="card-change">
+                                    +{refundPercentIncrease}% <span style={{ color: 'var(--admin-success-color)' }}>
+                                        +${refundData.refundedToday.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} Today
+                                    </span>
+                                </div>
                             </div>
+
                         </div>
 
                         {/* Recent Activity Table */}

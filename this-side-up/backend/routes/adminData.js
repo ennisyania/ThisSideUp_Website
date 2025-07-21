@@ -25,8 +25,6 @@ router.get('/dashboard/customers', async (req, res) => {
 
 
 import Stripe from 'stripe';
-
-
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 // Get total sales and order count
@@ -108,47 +106,29 @@ router.get('/dashboard/revenue-monthly', async (req, res) => {
   }
 });
 
-// // Get total customers and new customers today
-// router.get('/dashboard/customers', async (req, res) => {
-//   try {
-//     let totalCustomers = 0;
-//     let newCustomersToday = 0;
+// Get total refunded amount and today's refunded amount
+router.get('/dashboard/refunded', async (req, res) => {
+  try {
+    const refunds = await stripe.refunds.list({ limit: 100 });
+    
+    const totalRefundedCents = refunds.data.reduce((sum, refund) => sum + refund.amount, 0);
+    
+    const now = Math.floor(Date.now() / 1000);
+    const startOfDay = now - (now % 86400);
 
-//     const todayStart = new Date();
-//     todayStart.setHours(0, 0, 0, 0);
-//     const todayTimestamp = Math.floor(todayStart.getTime() / 1000);
+    const todayRefundedCents = refunds.data
+      .filter(refund => refund.created >= startOfDay)
+      .reduce((sum, refund) => sum + refund.amount, 0);
 
-//     let hasMore = true;
-//     let startingAfter = null;
-
-//     while (hasMore) {
-//       const params = { limit: 100 };
-//       if (startingAfter) {
-//         params.starting_after = startingAfter;
-//       }
-
-//       const response = await stripe.customers.list(params);
-
-//       totalCustomers += response.data.length;
-
-//       response.data.forEach(customer => {
-//         if (customer.created >= todayTimestamp) {
-//           newCustomersToday++;
-//         }
-//       });
-
-//       hasMore = response.has_more;
-//       if (hasMore) {
-//         startingAfter = response.data[response.data.length - 1].id;
-//       }
-//     }
-
-//     res.json({ totalCustomers, newCustomersToday });
-//   } catch (err) {
-//     console.error('Failed to fetch customers:', err);
-//     res.status(500).json({ error: err.message || 'Failed to fetch customers' });
-//   }
-// });
+    res.json({
+      totalRefunded: totalRefundedCents / 100,
+      refundedToday: todayRefundedCents / 100,
+    });
+  } catch (error) {
+    console.error('Failed to fetch refunds:', error);
+    res.status(500).json({ error: 'Failed to fetch refunds' });
+  }
+});
 
 
 
