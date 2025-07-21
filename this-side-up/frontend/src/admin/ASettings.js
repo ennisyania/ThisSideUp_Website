@@ -10,7 +10,8 @@ export default function ASettings() {
       <h1 className="page-title">⚙️ Site Settings</h1>
 
       <nav className="settings-tabs">
-        {['General', 'Branding', 'Homepage', 'Admins'].map(tab => (
+        {['General', 'Homepage', 'Admins', 'Discounts'].map(tab => (
+
           <button
             key={tab}
             onClick={() => setActive(tab)}
@@ -23,9 +24,10 @@ export default function ASettings() {
 
       <div className="settings-content">
         {active === 'General' && <GeneralForm />}
-        {active === 'Branding' && <BrandingForm />}
         {active === 'Homepage' && <HomepageForm />}
         {active === 'Admins' && <AdminForm />}
+        {active === 'Discounts' && <DiscountsForm />}
+
       </div>
     </div>
   );
@@ -116,12 +118,12 @@ function BrandingForm() {
         <input type="file" accept="image/*" onChange={handleLogoChange} />
       </label>
       {logoUrl && <img src={logoUrl} alt="Logo preview" style={{ maxHeight: 60, display: 'block', marginTop: 5 }} />}
-      
+
       <label>Favicon Upload
         <input type="file" accept="image/*" onChange={handleFaviconChange} />
       </label>
       {faviconUrl && <img src={faviconUrl} alt="Favicon preview" style={{ maxHeight: 32, display: 'block', marginTop: 5 }} />}
-      
+
       <button className="btn purple-btn" onClick={handleSave} disabled={uploading}>
         {uploading ? 'Uploading...' : 'Save Branding'}
       </button>
@@ -314,6 +316,114 @@ function AdminForm() {
           <li key={admin._id}>
             <span>{admin.email}</span>
             <button onClick={() => removeAdmin(admin._id)} className="ml-2">Remove</button>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+function DiscountsForm() {
+  const [siteDiscount, setSiteDiscount] = useState(0);
+  const [codes, setCodes] = useState([]);
+  const [newCode, setNewCode] = useState({ code: '', value: 0 });
+
+  useEffect(() => {
+    fetchDiscounts();
+  }, []);
+
+  const fetchDiscounts = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await axios.get('http://localhost:5000/api/settings/discounts', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setSiteDiscount(res.data.siteDiscount || 0);
+      setCodes(res.data.codes || []);
+    } catch (err) {
+      console.error('Failed to load discounts', err);
+    }
+  };
+
+  const saveSiteDiscount = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post('http://localhost:5000/api/settings/discounts', {
+        siteDiscount
+      }, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      alert('Storewide discount saved');
+    } catch (err) {
+      alert('Failed to save storewide discount');
+    }
+  };
+
+  const addDiscountCode = async () => {
+    if (!newCode.code || !newCode.value) return alert('Fill in both fields');
+
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post('http://localhost:5000/api/settings/discount-codes', newCode, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setNewCode({ code: '', value: 0 });
+      fetchDiscounts();
+    } catch (err) {
+      alert('Failed to add discount code');
+    }
+  };
+
+  const deleteCode = async (code) => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`http://localhost:5000/api/settings/discount-codes/${code}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      fetchDiscounts();
+    } catch (err) {
+      alert('Failed to delete discount code');
+    }
+  };
+
+  return (
+    <section className="settings-section">
+      <h3>Storewide Discount</h3>
+      <label>Sitewide Discount (%)
+        <input
+          type="number"
+          min={0}
+          max={100}
+          value={siteDiscount}
+          onChange={e => setSiteDiscount(Number(e.target.value))}
+        />
+      </label>
+      <button onClick={saveSiteDiscount}>Save Sitewide Discount</button>
+
+      <h3 className="mt-4">Discount Codes</h3>
+      <label>Code
+        <input
+          type="text"
+          value={newCode.code}
+          onChange={e => setNewCode(c => ({ ...c, code: e.target.value.toUpperCase() }))}
+        />
+      </label>
+      <label>Value (%)
+        <input
+          type="number"
+          min={1}
+          max={100}
+          value={newCode.value}
+          onChange={e => setNewCode(c => ({ ...c, value: Number(e.target.value) }))}
+        />
+      </label>
+      <button onClick={addDiscountCode}>Add Code</button>
+
+      <ul className="admin-list">
+        {codes.map(c => (
+          <li key={c.code}>
+            <span>{c.code} - {c.value}% off</span>
+            <button onClick={() => deleteCode(c.code)}>Remove</button>
           </li>
         ))}
       </ul>
