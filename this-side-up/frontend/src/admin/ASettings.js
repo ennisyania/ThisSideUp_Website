@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-
 export default function ASettings() {
-  const [active, setActive] = useState('General');
+  const [active, setActive] = useState('Homepage');
 
   return (
     <div className="admin-page settings-page">
       <h1 className="page-title">⚙️ Site Settings</h1>
 
       <nav className="settings-tabs">
-        {['General', 'Homepage', 'Admins', 'Discounts'].map(tab => (
-
+        {['Homepage', 'Admins', 'Discounts'].map(tab => (
           <button
             key={tab}
             onClick={() => setActive(tab)}
@@ -23,42 +21,19 @@ export default function ASettings() {
       </nav>
 
       <div className="settings-content">
-        {active === 'General' && <GeneralForm />}
         {active === 'Homepage' && <HomepageForm />}
         {active === 'Admins' && <AdminForm />}
         {active === 'Discounts' && <DiscountsForm />}
-
       </div>
     </div>
   );
 }
 
+
+
 // --- Inner Forms ---
 
-function GeneralForm() {
-  const [siteName, setSiteName] = useState('This Side Up');
-  const [tagline, setTagline] = useState('Ride the wave');
-  const [currency, setCurrency] = useState('USD');
 
-  return (
-    <section className="settings-section">
-      <label>Site Name
-        <input value={siteName} onChange={e => setSiteName(e.target.value)} />
-      </label>
-      <label>Tagline
-        <input value={tagline} onChange={e => setTagline(e.target.value)} />
-      </label>
-      <label>Currency
-        <select value={currency} onChange={e => setCurrency(e.target.value)}>
-          <option>USD</option><option>EUR</option><option>SGD</option>
-        </select>
-      </label>
-      <button className="btn purple-btn" onClick={() => alert('General saved (frontend only)')}>
-        Save General
-      </button>
-    </section>
-  );
-}
 
 function BrandingForm() {
   const [logo, setLogo] = useState(null);         // File object
