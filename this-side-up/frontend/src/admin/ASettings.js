@@ -59,70 +59,188 @@ function GeneralForm() {
 }
 
 function BrandingForm() {
-  const [logo, setLogo] = useState(null);
-  const [favicon, setFavicon] = useState(null);
+  const [logo, setLogo] = useState(null);         // File object
+  const [favicon, setFavicon] = useState(null);   // File object
+  const [logoUrl, setLogoUrl] = useState('');     // URL returned from backend
+  const [faviconUrl, setFaviconUrl] = useState(''); // URL returned from backend
+  const [uploading, setUploading] = useState(false);
+
+  // Upload file helper
+  async function uploadFile(file, setUrl) {
+    if (!file) return;
+    setUploading(true);
+    const formData = new FormData();
+    formData.append('image', file);
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch('http://localhost:5000/api/upload-image', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,  // if your backend requires auth for uploads
+        },
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.imageUrl) {
+        setUrl(data.imageUrl);
+      } else {
+        alert('Upload failed');
+      }
+    } catch (err) {
+      alert('Upload error: ' + err.message);
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  const handleLogoChange = e => {
+    const file = e.target.files[0];
+    setLogo(file);
+  };
+
+  const handleFaviconChange = e => {
+    const file = e.target.files[0];
+    setFavicon(file);
+  };
+
+  const handleSave = async () => {
+    if (logo) await uploadFile(logo, setLogoUrl);
+    if (favicon) await uploadFile(favicon, setFaviconUrl);
+
+    alert('Branding saved! (Add API call here to save logoUrl and faviconUrl to backend)');
+  };
 
   return (
     <section className="settings-section">
       <label>Logo Upload
-        <input type="file" accept="image/*" onChange={e => setLogo(e.target.files[0])} />
+        <input type="file" accept="image/*" onChange={handleLogoChange} />
       </label>
+      {logoUrl && <img src={logoUrl} alt="Logo preview" style={{ maxHeight: 60, display: 'block', marginTop: 5 }} />}
+      
       <label>Favicon Upload
-        <input type="file" accept="image/*" onChange={e => setFavicon(e.target.files[0])} />
+        <input type="file" accept="image/*" onChange={handleFaviconChange} />
       </label>
-      <button className="btn purple-btn" onClick={() => alert('Branding saved (frontend only)')}>
-        Save Branding
+      {faviconUrl && <img src={faviconUrl} alt="Favicon preview" style={{ maxHeight: 32, display: 'block', marginTop: 5 }} />}
+      
+      <button className="btn purple-btn" onClick={handleSave} disabled={uploading}>
+        {uploading ? 'Uploading...' : 'Save Branding'}
       </button>
     </section>
   );
 }
 
-function HomepageForm() {
-  const [banners, setBanners] = useState([{ id: 1, text: 'Summer Sale', link: '#' }]);
-  const [announcement, setAnnouncement] = useState('Free shipping over $50!');
-  const [showAnn, setShowAnn] = useState(true);
 
-  const add = () => setBanners(bs => [...bs, { id: Date.now(), text: '', link: '' }]);
-  const upd = (id, f, val) => setBanners(bs => bs.map(b => b.id === id ? { ...b, [f]: val } : b));
-  const remove = id => setBanners(bs => bs.filter(b => b.id !== id));
+function HomepageForm() {
+  const [heroImages, setHeroImages] = useState([]);
+  const [announcement, setAnnouncement] = useState('');
+  const [showAnn, setShowAnn] = useState(true);
+  const [uploadingIndex, setUploadingIndex] = useState(null); // Track which image is uploading
+
+  useEffect(() => {
+    // Load existing homepage settings on mount
+    async function fetchSettings() {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await fetch('http://localhost:5000/api/settings', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        if (data.heroImages) setHeroImages(data.heroImages);
+        if (data.announcement) setAnnouncement(data.announcement);
+      } catch (err) {
+        console.error('Failed to fetch homepage settings', err);
+      }
+    }
+    fetchSettings();
+  }, []);
+
+  const addHeroImage = () => {
+    setHeroImages(hs => [...hs, { id: Date.now(), imageUrl: '' }]);
+  };
+
+  const updateHeroImage = (id, val) => {
+    setHeroImages(hs => hs.map(h => (h.id === id ? { ...h, imageUrl: val } : h)));
+  };
+
+  const removeHeroImage = (id) => {
+    setHeroImages(hs => hs.filter(h => h.id !== id));
+  };
+
+  const handleUploadImage = async (e, id) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploadingIndex(id);
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch('http://localhost:5000/api/upload-image', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.imageUrl) {
+        updateHeroImage(id, data.imageUrl);
+      } else {
+        alert('Upload failed');
+      }
+    } catch (err) {
+      alert('Upload error: ' + err.message);
+    } finally {
+      setUploadingIndex(null);
+    }
+  };
+
+  async function saveHomepageSettings() {
+    try {
+      const token = localStorage.getItem('token');
+      await fetch('http://localhost:5000/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ heroImages, announcement }),
+      });
+      alert('Homepage settings saved!');
+    } catch (err) {
+      alert('Failed to save homepage settings');
+    }
+  }
 
   return (
     <section className="settings-section">
-      <h3>Banner Carousel</h3>
-      {banners.map(b => (
-        <div key={b.id} className="banner-row">
-          <input
-            placeholder="Text" value={b.text}
-            onChange={e => upd(b.id, 'text', e.target.value)}
-          />
-          <input
-            placeholder="Link" value={b.link}
-            onChange={e => upd(b.id, 'link', e.target.value)}
-          />
-          <button onClick={() => remove(b.id)}>Remove</button>
+      <h3 className="mt-4">Hero Carousel Images</h3>
+      {heroImages.map(h => (
+        <div key={h.id} className="banner-row" style={{ alignItems: 'center' }}>
+          {h.imageUrl ? (
+            <img src={h.imageUrl} alt="Hero" style={{ maxHeight: 80, marginRight: 8 }} />
+          ) : null}
+          <input type="file" accept="image/*" onChange={e => handleUploadImage(e, h.id)} disabled={uploadingIndex === h.id} />
+          <button onClick={() => removeHeroImage(h.id)} disabled={uploadingIndex === h.id}>Remove</button>
         </div>
       ))}
-      <button className="btn purple-outline-btn" onClick={add}>Add Banner</button>
+      <button onClick={addHeroImage} disabled={uploadingIndex !== null}>Add Hero Image</button>
 
-      <h3 className="mt-4">Announcement Bar</h3>
+      <h3 className="mt-4">Announcement Bar (Hero Text)</h3>
       <label className="inline-label">
         <input type="checkbox" checked={showAnn} onChange={e => setShowAnn(e.target.checked)} />
         Enable Announcement
       </label>
       {showAnn && (
-        <textarea
-          rows={2}
-          value={announcement}
-          onChange={e => setAnnouncement(e.target.value)}
-          className="full-width"
-        />
+        <textarea rows={2} value={announcement} onChange={e => setAnnouncement(e.target.value)} className="full-width" />
       )}
-      <button className="btn purple-btn" onClick={() => alert('Homepage saved (frontend only)')}>
+
+      <button onClick={saveHomepageSettings} disabled={uploadingIndex !== null}>
         Save Homepage
       </button>
     </section>
   );
 }
+
+
+
+
 
 function AdminForm() {
   const [admins, setAdmins] = useState([]);
@@ -148,21 +266,21 @@ function AdminForm() {
 
 
   const addAdmin = async () => {
-  if (!email) return alert('Email is required');
+    if (!email) return alert('Email is required');
 
-  try {
-    const token = localStorage.getItem('token');
-    await axios.put('http://localhost:5000/api/user/admins/promote', { email }, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-    setEmail('');
-    fetchAdmins();
-  } catch (err) {
-    alert(err.response?.data?.error || 'Failed to promote user');
-  }
-};
+    try {
+      const token = localStorage.getItem('token');
+      await axios.put('http://localhost:5000/api/user/admins/promote', { email }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      setEmail('');
+      fetchAdmins();
+    } catch (err) {
+      alert(err.response?.data?.error || 'Failed to promote user');
+    }
+  };
 
 
 
