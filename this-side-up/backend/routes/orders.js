@@ -1,6 +1,5 @@
-// routes/orders.js
 import express from 'express';
-import Order from '../models/orderModel.js';  // make sure path and casing match your project
+import Order from '../models/orderModel.js';
 import requireAuth from '../middlewares/requireAuth.js';
 import Stripe from 'stripe';
 
@@ -8,20 +7,14 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 const router = express.Router();
 
-// Create a new order
+// Create new order
 router.post('/', requireAuth, async (req, res) => {
   try {
     if (!req.user) {
       return res.status(401).json({ error: 'User not found in request, authorization denied' });
     }
-
     const userId = req.user._id;
-
-    const order = new Order({
-      ...req.body,
-      userId,
-    });
-
+    const order = new Order({ ...req.body, userId });
     await order.save();
     res.status(201).json({ message: 'Order saved', orderId: order._id });
   } catch (error) {
@@ -34,42 +27,33 @@ router.post('/', requireAuth, async (req, res) => {
 router.get('/allOrders', async (req, res) => {
   try {
     const { status, dateRange } = req.query;
-
-    // Build filter query object
     const query = {};
 
     if (status && status !== 'all') {
-      query.orderStatus = status.toLowerCase();  // your schema enums are lowercase
+      query.orderStatus = status.toLowerCase();
     }
 
     if (dateRange && dateRange !== 'all') {
       let startDate;
-
       const now = new Date();
 
-      if (dateRange === 'last7') {
-        startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-      } else if (dateRange === 'last30') {
-        startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-      } else if (dateRange === 'thisMonth') {
-        startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-      }
+      if (dateRange === 'last7') startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      else if (dateRange === 'last30') startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+      else if (dateRange === 'thisMonth') startDate = new Date(now.getFullYear(), now.getMonth(), 1);
 
       if (startDate) {
         query.placedAt = { $gte: startDate };
       }
     }
 
-    const orders = await Order.find(query)
-      .sort({ placedAt: -1 })
-      .limit(100);
+    const orders = await Order.find(query).sort({ placedAt: -1 }).limit(100);
 
     const formatted = orders.map(o => ({
       id: o._id.toString(),
       customer: `${o.firstName} ${o.lastName}`,
       date: o.placedAt.toISOString().slice(0, 10),
       status: o.orderStatus,
-      total: `$${(o.total || 0).toFixed(2)}`,
+      total: `$${(o.total || 0).toFixed(2)}`,  // Use totalAmount here
     }));
 
     res.json(formatted);
@@ -79,10 +63,11 @@ router.get('/allOrders', async (req, res) => {
   }
 });
 
-// Update order status
+// Update order status (non-refund)
 router.patch('/allOrders/:id', requireAuth, async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
+
   try {
     if (!status) return res.status(400).json({ error: 'Status is required' });
 
@@ -104,7 +89,7 @@ router.patch('/allOrders/:id', requireAuth, async (req, res) => {
   }
 });
 
-// Refund an order (mark as cancelled)
+// Refund an order: process Stripe refund and update status
 router.post('/:id/refund', requireAuth, async (req, res) => {
   const { id } = req.params;
 
@@ -113,25 +98,24 @@ router.post('/:id/refund', requireAuth, async (req, res) => {
     if (!order) return res.status(404).json({ error: 'Order not found' });
 
     if (!order.paymentIntentId) {
-      return res.status(400).json({ error: 'No Stripe Payment Intent associated with this order' });
+      return res.status(400).json({ error: 'No paymentIntentId on order' });
     }
 
-    // Refund through Stripe
+    // Stripe refund request
     const refund = await stripe.refunds.create({
       payment_intent: order.paymentIntentId,
+      amount: Math.round((order.totalAmount || 0) * 100),
     });
 
-    // Update order status
-    order.orderStatus = 'refunded';
+    order.orderStatus = 'refunded';  // keep consistent lowercase
     order.refundId = refund.id;
     await order.save();
 
-    res.json({ message: 'Order refunded through Stripe', refundId: refund.id });
+    res.json({ message: 'Refund successful', refund });
   } catch (error) {
-    console.error('Failed to refund order via Stripe:', error);
-    res.status(500).json({ error: 'Stripe refund failed' });
+    console.error('Refund failed:', error);
+    res.status(500).json({ error: 'Refund failed' });
   }
 });
-
 
 export default router;

@@ -373,7 +373,7 @@ body {
 .status-badge.pending { background-color: #ffe0b2; color: #ff9800; } /* Light orange */
 .status-badge.shipped { background-color: #e0f2f7; color: #2196f3; } /* Medium blue */
 .status-badge.delivered { background-color: #dcedc8; color: #8bc34a; } /* Light green */
-.status-badge.cancelled { background-color: #ffebee; color: #f44336; } /* Light red */
+.status-badge.refunded { background-color: #ffebee; color: #f44336; } /* Light red */
 
 
 /* Traffic Channel Chart */
