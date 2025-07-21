@@ -154,7 +154,7 @@ export default function AAdmin() {
                             {/* Total Sales Card */}
                             <div className="admin-card dashboard-card">
                                 <div className="card-header">
-                                    <h3>Total Sales</h3>
+                                    <h3>Total Completed Sales</h3>
                                     <i className="fa-solid fa-ellipsis-vertical menu-icon"></i>
                                 </div>
                                 <div className="card-value">${totalSales.toLocaleString()}</div>

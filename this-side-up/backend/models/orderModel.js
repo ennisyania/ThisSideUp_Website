@@ -3,8 +3,8 @@ import mongoose from 'mongoose';
 
 const orderSchema = new mongoose.Schema({
     userId: {
-      type: String,    
-      required: true, 
+        type: String,
+        required: true,
     },
     contactEmail: String,
     countryRegion: String,
@@ -37,7 +37,12 @@ const orderSchema = new mongoose.Schema({
         type: String,
         enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'],
         default: 'pending'
+    },
+    paymentIntentId: {
+        type: String,
+        required: true,
     }
+
 });
 
 const Order = mongoose.model('Order', orderSchema);

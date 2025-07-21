@@ -2,28 +2,27 @@ import React, { useState, useEffect } from 'react';
 import {
   Package,
   TrendingUp,
-  DollarSign,
-  RefreshCw,
   Calendar as CalendarIcon,
-  Filter as FilterIcon
+  Filter as FilterIcon,
+  DollarSign,
+  RefreshCw
 } from 'lucide-react';
 import './AAdmin.css';
 
 export default function AOrders() {
-  const [orders, setOrders]               = useState([]);
-  const [filters, setFilters]             = useState({ status: 'all', dateRange: 'last30' });
+  const [orders, setOrders] = useState([]);
+  const [filters, setFilters] = useState({ status: 'all', dateRange: 'all' });
   const [selectedOrder, setSelectedOrder] = useState(null);
-  const [loading, setLoading]             = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  // Fetch orders when filters change
   useEffect(() => {
-    async function load() {
+    async function loadOrders() {
       setLoading(true);
       try {
         const params = new URLSearchParams();
         if (filters.status !== 'all') params.set('status', filters.status);
-        if (filters.dateRange)       params.set('dateRange', filters.dateRange);
-        const res  = await fetch(`/api/orders?${params.toString()}`);
+        if (filters.dateRange) params.set('dateRange', filters.dateRange);
+        const res = await fetch(`http://localhost:5000/api/orders/allOrders?${params.toString()}`);
         const data = await res.json();
         setOrders(data);
       } catch (e) {
@@ -32,35 +31,70 @@ export default function AOrders() {
         setLoading(false);
       }
     }
-    load();
+    loadOrders();
   }, [filters]);
 
-  // Order actions
-  async function handleStatusUpdate(id, status) {
-    await fetch(`/api/orders/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status }),
-    });
-    setOrders(os => os.map(o => o.id === id ? { ...o, status } : o));
-    setSelectedOrder(o => o && o.id === id ? { ...o, status } : o);
-  }
-
-  async function handleRefund(id) {
-    await fetch(`/api/orders/${id}/refund`, { method: 'POST' });
-    setOrders(os => os.map(o => o.id === id ? { ...o, status: 'Refunded' } : o));
-    setSelectedOrder(o => o && o.id === id ? { ...o, status: 'Refunded' } : o);
-  }
-
-  // KPI stats
-  const total        = orders.length;
-  const avgValue     = total
-    ? (orders.reduce((sum, o) => sum + parseFloat(o.total.slice(1)), 0) / total).toFixed(2)
+  // Calculate KPIs from orders state
+  const totalOrders = orders.length;
+  const avgOrderValue = totalOrders
+    ? (orders.reduce((sum, o) => sum + parseFloat(o.total.slice(1)), 0) / totalOrders).toFixed(2)
     : '0.00';
-  const pendingCount = orders.filter(o => o.status === 'Pending').length;
-  const refundRate   = total
-    ? `${((orders.filter(o => o.status === 'Refunded').length / total) * 100).toFixed(1)}%`
+  const pendingCount = orders.filter(o => o.status === 'pending').length;
+  const refundRate = totalOrders
+    ? `${((orders.filter(o => o.status === 'Refunded').length / totalOrders) * 100).toFixed(1)}%`
     : '0%';
+
+  async function handleStatusUpdate(id, status) {
+    const token = localStorage.getItem('token');
+
+    if (status === 'Refunded') {
+      // If refund selected, call refund endpoint
+      try {
+        const res = await fetch(`http://localhost:5000/api/orders/${id}/refund`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        if (!res.ok) {
+          const errData = await res.json();
+          throw new Error(errData.error || 'Refund failed');
+        }
+
+        setOrders(os => os.map(o => o.id === id ? { ...o, status: 'Refunded' } : o));
+        setSelectedOrder(o => o && o.id === id ? { ...o, status: 'Refunded' } : o);
+      } catch (err) {
+        console.error(err);
+        alert(`Failed to issue refund: ${err.message}`);
+      }
+    } else {
+      // For other statuses, use PATCH
+      try {
+        const res = await fetch(`http://localhost:5000/api/orders/allOrders/${id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({ status }),
+        });
+
+        if (!res.ok) {
+          const errData = await res.json();
+          throw new Error(errData.error || 'Status update failed');
+        }
+
+        setOrders(os => os.map(o => o.id === id ? { ...o, status } : o));
+        setSelectedOrder(o => o && o.id === id ? { ...o, status } : o);
+      } catch (err) {
+        console.error(err);
+        alert(`Failed to update status: ${err.message}`);
+      }
+    }
+  }
+
 
   return (
     <div className="admin-page orders-page">
@@ -79,14 +113,14 @@ export default function AOrders() {
           <div className="kpi-icon purple-bg"><Package /></div>
           <div>
             <h4>Total Orders</h4>
-            <p>{total}</p>
+            <p>{totalOrders}</p>
           </div>
         </div>
         <div className="kpi-card purple-border">
           <div className="kpi-icon purple-bg"><TrendingUp /></div>
           <div>
             <h4>Avg. Order Value</h4>
-            <p>${avgValue}</p>
+            <p>${avgOrderValue}</p>
           </div>
         </div>
         <div className="kpi-card purple-border">
@@ -123,16 +157,18 @@ export default function AOrders() {
           value={filters.dateRange}
           onChange={e => setFilters({ ...filters, dateRange: e.target.value })}
         >
+          <option value="all">All Time</option>
           <option value="last7">Last 7 days</option>
           <option value="last30">Last 30 days</option>
           <option value="thisMonth">This Month</option>
         </select>
+
       </div>
 
       <table className="orders-table">
         <thead>
           <tr>
-            {['ID','Customer','Date','Status','Total'].map(h => (
+            {['ID', 'Customer', 'Date', 'Status', 'Total'].map(h => (
               <th key={h}>{h}</th>
             ))}
           </tr>
@@ -156,30 +192,34 @@ export default function AOrders() {
             <button
               className="modal-close"
               onClick={() => setSelectedOrder(null)}
-            >✕</button>
+            >
+              ✕
+            </button>
             <h2>Order {selectedOrder.id}</h2>
             <p><strong>Customer:</strong> {selectedOrder.customer}</p>
             <p><strong>Date:</strong> {selectedOrder.date}</p>
             <p><strong>Status:</strong> {selectedOrder.status}</p>
             <p><strong>Total:</strong> {selectedOrder.total}</p>
             <div className="modal-actions">
-              {selectedOrder.status === 'Pending' && (
-                <button
-                  className="btn purple-btn"
-                  onClick={() => handleStatusUpdate(selectedOrder.id, 'Shipped')}
-                >
-                  Mark as Shipped
-                </button>
-              )}
-              {selectedOrder.status !== 'Refunded' && (
-                <button
-                  className="btn purple-outline-btn"
-                  onClick={() => handleRefund(selectedOrder.id)}
-                >
-                  Issue Refund
-                </button>
-              )}
+              <label htmlFor="status-select"><strong>Update Status:</strong></label>
+              <select
+                id="status-select"
+                value={selectedOrder.status}
+                onChange={(e) => setSelectedOrder({ ...selectedOrder, status: e.target.value })}
+              >
+                <option value="Pending">Pending</option>
+                <option value="Shipped">Shipped</option>
+                <option value="Delivered">Delivered</option>
+                <option value="Refunded">Refunded</option>
+              </select>
+              <button
+                className="btn purple-btn"
+                onClick={() => handleStatusUpdate(selectedOrder.id, selectedOrder.status)}
+              >
+                Update Status
+              </button>
             </div>
+
           </div>
         </div>
       )}

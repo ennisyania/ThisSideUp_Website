@@ -129,7 +129,8 @@ export default function CheckOut({ cartItems, handlePlaceOrder }) { // Receive c
                     productId: item.id,
                     size: item.size || item.variant || 'Default',
                     quantity: item.quantity || 1
-                }))
+                })),
+                paymentIntentId: result.paymentIntent.id,
             };
 
             try {
