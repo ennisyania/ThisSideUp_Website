@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import PrivateRoute from './component/PrivateRoute.js';
@@ -57,12 +57,24 @@ import AdminCustomers from './admin/ACustomers.js';
 import AdminIndividualCustomer from './admin/AIndividualCustomer.js';
 import AdminSettings from './admin/ASettings.js';
 
+
+
 const stripePromise = loadStripe('pk_test_51RmwlwRuckXf5vemNjbtW6va56XmNAWtu5QkaTVuuP84itTAQOFS7T5IOhxjV8WEtPxsIh18NATN5Zvt0NsvTXjK00qkuk3udr'); // Replace with your real Stripe publishable key
 
 
 function App() {
   // Global cart state
   const [cartItems, setCartItems] = useState([]);
+
+  useEffect(() => {
+  document.title = "This Side Up";
+
+  const link =
+    document.querySelector("link[rel~='icon']") || document.createElement('link');
+  link.rel = 'icon';
+  link.href = '/whitelogofooter.svg';  
+  document.getElementsByTagName('head')[0].appendChild(link);
+}, []);
 
   const handleAddToCart = (productToAdd) => {
     setCartItems((prevItems) => {
