@@ -1,9 +1,30 @@
 import express from 'express';
+const router = express.Router();
+
+import Order from '../models/orderModel.js';
+
+router.get('/dashboard/recent-orders', async (req, res) => {
+  try {
+    const recentOrders = await Order.find({}, {
+      firstName: 1,
+      lastName: 1,
+      userId: 1,
+      orderStatus: 1,
+      total: 1,
+      placedAt: 1,
+    }).sort({ placedAt: -1 }).limit(5);
+
+    res.json(recentOrders);
+  } catch (err) {
+    console.error('Failed to fetch recent orders:', err);
+    res.status(500).json({ error: 'Failed to fetch recent orders' });
+  }
+});
 
 
 import User from '../models/userModel.js'; 
 
-const router = express.Router();
+
 
 router.get('/dashboard/customers', async (req, res) => {
   try {
