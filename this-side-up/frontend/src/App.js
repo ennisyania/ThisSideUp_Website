@@ -36,6 +36,7 @@ import Jackets from './Jackets.js';
 import ProductDetail from './ProductDetail.js';
 import CustomSkimboards from './CustomSkimboards.js';
 
+import CheckoutCS from './CheckoutCS.js';
 import CheckOut from './CheckOut.js';
 import Tryouts from './Tryouts.js';
 
@@ -148,6 +149,18 @@ function App() {
                 <Route
                   path="/customSkimboards"
                   element={<CustomSkimboards />}
+                />
+
+                <Route
+                  path="/checkoutCS"
+                  element={
+                    <PrivateRoute>
+                      <Elements stripe={stripePromise}>
+                        <CheckoutCS
+                        />
+                      </Elements>
+                    </PrivateRoute>
+                  }
                 />
 
                 <Route

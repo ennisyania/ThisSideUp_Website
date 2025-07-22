@@ -11,6 +11,7 @@ import { fileURLToPath } from 'url';
 import productsRoute from './routes/products.js';
 import userRoute from './routes/user.js';
 import orderRoute from './routes/orders.js';
+import ordersCSRoute from './routes/ordersCS.js';
 import adminStripeDataRoutes from './routes/adminData.js';
 import settingsRoute from './routes/settings.js';
 
@@ -40,6 +41,20 @@ app.post('/api/upload-image', upload.single('image'), (req, res) => {
   const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
   res.json({ imageUrl });
 });
+
+// multiple images
+app.post('/api/upload-images', upload.array('images'), (req, res) => {
+  if (!req.files || req.files.length === 0) {
+    return res.status(400).json({ error: 'No files uploaded' });
+  }
+
+  const imageUrls = req.files.map(file =>
+    `${req.protocol}://${req.get('host')}/uploads/${file.filename}`
+  );
+
+  res.json({ imageUrls });
+});
+
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
@@ -79,6 +94,7 @@ app.get('/', (req, res) => {
 app.use('/api/products', productsRoute);
 app.use('/api/user', userRoute);
 app.use('/api/orders', orderRoute);
+app.use('/api/ordersCS', ordersCSRoute);
 app.use('/api/admin', adminStripeDataRoutes);
 app.use('/api/settings', settingsRoute);
 
