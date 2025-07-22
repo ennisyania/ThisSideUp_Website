@@ -13,7 +13,7 @@ const dbName = 'ThisSideUp';
 
 
 // Helper function to get collection
-async function getCollection() {
+export async function getCollection() {
   if (!client.isConnected?.()) {
     await client.connect();
   }

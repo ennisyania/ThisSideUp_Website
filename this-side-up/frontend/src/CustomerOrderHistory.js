@@ -9,7 +9,7 @@ const statusMapping = {
   pending: ['pending', 'shipped'],
   completed: ['delivered'],
   cancelled: ['refunded'],
-  all: [], // optional: no filter, show all
+  all: [],
 };
 
 export default function CustomerOrderHistory() {
@@ -20,8 +20,9 @@ export default function CustomerOrderHistory() {
   const [ordersCS, setOrdersCS] = useState([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
   const [loadingOrdersCS, setLoadingOrdersCS] = useState(true);
+  const [filterStatus, setFilterStatus] = useState('all');
 
-  const [filterStatus, setFilterStatus] = useState('all');  // Track current filter
+  const [selectedOrder, setSelectedOrder] = useState(null); // single state for both types
 
   useEffect(() => {
     async function fetchOrders() {
@@ -38,8 +39,6 @@ export default function CustomerOrderHistory() {
         setLoadingOrders(false);
       }
     }
-
-
 
     if (user && token) {
       fetchOrders();
@@ -62,14 +61,11 @@ export default function CustomerOrderHistory() {
       }
     }
 
-
-
     if (user && token) {
       fetchOrdersCS();
     }
   }, [user, token]);
 
-  // Filter orders based on selected filterStatus
   const filteredOrders = React.useMemo(() => {
     if (filterStatus === 'all') return orders;
     const statuses = statusMapping[filterStatus];
@@ -82,8 +78,31 @@ export default function CustomerOrderHistory() {
     return ordersCS.filter(orderCS => statuses.includes(orderCS.status.toLowerCase()));
   }, [ordersCS, filterStatus]);
 
-  // Capitalize helper
   const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
+
+  const renderOrderDetails = (order) => (
+    <div>
+      <h3>Order Details</h3>
+      <p><strong>Order ID:</strong> {order.id}</p>
+      <p><strong>Status:</strong> {capitalize(order.status)}</p>
+      <p><strong>Date:</strong> {order.date}</p>
+      <p><strong>Total:</strong> {order.total}</p>
+      {order.items && order.items.length > 0 && (
+        <>
+          <h4>Items</h4>
+          <ul>
+            {order.items.map((item, index) => (
+              <li key={index}>
+                {item.name} - Qty: {item.quantity} - Size:{item.size} - ${(item.price*item.quantity).toFixed(2)}
+
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+
+    </div>
+  );
 
   return (
     <div className="customer-profile-container">
@@ -147,7 +166,7 @@ export default function CustomerOrderHistory() {
       {/* Main Content */}
       <main className="customer-profile-main-content">
 
-        {/* {normal orders} */}
+        {/* Normal Orders */}
         <div className="profile-card order-history-card">
           {loadingOrders ? (
             <p>Loading orders...</p>
@@ -165,13 +184,13 @@ export default function CustomerOrderHistory() {
               </thead>
               <tbody>
                 {filteredOrders.map((order) => (
-                  <tr key={order.id}>
+                  <tr
+                    key={order.id}
+                    onClick={() => setSelectedOrder({ ...order, type: 'normal' })}
+                    style={{ cursor: 'pointer' }}
+                  >
                     <td>{order.id}</td>
-                    <td>
-                      <span className={`status-badge ${order.status.toLowerCase()}`}>
-                        {capitalize(order.status)}
-                      </span>
-                    </td>
+                    <td><span className={`status-badge ${order.status.toLowerCase()}`}>{capitalize(order.status)}</span></td>
                     <td>{order.date}</td>
                     <td>{order.total}</td>
                   </tr>
@@ -180,8 +199,10 @@ export default function CustomerOrderHistory() {
             </table>
           )}
         </div>
+
         <br />
-        {/* {custom skimboard} */}
+
+        {/* Custom Orders */}
         <div className="profile-card order-history-card">
           {loadingOrdersCS ? (
             <p>Loading orders...</p>
@@ -199,13 +220,13 @@ export default function CustomerOrderHistory() {
               </thead>
               <tbody>
                 {filteredOrdersCS.map((orderCS) => (
-                  <tr key={orderCS.id}>
+                  <tr
+                    key={orderCS.id}
+                    onClick={() => setSelectedOrder({ ...orderCS, type: 'custom' })}
+                    style={{ cursor: 'pointer' }}
+                  >
                     <td>{orderCS.id}</td>
-                    <td>
-                      <span className={`status-badge ${orderCS.status.toLowerCase()}`}>
-                        {capitalize(orderCS.status)}
-                      </span>
-                    </td>
+                    <td><span className={`status-badge ${orderCS.status.toLowerCase()}`}>{capitalize(orderCS.status)}</span></td>
                     <td>{orderCS.date}</td>
                     <td>{orderCS.total}</td>
                   </tr>
@@ -215,6 +236,16 @@ export default function CustomerOrderHistory() {
           )}
         </div>
       </main>
+
+      {/* Shared Modal for both order types */}
+      {selectedOrder && (
+        <div className="modal-overlay" onClick={() => setSelectedOrder(null)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={() => setSelectedOrder(null)}>×</button>
+            {renderOrderDetails(selectedOrder)}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

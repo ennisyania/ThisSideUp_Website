@@ -5,6 +5,8 @@ import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
+import { getCollection } from './products.js'; // adjust path as needed
+
 const router = express.Router();
 
 // Create new order
@@ -24,7 +26,8 @@ router.post('/', requireAuth, async (req, res) => {
 });
 
 // Get all orders with optional filters
-router.get('/allOrders', async (req, res) => {
+// Consider protecting this route with requireAuth or admin middleware
+router.get('/allOrders', requireAuth, async (req, res) => {
   try {
     const { status, dateRange } = req.query;
     const query = {};
@@ -63,12 +66,8 @@ router.get('/allOrders', async (req, res) => {
       appliedDiscount: o.appliedDiscount,
       subtotal: Number(o.subtotal),
       shippingCost: Number(o.shippingCost),
-      address: o.address,
-      aptSuiteEtc: o.aptSuiteEtc,
-      postalCode: o.postalCode,
-      phone: o.phone,
 
-      date: o.placedAt.toISOString(),
+      date: o.placedAt.toISOString(),  // full ISO date string
       status: o.orderStatus,
       total: `$${(o.total || 0).toFixed(2)}`,
     }));
@@ -121,7 +120,7 @@ router.post('/:id/refund', requireAuth, async (req, res) => {
     // Stripe refund request
     const refund = await stripe.refunds.create({
       payment_intent: order.paymentIntentId,
-      amount: Math.round((order.totalAmount || 0) * 100),
+      amount: Math.round((order.total || 0) * 100), // fix here: use order.total
     });
 
     order.orderStatus = 'refunded';  // keep consistent lowercase
@@ -135,24 +134,69 @@ router.post('/:id/refund', requireAuth, async (req, res) => {
   }
 });
 
-// GET /api/orders/myorders
+// Get current user's orders with product info
 router.get('/myorders', requireAuth, async (req, res) => {
   try {
     if (!req.user) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
+
     const userId = req.user._id;
 
-    const orders = await Order.find({ userId }).sort({ placedAt: -1 }).limit(100);
+    const orders = await Order.find({ userId })
+      .sort({ placedAt: -1 })
+      .limit(100);
 
-    const formatted = orders.map(o => ({
-      id: o._id.toString(),
-      date: o.placedAt.toISOString().slice(0, 10),
-      status: o.orderStatus,
-      total: `$${(o.total || 0).toFixed(2)}`,
-      productName: o.productName,          // adjust these to your schema
-      paymentMethod: o.paymentMethod,
-      // add any other fields your frontend needs
+    // Extract unique productIds from all order items
+    const productIdsSet = new Set();
+    orders.forEach(order => {
+      order.items.forEach(item => {
+        if (item.productId) {
+          productIdsSet.add(item.productId);
+        }
+      });
+    });
+    const productIds = [...productIdsSet];
+
+    // Fetch products from product collection
+    const productCollection = await getCollection();
+    const productsCursor = await productCollection
+      .find({ productId: { $in: productIds } })
+      .toArray();
+
+    // Create a map of productId to product object
+    const productMap = {};
+    productsCursor.forEach(prod => {
+      productMap[prod.productId] = prod;
+    });
+
+    // Format orders, injecting product info into items
+    const formatted = orders.map(order => ({
+      id: order._id.toString(),
+      date: order.placedAt.toISOString().slice(0, 10), // YYYY-MM-DD
+      status: order.orderStatus,
+      total: `$${(order.total || 0).toFixed(2)}`,
+      paymentMethod: order.paymentMethod,
+      items: order.items.map(item => {
+        const product = productMap[item.productId] || {};
+        let price = 0;
+        if (Array.isArray(product.sizes) && product.sizes.length > 0 && item.size) {
+          const index = product.sizes.indexOf(item.size);
+          price = index !== -1 ? Number(product.price?.[index]) || 0 : Number(product.price?.[0]) || 0;
+        } else {
+          price = Number(product.price?.[0]) || 0;
+        }
+
+
+        return {
+          productId: item.productId,
+          name: product.name || 'Unknown Product',
+          imageurl: product.imageurl || '',
+          size: item.size,
+          quantity: item.quantity,
+          price: price,
+        };
+      })
     }));
 
     res.json(formatted);
@@ -161,6 +205,5 @@ router.get('/myorders', requireAuth, async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch user orders' });
   }
 });
-
 
 export default router;
