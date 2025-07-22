@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import { MongoClient } from 'mongodb';
+import { ObjectId } from 'mongodb';
 
 dotenv.config();
 
@@ -10,6 +11,7 @@ const uri = process.env.MONGO_URI;
 const client = new MongoClient(uri);
 const dbName = 'ThisSideUp';
 
+
 // Helper function to get collection
 async function getCollection() {
   if (!client.isConnected?.()) {
@@ -18,6 +20,19 @@ async function getCollection() {
   const db = client.db(dbName);
   return db.collection('products');
 }
+
+// Get all products
+router.get('/all', async (req, res) => {
+  try {
+    const collection = await getCollection();
+    const allProducts = await collection.find({}).toArray();
+    res.json(allProducts);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch products' });
+  }
+});
+
 
 // Get skimboards
 router.get('/skimboards', async (req, res) => {
@@ -94,6 +109,57 @@ router.get('/:productId', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.put('/:id', async (req, res) => {
+  const { id } = req.params;
+  const {
+    name,
+    category,
+    description,
+    sizes,
+    price,
+    quantities,
+    imageurl,
+  } = req.body;
+
+  // Basic validation example
+  if (!name || !category || !description || !Array.isArray(sizes) || !Array.isArray(price) || !Array.isArray(quantities)) {
+    return res.status(400).json({ error: 'Invalid input data' });
+  }
+
+  try {
+    const collection = await getCollection();
+
+    // Make sure the id is a valid ObjectId
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ error: 'Invalid product ID' });
+    }
+
+    const filter = { _id: new ObjectId(id) };
+    const updateDoc = {
+      $set: {
+        name,
+        category,
+        description,
+        sizes,
+        price,
+        quantities,
+        imageurl,
+      },
+    };
+
+    const result = await collection.updateOne(filter, updateDoc);
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    res.json({ message: 'Product updated successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to update product' });
   }
 });
 
