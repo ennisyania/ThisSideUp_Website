@@ -48,13 +48,12 @@ import TermsAndConditions from './TermsAndConditions.js';
 
 import Admin from './admin/AAdmin.js';
 import AdminProducts from './admin/AProducts.js';
-import AdminViewProducts from './admin/AViewProducts.js';
-import AdminAddProduct from './admin/AAddProduct.js';
-import AdminEditProducts from './admin/AEditProducts.js';
+
+
 import AdminOrders from './admin/AOrders.js';
-import AdminOrderDetail from './admin/AOrderDetail.js';
+
 import AdminCustomers from './admin/ACustomers.js';
-import AdminIndividualCustomer from './admin/AIndividualCustomer.js';
+
 import AdminSettings from './admin/ASettings.js';
 
 
@@ -193,14 +192,9 @@ function App() {
         >
           <Route index element={<Admin />} />
           <Route path="products" element={<AdminProducts />} />
-          <Route path="viewproducts" element={<AdminViewProducts />} />
-          <Route path="addproduct" element={<AdminAddProduct />} />
+
           <Route path="orders" element={<AdminOrders />} />
           <Route path="customers" element={<AdminCustomers />} />
-          <Route
-            path="individualcustomer/:id"
-            element={<AdminIndividualCustomer />}
-          />
           <Route path="settings" element={<AdminSettings />} />
         </Route>
       </Routes>
