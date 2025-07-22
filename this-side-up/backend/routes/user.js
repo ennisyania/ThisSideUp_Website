@@ -80,6 +80,23 @@ router.delete('/admins/:id', requireAuth, async (req, res) => {
     }
 });
 
+// GET /api/users/all - get all users with selected fields
+router.get('/all', requireAuth, async (req, res) => {
+  try {
+    const users = await User.find({})
+      .select('userId firstName lastName email phone address registeredDate role createdAt updatedAt')
+      .lean();
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch users' });
+  }
+});
+
+
+
+
+
+
 // GET /api/user/me
 router.get('/me', requireAuth, async (req, res) => {
   try {
