@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+
 export default function CustomSkimboards() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [products, setProducts] = useState([]);
 
-  // Preset labor cost
   const LABOR_COST = 80;
 
   useEffect(() => {
@@ -34,6 +34,7 @@ export default function CustomSkimboards() {
 
   const [imageFiles, setImageFiles] = useState([]);
   const [previewUrls, setPreviewUrls] = useState([]);
+  const [uploading, setUploading] = useState(false);
 
   const priceMap = {
     shape: { classic: 10, round: 20, pointed: 20 },
@@ -50,7 +51,7 @@ export default function CustomSkimboards() {
     total += (form.length || 54) * priceMap.length.base;
     total += priceMap.rockerProfile[form.rockerProfile] || 0;
     total += priceMap.deckChannels[form.deckChannels] || 0;
-    total += LABOR_COST;  // Add preset labor cost here
+    total += LABOR_COST;
     return total;
   };
 
@@ -58,7 +59,6 @@ export default function CustomSkimboards() {
     const files = Array.from(e.target.files);
     setImageFiles(files);
 
-    // Revoke previous preview URLs
     previewUrls.forEach(url => URL.revokeObjectURL(url));
 
     const urls = files.map(file => URL.createObjectURL(file));
@@ -83,7 +83,6 @@ export default function CustomSkimboards() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-
     const totalPrice = calculatePrice();
 
     if (!imageFiles || imageFiles.length === 0) {
@@ -91,16 +90,41 @@ export default function CustomSkimboards() {
       return;
     }
 
-    // Pass existing previewUrls directly — no new object URLs created here
-    const skimboardData = {
-      form,
-      laborCost: LABOR_COST,
-      totalPrice,
-      images: previewUrls,
-    };
+    try {
+      setUploading(true);
 
-    // Redirect to custom checkout page with state
-    navigate('/checkoutcs', { state: skimboardData });
+      // Upload images
+      const formData = new FormData();
+      imageFiles.forEach(file => {
+        formData.append('images', file);
+      });
+
+      const response = await fetch('http://localhost:5000/api/upload-images', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to upload images');
+      }
+
+      const data = await response.json();
+      const uploadedImageUrls = data.imageUrls;
+
+      const skimboardData = {
+        form,
+        laborCost: LABOR_COST,
+        totalPrice,
+        images: uploadedImageUrls, // use uploaded URLs instead of preview
+      };
+
+      navigate('/checkoutcs', { state: skimboardData });
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('Failed to submit form. Please try again.');
+    } finally {
+      setUploading(false);
+    }
   }
 
   return (
@@ -160,19 +184,13 @@ export default function CustomSkimboards() {
       {/* Right form */}
       <div style={{ flex: 1, padding: 40, backgroundColor: '#fff', color: '#000' }}>
         <h2 style={{ fontWeight: 'bold', marginBottom: 20 }}>Customise Your Skimboard</h2>
-        <form
-          onSubmit={handleSubmit}
-          style={{ display: 'flex', flexDirection: 'column', gap: 16 }}
-        >
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          {/* Form Inputs */}
+          {/* ... [same as before, unchanged] ... */}
+
           <label>
             Shape
-            <select
-              name="shape"
-              value={form.shape}
-              onChange={handleChange}
-              required
-              style={{ marginTop: 4, padding: 8, borderRadius: 5, border: '1px solid #ccc', width: '100%' }}
-            >
+            <select name="shape" value={form.shape} onChange={handleChange} required style={{ marginTop: 4, padding: 8 }}>
               <option value="">Select Shape</option>
               {Object.entries(priceMap.shape).map(([key, price]) => (
                 <option key={key} value={key}>
@@ -184,13 +202,7 @@ export default function CustomSkimboards() {
 
           <label>
             Thickness
-            <select
-              name="thickness"
-              value={form.thickness}
-              onChange={handleChange}
-              required
-              style={{ marginTop: 4, padding: 8, borderRadius: 5, border: '1px solid #ccc', width: '100%' }}
-            >
+            <select name="thickness" value={form.thickness} onChange={handleChange} required style={{ marginTop: 4, padding: 8 }}>
               <option value="">Select Thickness</option>
               {Object.entries(priceMap.thickness).map(([key, price]) => (
                 <option key={key} value={key}>
@@ -202,13 +214,7 @@ export default function CustomSkimboards() {
 
           <label>
             Rocker Profile
-            <select
-              name="rockerProfile"
-              value={form.rockerProfile}
-              onChange={handleChange}
-              required
-              style={{ marginTop: 4, padding: 8, borderRadius: 5, border: '1px solid #ccc', width: '100%' }}
-            >
+            <select name="rockerProfile" value={form.rockerProfile} onChange={handleChange} required style={{ marginTop: 4, padding: 8 }}>
               <option value="">Select Rocker Profile</option>
               {Object.entries(priceMap.rockerProfile).map(([key, price]) => (
                 <option key={key} value={key}>
@@ -220,109 +226,48 @@ export default function CustomSkimboards() {
 
           <label>
             Length: {form.length}"
-            <input
-              type="range"
-              name="length"
-              min={40}
-              max={60}
-              value={form.length}
-              onChange={handleChange}
-              style={{ width: '100%', marginTop: 8 }}
-            />
+            <input type="range" name="length" min={40} max={60} value={form.length} onChange={handleChange} style={{ width: '100%', marginTop: 8 }} />
             <div>(${(form.length * priceMap.length.base).toFixed(2)})</div>
           </label>
 
           <fieldset style={{ border: 'none', padding: 0 }}>
             <legend>Deck Channels</legend>
             <label style={{ marginRight: 20 }}>
-              <input
-                type="radio"
-                id="yes"
-                name="deckChannels"
-                checked={form.deckChannels === 'yes'}
-                onChange={handleChange}
-                required
-                style={{ marginRight: 6 }}
-              />
+              <input type="radio" id="yes" name="deckChannels" checked={form.deckChannels === 'yes'} onChange={handleChange} required />
               Yes (+$25)
             </label>
             <label>
-              <input
-                type="radio"
-                id="no"
-                name="deckChannels"
-                checked={form.deckChannels === 'no'}
-                onChange={handleChange}
-                style={{ marginRight: 6 }}
-              />
+              <input type="radio" id="no" name="deckChannels" checked={form.deckChannels === 'no'} onChange={handleChange} />
               No (+$0)
             </label>
           </fieldset>
 
           <label>
             Extra details
-            <textarea
-              name="extraDetails"
-              value={form.extraDetails}
-              onChange={handleChange}
-              placeholder="Value"
-              rows={4}
-              style={{ marginTop: 4, padding: 8, borderRadius: 5, border: '1px solid #ccc', width: '100%' }}
-            />
+            <textarea name="extraDetails" value={form.extraDetails} onChange={handleChange} rows={4} style={{ marginTop: 4, padding: 8 }} />
           </label>
 
           <label>
             Upload Image References
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={handleImageChange}
-              style={{ marginTop: 8 }}
-            />
+            <input type="file" accept="image/*" multiple onChange={handleImageChange} style={{ marginTop: 8 }} />
           </label>
 
           {previewUrls.length > 0 && (
-            <div style={{ marginTop: 12 }}>
+            <div>
               <strong>Preview:</strong>
               <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 8 }}>
                 {previewUrls.map((url, i) => (
-                  <img
-                    key={i}
-                    src={url}
-                    alt={`Preview ${i + 1}`}
-                    style={{ maxWidth: 120, maxHeight: 120, borderRadius: 6 }}
-                  />
+                  <img key={i} src={url} alt={`Preview ${i + 1}`} style={{ maxWidth: 120, maxHeight: 120, borderRadius: 6 }} />
                 ))}
               </div>
             </div>
           )}
 
-          {/* Show labor cost (preset) */}
-          <div style={{ fontWeight: 'bold', marginTop: 20 }}>
-            Labor Cost: ${LABOR_COST.toFixed(2)}
-          </div>
+          <div style={{ fontWeight: 'bold' }}>Labor Cost: ${LABOR_COST.toFixed(2)}</div>
+          <div style={{ fontWeight: 'bold' }}>Total Price: ${calculatePrice().toFixed(2)}</div>
 
-          {/* Show total price including labor */}
-          <div style={{ fontWeight: 'bold', marginTop: 8 }}>
-            Total Price: ${calculatePrice().toFixed(2)}
-          </div>
-
-          <button
-            type="submit"
-            style={{
-              backgroundColor: '#f96332',
-              color: '#fff',
-              padding: '12px 24px',
-              border: 'none',
-              borderRadius: 5,
-              cursor: 'pointer',
-              alignSelf: 'flex-start',
-              fontWeight: 'bold',
-              marginTop: 10,
-            }}
-          >
-            Continue
+          <button type="submit" disabled={uploading} style={{ backgroundColor: '#f96332', color: '#fff', padding: 12, border: 'none', borderRadius: 5 }}>
+            {uploading ? 'Uploading...' : 'Continue'}
           </button>
         </form>
       </div>
