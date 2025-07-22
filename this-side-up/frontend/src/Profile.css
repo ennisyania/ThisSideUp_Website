@@ -286,7 +286,7 @@
 
 .profile-button.primary {
     background-color: var(--profile-active-link);
-    color: #fff;
+    color: #110F0F;
 }
 
 .profile-button.primary:hover {
