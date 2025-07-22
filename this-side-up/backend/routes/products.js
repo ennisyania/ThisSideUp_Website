@@ -122,17 +122,17 @@ router.put('/:id', async (req, res) => {
     price,
     quantities,
     imageurl,
+    details = [],      // <-- add details here
   } = req.body;
 
   // Basic validation example
-  if (!name || !category || !description || !Array.isArray(sizes) || !Array.isArray(price) || !Array.isArray(quantities)) {
+  if (!name || !category || !description || !Array.isArray(sizes) || !Array.isArray(price) || !Array.isArray(quantities) || !Array.isArray(details)) {
     return res.status(400).json({ error: 'Invalid input data' });
   }
 
   try {
     const collection = await getCollection();
 
-    // Make sure the id is a valid ObjectId
     if (!ObjectId.isValid(id)) {
       return res.status(400).json({ error: 'Invalid product ID' });
     }
@@ -147,6 +147,7 @@ router.put('/:id', async (req, res) => {
         price,
         quantities,
         imageurl,
+        details,       // <-- include details in update
       },
     };
 
@@ -162,5 +163,53 @@ router.put('/:id', async (req, res) => {
     res.status(500).json({ error: 'Failed to update product' });
   }
 });
+
+
+import { nanoid } from 'nanoid'; // for generating unique productId strings (install with `npm i nanoid`)
+
+router.post('/', async (req, res) => {
+  const {
+    name,
+    category,
+    description,
+    sizes,
+    price,
+    quantities,
+    imageurl,
+    details = [], // optional details field you mentioned
+  } = req.body;
+
+  if (!name || !category || !description || !Array.isArray(sizes) || !Array.isArray(price) || !Array.isArray(quantities)) {
+    return res.status(400).json({ error: 'Invalid input data' });
+  }
+
+  try {
+    const collection = await getCollection();
+
+    // Generate a unique productId, e.g., 'bs001' or any custom scheme
+    // Here, using nanoid for simplicity
+    const productId = nanoid(6);
+
+    const newProduct = {
+      productId,
+      name,
+      category,
+      description,
+      sizes,
+      price,
+      quantities,
+      imageurl,
+      details,
+    };
+
+    const result = await collection.insertOne(newProduct);
+
+    res.status(201).json({ message: 'Product created', productId: newProduct.productId, _id: result.insertedId });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to create product' });
+  }
+});
+
 
 export default router;
