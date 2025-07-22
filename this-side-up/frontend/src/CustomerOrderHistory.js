@@ -72,7 +72,7 @@ export default function CustomerOrderHistory() {
             <li>
               <Link
                 className={location.pathname === '/account' ? 'active' : ''}
-                to="/account"
+                to="/myProfile"
               >
                 My Account
               </Link>
