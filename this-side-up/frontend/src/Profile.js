@@ -85,14 +85,48 @@ export default function Profile() {
         </nav>
       </aside>
 
-      {/* Main Content */}
-      <main className="customer-profile-main-content">
-        {/* Half‐wave overlay */}
-        <img
-        src={wavesBgUrl}
-        alt=""
-        className="wave-img"
-        />
+    return (
+        <div className="customer-profile-container">
+            {/* Sidebar */}
+            <aside
+                className="customer-profile-sidebar"
+                style={{
+                    backgroundImage: `url(${sidebarBgUrl})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center', // This will be overridden by CSS if defined
+                    backgroundRepeat: 'no-repeat'
+                }}
+            >
+                <div className="sidebar-header">
+                    <h2>My Account</h2>
+                    <Link to="/logout" className="logout-link">Log out</Link>
+                </div>
+                <nav className="profile-nav">
+                    <ul>
+                        <li>
+                            {/* Link to the main profile page (Contact Info & Address Book) */}
+                            <Link
+                                to="/myProfile" // This should be the base path for My Account content
+                                className={location.pathname === '/myProfile' ? 'active' : ''}
+                            >
+                                My Account
+                            </Link>
+                        </li>
+                        <li>
+                            {/* Link to the Order History main route */}
+                            <Link
+                                to="/orderhistory" // Updated path
+                                className={location.pathname.startsWith('/orderhistory') ? 'active' : ''} // Updated path
+                            >
+                                Order History
+                            </Link>
+                            {/* Nested links for Order History sub-sections */}
+                            
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+
 
 
         {content}

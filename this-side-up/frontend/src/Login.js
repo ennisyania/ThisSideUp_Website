@@ -1,7 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthContext from './context/AuthContext';
-
 import './component/AuthForm.css';
 
 export default function Login() {
@@ -12,7 +11,6 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const res = await fetch('http://localhost:5000/api/user/login', {
         method: 'POST',
@@ -21,13 +19,12 @@ export default function Login() {
       });
 
       const data = await res.json();
-
       if (!res.ok) throw new Error(data.error || 'Login failed');
 
-      login(data.user, data.token);
+      const { user, token } = data;
+      login(user, token);
 
-      // Redirect based on user role
-      if (data.user.role === 'admin') {
+      if (user.role === 'admin') {
         navigate('/admin');
       } else {
         navigate('/');

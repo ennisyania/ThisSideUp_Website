@@ -1,5 +1,6 @@
-const User = require('../models/userModel');
-const { createToken, maxAge } = require('../utils/jwt'); // import JWT helper
+import User from '../models/userModel.js';
+import { createToken, maxAge } from '../utils/jwt.js'; // import JWT helper
+import bcrypt from 'bcrypt';
 
 const validateEmail = (email) => {
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -38,8 +39,9 @@ const registerUser = async (req, res) => {
     res.status(200).json({
       email: user.email,
       user: {
-        id: user._id,
+        userId: user.userId,
         email: user.email,
+        role: user.role,
       },
       token,
       expiresIn: maxAge
@@ -49,8 +51,6 @@ const registerUser = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
-
-const bcrypt = require('bcrypt');
 
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
@@ -80,9 +80,9 @@ const loginUser = async (req, res) => {
     res.status(200).json({
       email: user.email,
       user: {
-        id: user._id,
+        userId: user.userId,
         email: user.email,
-        role: user.role, 
+        role: user.role,
       },
       token,
       expiresIn: maxAge
@@ -108,5 +108,4 @@ const getCart = async (req, res) => {
   }
 };
 
-
-module.exports = { registerUser, loginUser, getCart };
+export { registerUser, loginUser, getCart };

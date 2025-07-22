@@ -1,210 +1,284 @@
-// src/admin/ASettings.js
-import React, { useState, useEffect } from 'react';
+
+// src/admin/AAdmin.js
+import React, { useEffect, useState } from 'react';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
+import { Link, Outlet, useLocation, useMatch, useNavigate } from 'react-router-dom';
 import './AAdmin.css';
 
-export default function ASettings() {
-  const [active, setActive] = useState('General');
+export default function AAdmin() {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const isDashboardRoute = useMatch('/admin');
+    const [monthlyRevenue, setMonthlyRevenue] = useState([]);
 
-  return (
-    <div className="admin-page settings-page">
-      <h1 className="page-title">⚙️ Site Settings</h1>
+    const [dashboardData, setDashboardData] = useState({
+        totalSales: 0,
+        totalOrders: 0,
+        totalSalesToday: 0,
+        totalOrdersToday: 0,
+    });
 
-      <nav className="settings-tabs">
-        {['General','Branding','Homepage','Emails'].map(tab => (
-          <button
-            key={tab}
-            onClick={() => setActive(tab)}
-            className={active===tab ? 'tab-active' : ''}
-          >
-            {tab}
-          </button>
-        ))}
-      </nav>
+    useEffect(() => {
+        // Fetch monthly revenue
+        const fetchMonthlyRevenue = async () => {
+            try {
+                const res = await fetch('http://localhost:5000/api/admin/dashboard/revenue-monthly');
+                const data = await res.json();
+                setMonthlyRevenue(data);
+            } catch (err) {
+                console.error('Failed to fetch monthly revenue:', err);
+            }
+        };
 
-      <div className="settings-content">
-        {active==='General'  && <GeneralForm />}
-        {active==='Branding' && <BrandingForm />}
-        {active==='Homepage' && <HomepageForm />}
-        {active==='Emails'   && <EmailTemplatesForm />}
-      </div>
-    </div>
-  );
-}
+        fetchMonthlyRevenue();
+    }, []);
 
-// --- GeneralForm ---
-function GeneralForm() {
-  const [siteName, setSiteName] = useState('');
-  const [tagline,  setTagline]  = useState('');
-  const [currency, setCurrency] = useState('USD');
+    useEffect(() => {
+        const fetchDashboardData = async () => {
+            try {
+                const res = await fetch('http://localhost:5000/api/admin/dashboard');
+                const text = await res.text();
+                console.log('Raw dashboard response:', text);
 
-  // load saved
-  useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem('settings.general')) || {};
-    setSiteName(saved.siteName || 'This Side Up');
-    setTagline(saved.tagline || 'Ride the wave');
-    setCurrency(saved.currency || 'USD');
-  }, []);
+                const allTimeData = JSON.parse(text);
 
-  // save handler
-  function handleSave() {
-    localStorage.setItem('settings.general',
-      JSON.stringify({ siteName, tagline, currency })
-    );
-    alert('General settings saved');
-  }
+                const todayRes = await fetch('http://localhost:5000/api/admin/dashboard/today');
+                const todayText = await todayRes.text();
+                console.log('Raw today response:', todayText);
 
-  return (
-    <section className="settings-section">
-      <label>Site Name
-        <input
-          value={siteName}
-          onChange={e => setSiteName(e.target.value)}
-        />
-      </label>
-      <label>Tagline
-        <input
-          value={tagline}
-          onChange={e => setTagline(e.target.value)}
-        />
-      </label>
-      <label>Currency
-        <select
-          value={currency}
-          onChange={e => setCurrency(e.target.value)}
-        >
-          <option>USD</option>
-          <option>EUR</option>
-          <option>SGD</option>
-        </select>
-      </label>
-      <button
-        className="btn purple-btn"
-        onClick={handleSave}
-      >
-        Save General
-      </button>
-    </section>
-  );
-}
+                const todayData = JSON.parse(todayText);
 
-// --- BrandingForm ---
-function BrandingForm() {
-  const [logoPreview, setLogoPreview]       = useState('');
-  const [faviconPreview, setFaviconPreview] = useState('');
+                setDashboardData({
+                    totalSales: allTimeData.totalSales,
+                    totalOrders: allTimeData.totalOrders,
+                    totalSalesToday: todayData.totalSalesToday,
+                    totalOrdersToday: todayData.totalOrdersToday,
+                });
+            } catch (err) {
+                console.error('Failed to fetch dashboard data:', err);
+            }
+        };
 
-  // load saved
-  useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem('settings.branding')) || {};
-    if (saved.logo)    setLogoPreview(saved.logo);
-    if (saved.favicon) setFaviconPreview(saved.favicon);
-  }, []);
 
-  // when user picks a file, read as base64
-  function handleFileChange(e, setter) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onloadend = () => setter(reader.result);
-    reader.readAsDataURL(file);
-  }
+        fetchDashboardData();
+    }, []);
 
-  // save handler
-  function handleSave() {
-    localStorage.setItem('settings.branding',
-      JSON.stringify({ logo: logoPreview, favicon: faviconPreview })
-    );
-    alert('Branding settings saved');
-  }
+    // Calculate percentage increases
+    const getPercentIncrease = (today, total) => {
+        if (total === 0) return 0;
+        return ((today / (total - today)) * 100).toFixed(1);
+    };
 
-  return (
-    <section className="settings-section">
-      <label>Logo Upload
-        <input
-          type="file"
-          accept="image/*"
-          onChange={e => handleFileChange(e, setLogoPreview)}
-        />
-      </label>
-      {logoPreview && (
-        <img
-          src={logoPreview}
-          alt="Logo Preview"
-          style={{ maxHeight: '80px', margin: '0.5rem 0' }}
-        />
-      )}
+    const {
+        totalSales,
+        totalOrders,
+        totalSalesToday,
+        totalOrdersToday,
+    } = dashboardData;
 
-      <label>Favicon Upload
-        <input
-          type="file"
-          accept="image/*"
-          onChange={e => handleFileChange(e, setFaviconPreview)}
-        />
-      </label>
-      {faviconPreview && (
-        <img
-          src={faviconPreview}
-          alt="Favicon Preview"
-          style={{ maxHeight: '40px', margin: '0.5rem 0' }}
-        />
-      )}
+    const salesPercentIncrease = getPercentIncrease(totalSalesToday, totalSales);
+    const ordersPercentIncrease = getPercentIncrease(totalOrdersToday, totalOrders);
 
-      <button
-        className="btn purple-btn"
-        onClick={handleSave}
-      >
-        Save Branding
-      </button>
-    </section>
-  );
-}
+    const [customerData, setCustomerData] = useState({
+        totalCustomers: 0,
+        newCustomersToday: 0,
+    });
 
-// --- HomepageForm ---
-function HomepageForm() {
-  const [banners, setBanners]           = useState([]);
-  const [announcement, setAnnouncement] = useState('');
-  const [showAnn, setShowAnn]          = useState(true);
 
-  // load saved
-  useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem('settings.homepage')) || {};
-    setBanners(saved.banners || [{ id: Date.now(), text:'', link:'' }]);
-    setAnnouncement(saved.announcement || '');
-    setShowAnn(saved.showAnn ?? true);
-  }, []);
+    useEffect(() => {
+        const fetchCustomerData = async () => {
+            try {
+                const res = await fetch('http://localhost:5000/api/admin/dashboard/customers');
+                const data = await res.json();
+                setCustomerData(data);
+            } catch (err) {
+                console.error('Failed to fetch customer data:', err);
+            }
+        };
 
-  function addBanner() {
-    setBanners(bs => [...bs, { id: Date.now(), text:'', link:'' }]);
-  }
-  function updateBanner(id, field, val) {
-    setBanners(bs => bs.map(b => b.id===id ? { ...b, [field]: val } : b));
-  }
-  function removeBanner(id) {
-    setBanners(bs => bs.filter(b => b.id!==id));
-  }
+        fetchCustomerData();
+    }, []);
 
-  function handleSave() {
-    localStorage.setItem('settings.homepage',
-      JSON.stringify({ banners, announcement, showAnn })
-    );
-    alert('Homepage settings saved');
-  }
+    const [refundData, setRefundData] = useState({
+        totalRefunded: 0,
+        refundedToday: 0,
+    });
 
-  return (
-    <section className="settings-section">
-      <h3>Banner Carousel</h3>
-      {banners.map(b => (
-        <div key={b.id} className="banner-row">
-          <input
-            placeholder="Text"
-            value={b.text}
-            onChange={e => updateBanner(b.id, 'text', e.target.value)}
-          />
-          <input
-            placeholder="Link"
-            value={b.link}
-            onChange={e => updateBanner(b.id, 'link', e.target.value)}
-          />
-          <button onClick={() => removeBanner(b.id)}>Remove</button>
+    // Fetch refund data
+    useEffect(() => {
+        const fetchRefundData = async () => {
+            try {
+                const res = await fetch('http://localhost:5000/api/admin/dashboard/refunded');
+                const data = await res.json();
+                setRefundData(data);
+            } catch (err) {
+                console.error('Failed to fetch refund data:', err);
+            }
+        };
+
+        fetchRefundData();
+    }, []);
+
+    const refundPercentIncrease = (() => {
+        const { totalRefunded, refundedToday } = refundData;
+        if (totalRefunded === 0) return 0;
+        return ((refundedToday / (totalRefunded - refundedToday)) * 100).toFixed(1);
+    })();
+
+    // Fetch recent orders
+    const [recentOrders, setRecentOrders] = useState([]);
+    useEffect(() => {
+        const fetchRecentOrders = async () => {
+            try {
+                const res = await fetch('http://localhost:5000/api/admin/dashboard/recent-orders');
+                const data = await res.json();
+                setRecentOrders(data);
+            } catch (err) {
+                console.error('Failed to fetch recent orders:', err);
+            }
+        };
+
+        fetchRecentOrders();
+    }, []);
+
+    return (
+        <div className="admin-dashboard-container">
+            <main className="admin-main-content">
+                <header className="admin-main-header">
+                    <h1>Dashboard</h1>
+                    <p>Here's your analytic details</p>
+                </header>
+
+                {isDashboardRoute ? (
+                    <div className="admin-dashboard-content">
+                        <div className="dashboard-cards">
+                            {/* Total Sales Card */}
+                            <div className="admin-card dashboard-card">
+                                <div className="card-header">
+                                    <h3>Total Completed Sales</h3>
+                                    <i className="fa-solid fa-ellipsis-vertical menu-icon"></i>
+                                </div>
+                                <div className="card-value">${totalSales.toLocaleString()}</div>
+                                <div className="card-change">
+                                    +{salesPercentIncrease}% <span style={{ color: 'var(--admin-success-color)' }}>+${totalSalesToday.toLocaleString()} Today</span>
+                                </div>
+                                <div className="card-footer">
+                                    <a href="#" onClick={() => navigate('/admin/orders')}
+                                        className="view-report-button">View Report <i className="fa-solid fa-arrow-right"></i></a>
+                                </div>
+                            </div>
+
+                            {/* Total Orders Card */}
+                            <div className="admin-card dashboard-card">
+                                <div className="card-header">
+                                    <h3>Total Orders</h3>
+                                    <i className="fa-solid fa-ellipsis-vertical menu-icon"></i>
+                                </div>
+                                <div className="card-value">{totalOrders.toLocaleString()}</div>
+                                <div className="card-change">
+                                    +{ordersPercentIncrease}% <span style={{ color: 'var(--admin-success-color)' }}>+{totalOrdersToday.toLocaleString()} Today</span>
+                                </div>
+                                <div className="card-footer">
+                                    <a href="#" onClick={() => navigate('/admin/orders')} className="view-report-button">View Report <i className="fa-solid fa-arrow-right"></i></a>
+                                </div>
+                            </div>
+
+                            {/* Refunded Card */}
+                            <div className="admin-card dashboard-card">
+                                <div className="card-header">
+                                    <h3>Refunded</h3>
+                                    <i className="fa-solid fa-ellipsis-vertical menu-icon"></i>
+                                </div>
+                                <div className="card-value">${refundData.totalRefunded.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                                <div className="card-change">
+                                    +{refundPercentIncrease}% <span style={{ color: 'var(--admin-success-color)' }}>
+                                        +${refundData.refundedToday.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} Today
+                                    </span>
+                                </div>
+                            </div>
+
+                            {/* Revenue Chart Card */}
+                            <div className="admin-card dashboard-card revenue-chart-card">
+                                <div className="card-header">
+                                    <h3>Revenue (Monthly)</h3>
+                                </div>
+
+                                <div style={{ width: '100%', height: 300 }}>
+                                    <ResponsiveContainer>
+                                        <BarChart data={monthlyRevenue} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                                            <CartesianGrid strokeDasharray="3 3" />
+                                            <XAxis dataKey="month" />
+                                            <YAxis />
+                                            <Tooltip formatter={(value) => `$${value.toFixed(2)}`} />
+                                            <Bar dataKey="revenue" fill="#8A2BE2" />
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                </div>
+                            </div>
+
+                            {/* Customers Card */}
+                            <div className="admin-card dashboard-card">
+                                <div className="card-header">
+                                    <h3>Customers</h3>
+                                    <i className="fa-solid fa-ellipsis-vertical menu-icon"></i>
+                                </div>
+                                <div className="card-value">{(customerData.totalCustomers ?? 0).toLocaleString()}</div>
+                                <div className="card-change">
+                                    <span>{(customerData.newCustomersToday ?? 0).toLocaleString()} New Today</span>
+                                </div>
+                                <div className="card-footer">
+                                    <a href="#" onClick={() => navigate('/admin/customers')} className="view-report-button">
+                                        View Report <i className="fa-solid fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+
+                        {/* Recent Activity Table */}
+                        <div className="admin-card recent-activity-card">
+                            <h3>Recent activity</h3>
+                            <table className="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Customer ID</th>
+                                        <th>Status</th>
+                                        <th>Order ID</th>
+                                        <th>Placed</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {recentOrders.map(order => (
+                                        <tr key={order._id}>
+                                            <td>{order.firstName} {order.lastName}</td> {/* Full Name */}
+                                            <td>{order.userId}</td>
+                                            <td>
+                                                <span className={`status-badge ${order.orderStatus.replace(/\s+/g, '-').toLowerCase()}`}>
+                                                    {order.orderStatus}
+                                                </span>
+                                            </td>
+                                            <td>#{order._id.slice(-6)}</td>
+                                            <td>{new Date(order.placedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
+                                            <td>${order.total.toFixed(2)}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+
+                            </table>
+                        </div>
+
+
+                    </div>
+                ) : (
+                    // Outlet for nested routes (e.g., AProducts, AOrders)
+                    <Outlet />
+                )}
+            </main>
+
         </div>
       ))}
       <button

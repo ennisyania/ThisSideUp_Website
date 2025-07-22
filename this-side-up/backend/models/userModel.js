@@ -1,6 +1,9 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-const { nanoid } = require('nanoid');
+import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
+import { nanoid } from 'nanoid';
+
+
+
 
 const Schema = mongoose.Schema;
 const userSchema = new Schema({
@@ -9,7 +12,8 @@ const userSchema = new Schema({
     default: () => `usr_${nanoid(6)}`, // e.g., usr_f1z2a9
     unique: true,
   },
-  name: { type: String },  // optional full name field
+  firstName: { type: String },
+  lastName: { type: String },  // optional full name field
   email: {
     type: String,
     required: true,
@@ -27,13 +31,6 @@ const userSchema = new Schema({
     country: String,
   },
   registeredDate: { type: Date, default: Date.now },
-  orders: [{ type: Schema.Types.ObjectId, ref: 'Order' }], // if you have an Order model
-  cart: [
-    {
-      productId: { type: Schema.Types.ObjectId, ref: 'Product' },
-      quantity: { type: Number, default: 1, min: 1 },
-    },
-  ],
   password: {
     type: String,
     required: true,
@@ -43,7 +40,7 @@ const userSchema = new Schema({
     enum: ['user', 'admin'],
     default: 'user',
   }
-});
+}, { timestamps: true });
 
 // Static signup method
 userSchema.statics.register = async function (email, password) {
@@ -60,8 +57,8 @@ userSchema.statics.register = async function (email, password) {
   return user;
 };
 
-//Static login ethod
-userSchema.statics.login = async function(email, password) {
+// Static login method
+userSchema.statics.login = async function (email, password) {
   const user = await this.findOne({ email });
   if (!user) {
     throw Error('Incorrect email or password');
@@ -75,5 +72,4 @@ userSchema.statics.login = async function(email, password) {
   return user;
 };
 
-
-module.exports = mongoose.model('user', userSchema);
+export default mongoose.model('user', userSchema);

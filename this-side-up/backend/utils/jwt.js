@@ -1,6 +1,6 @@
-const jwt = require('jsonwebtoken');
-const User = require('../models/userModel');
-
+import jwt from 'jsonwebtoken';
+import User from '../models/userModel.js';
+const maxAge = 3 * 24 * 60 * 60;
 const createToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '3d' }); // token valid for 3 days
 };
@@ -23,4 +23,4 @@ const requireAuth = async (req, res, next) => {
   }
 };
 
-module.exports = {requireAuth, createToken};
+export { requireAuth, createToken, maxAge };

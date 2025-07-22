@@ -1,59 +1,106 @@
 // src/admin/AOrders.js
 import React, { useState, useEffect } from 'react';
+
+import {
+  Package,
+  TrendingUp,
+  Calendar as CalendarIcon,
+  Filter as FilterIcon,
+  DollarSign,
+  RefreshCw
+} from 'lucide-react';
 import './AAdmin.css';
 
-export default function AOrders() {
-  const [orders, setOrders]               = useState([]);
-  const [filters, setFilters]             = useState({ status: 'all', dateRange: 'last30' });
-  const [selectedOrder, setSelectedOrder] = useState(null);
-  const [loading, setLoading]             = useState(false);
+// Use lowercase statuses for logic
+const STATUSES = ['pending', 'shipped', 'delivered', 'refunded'];
 
-  // Fetch orders when filters change
-  useEffect(() => {
-    async function load() {
-      setLoading(true);
-      try {
-        const params = new URLSearchParams();
-        if (filters.status !== 'all') params.set('status', filters.status);
-        if (filters.dateRange)       params.set('dateRange', filters.dateRange);
-        const res  = await fetch(`/api/orders?${params.toString()}`);
-        const data = await res.json();
-        setOrders(data);
-      } catch (e) {
-        console.error('Failed to load orders', e);
-      } finally {
-        setLoading(false);
-      }
+export default function AOrders() {
+  const [orders, setOrders] = useState([]);
+  const [filters, setFilters] = useState({ status: 'all', dateRange: 'all' });
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [newStatus, setNewStatus] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [confirming, setConfirming] = useState(false);
+  const [updating, setUpdating] = useState(false);
+
+  async function loadOrders() {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (filters.status !== 'all') params.set('status', filters.status);
+      if (filters.dateRange) params.set('dateRange', filters.dateRange);
+      const res = await fetch(`http://localhost:5000/api/orders/allOrders?${params.toString()}`);
+      const data = await res.json();
+      setOrders(data);
+    } catch (e) {
+      console.error('Failed to load orders', e);
+    } finally {
+      setLoading(false);
     }
-    load();
+  }
+
+  useEffect(() => {
+    loadOrders();
   }, [filters]);
 
-  // Order actions
-  async function handleStatusUpdate(id, status) {
-    await fetch(`/api/orders/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status }),
-    });
-    setOrders(os => os.map(o => o.id === id ? { ...o, status } : o));
-    setSelectedOrder(o => o && o.id === id ? { ...o, status } : o);
-  }
+  useEffect(() => {
+    const interval = setInterval(() => {
+      loadOrders();
+    }, 10000);
+    return () => clearInterval(interval);
+  }, []);
 
-  async function handleRefund(id) {
-    await fetch(`/api/orders/${id}/refund`, { method: 'POST' });
-    setOrders(os => os.map(o => o.id === id ? { ...o, status: 'Refunded' } : o));
-    setSelectedOrder(o => o && o.id === id ? { ...o, status: 'Refunded' } : o);
-  }
+  const parseTotal = (totalStr) => {
+    if (!totalStr) return 0;
+    const num = parseFloat(totalStr.replace(/[^0-9.-]+/g, ''));
+    return isNaN(num) ? 0 : num;
+  };
 
-  // KPI stats
-  const total        = orders.length;
-  const avgValue     = total
-    ? (orders.reduce((sum, o) => sum + parseFloat(o.total.slice(1)), 0) / total).toFixed(2)
+  const totalOrders = orders.length;
+  const avgOrderValue = totalOrders
+    ? (orders.reduce((sum, o) => sum + parseTotal(o.total), 0) / totalOrders).toFixed(2)
     : '0.00';
-  const pendingCount = orders.filter(o => o.status === 'Pending').length;
-  const refundRate   = total
-    ? `${((orders.filter(o => o.status === 'Refunded').length / total) * 100).toFixed(1)}%`
+
+  const pendingCount = orders.filter(o => o.status === 'pending').length;
+  const refundCount = orders.filter(o => o.status === 'refunded').length;
+  const refundRate = totalOrders
+    ? `${((refundCount / totalOrders) * 100).toFixed(1)}%`
     : '0%';
+
+  async function handleStatusUpdate(id, status) {
+    setUpdating(true);
+    const token = localStorage.getItem('token');
+    try {
+      const statusLower = status.toLowerCase();
+      const endpoint = statusLower === 'refunded'
+        ? `http://localhost:5000/api/orders/${id}/refund`
+        : `http://localhost:5000/api/orders/allOrders/${id}`;
+
+      const method = statusLower === 'refunded' ? 'POST' : 'PATCH';
+      const body = statusLower === 'refunded' ? null : JSON.stringify({ status: statusLower });
+
+      const res = await fetch(endpoint, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body,
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.error || 'Failed to update');
+      }
+
+      await loadOrders();
+    } catch (err) {
+      console.error(err);
+      alert(`Failed: ${err.message}`);
+    } finally {
+      setUpdating(false);
+    }
+  }
 
   return (
     <div className="admin-page orders-page">
@@ -70,14 +117,14 @@ export default function AOrders() {
           <div className="kpi-icon purple-bg">📦</div>
           <div>
             <h4>Total Orders</h4>
-            <p>{total}</p>
+            <p>{totalOrders}</p>
           </div>
         </div>
         <div className="kpi-card purple-border">
           <div className="kpi-icon purple-bg">📈</div>
           <div>
             <h4>Avg. Order Value</h4>
-            <p>${avgValue}</p>
+            <p>${avgOrderValue}</p>
           </div>
         </div>
         <div className="kpi-card purple-border">
@@ -102,16 +149,18 @@ export default function AOrders() {
           onChange={e => setFilters({ ...filters, status: e.target.value })}
         >
           <option value="all">All Statuses</option>
-          <option value="Pending">Pending</option>
-          <option value="Shipped">Shipped</option>
-          <option value="Delivered">Delivered</option>
-          <option value="Refunded">Refunded</option>
+          {STATUSES.map(s => (
+            <option key={s} value={s}>
+              {s.charAt(0).toUpperCase() + s.slice(1)}
+            </option>
+          ))}
         </select>
 
         <select
           value={filters.dateRange}
           onChange={e => setFilters({ ...filters, dateRange: e.target.value })}
         >
+          <option value="all">All Time</option>
           <option value="last7">Last 7 days</option>
           <option value="last30">Last 30 days</option>
           <option value="thisMonth">This Month</option>
@@ -121,16 +170,29 @@ export default function AOrders() {
       <table className="orders-table">
         <thead>
           <tr>
-            <th>ID</th><th>Customer</th><th>Date</th><th>Status</th><th>Total</th>
+
+            <th>ID</th>
+            <th>Customer</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Total</th>
+
           </tr>
         </thead>
         <tbody>
           {orders.map(o => (
-            <tr key={o.id} onClick={() => setSelectedOrder(o)}>
+            <tr
+              key={o.id}
+              onClick={() => {
+                setSelectedOrder(o);
+                setNewStatus(o.status);
+                setConfirming(false);
+              }}
+            >
               <td>{o.id}</td>
               <td>{o.customer}</td>
-              <td>{o.date}</td>
-              <td>{o.status}</td>
+              <td>{new Date(o.date).toLocaleDateString()}</td>
+              <td>{o.status.charAt(0).toUpperCase() + o.status.slice(1)}</td>
               <td>{o.total}</td>
             </tr>
           ))}
@@ -140,22 +202,97 @@ export default function AOrders() {
       {selectedOrder && (
         <div className="modal-backdrop">
           <div className="modal-contentpurple">
-            <button className="modal-close" onClick={() => setSelectedOrder(null)}>✕</button>
+
+            <button
+              aria-label="Close modal"
+              className="modal-close"
+              onClick={() => {
+                setSelectedOrder(null);
+                setNewStatus('');
+                setConfirming(false);
+              }}
+            >
+              ✕
+            </button>
+
             <h2>Order {selectedOrder.id}</h2>
+
             <p><strong>Customer:</strong> {selectedOrder.customer}</p>
-            <p><strong>Date:</strong> {selectedOrder.date}</p>
-            <p><strong>Status:</strong> {selectedOrder.status}</p>
+            <p><strong>Contact Email:</strong> {selectedOrder.contactEmail}</p>
+            <p><strong>Phone:</strong> {selectedOrder.phone}</p>
+
+            <p><strong>Shipping Address:</strong><br />
+              {selectedOrder.address}<br />
+              {selectedOrder.aptSuiteEtc && <>{selectedOrder.aptSuiteEtc}<br /></>}
+              {selectedOrder.postalCode}, {selectedOrder.countryRegion}
+            </p>
+
+            <p><strong>Shipping Method:</strong> {selectedOrder.shippingMethod}</p>
+
+            {selectedOrder.discountCode && (
+              <p><strong>Discount Code:</strong> {selectedOrder.discountCode} (−%{selectedOrder.appliedDiscount || '0.00'})</p>
+            )}
+
+            <p><strong>Subtotal:</strong> ${selectedOrder.subtotal?.toFixed(2)}</p>
+            <p><strong>Shipping Cost:</strong> ${selectedOrder.shippingCost?.toFixed(2)}</p>
+
             <p><strong>Total:</strong> {selectedOrder.total}</p>
+            <p><strong>Date:</strong> {new Date(selectedOrder.date).toLocaleString('en-SG', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: false
+            })}</p>
+
+            <p><strong>Status:</strong> {selectedOrder.status.charAt(0).toUpperCase() + selectedOrder.status.slice(1)}</p>
+
             <div className="modal-actions">
-              {selectedOrder.status === 'Pending' && (
-                <button className="btn purple-btn" onClick={() => handleStatusUpdate(selectedOrder.id, 'Shipped')}>
-                  Mark as Shipped
+
+              <label htmlFor="status-select"><strong>Update Status:</strong></label>
+              <select
+                id="status-select"
+                value={newStatus}
+                onChange={(e) => {
+                  setNewStatus(e.target.value);
+                  setConfirming(false);
+                }}
+                disabled={selectedOrder.status === 'refunded'}  // Disable if refunded
+              >
+                {STATUSES.map(s => (
+                  <option key={s} value={s}>
+                    {s.charAt(0).toUpperCase() + s.slice(1)}
+                  </option>
+                ))}
+              </select>
+
+              {/* Hide submit buttons if status is refunded */}
+              {selectedOrder.status !== 'refunded' && !confirming && newStatus !== selectedOrder.status && (
+                <button onClick={() => setConfirming(true)}>
+                  Submit
                 </button>
               )}
-              {selectedOrder.status !== 'Refunded' && (
-                <button className="btn purple-outline-btn" onClick={() => handleRefund(selectedOrder.id)}>
-                  Issue Refund
+
+              {selectedOrder.status !== 'refunded' && confirming && (
+                <button
+                  disabled={updating}
+                  onClick={async () => {
+                    await handleStatusUpdate(selectedOrder.id, newStatus);
+                    setSelectedOrder(null);
+                    setNewStatus('');
+                    setConfirming(false);
+                  }}
+                >
+                  {updating ? 'Updating...' : 'Confirm'}
+
                 </button>
+              )}
+
+              {selectedOrder.status === 'refunded' && (
+                <p style={{ color: 'red', marginTop: '10px' }}>
+                  This order has been refunded and status cannot be changed.
+                </p>
               )}
             </div>
           </div>

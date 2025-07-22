@@ -1,9 +1,12 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import PrivateRoute from './component/PrivateRoute.js';
 import ProtectedAdminRoute from './component/ProtectedAdminRoute.js';
+
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
 
 
 // Import Layout Components
@@ -35,6 +38,7 @@ import Jackets from './Jackets.js';
 import ProductDetail from './ProductDetail.js';
 import CustomSkimboards from './CustomSkimboards.js';
 
+import CheckoutCS from './CheckoutCS.js';
 import CheckOut from './CheckOut.js';
 import Tryouts from './Tryouts.js';
 
@@ -47,19 +51,32 @@ import TermsAndConditions from './TermsAndConditions.js';
 
 import Admin from './admin/AAdmin.js';
 import AdminProducts from './admin/AProducts.js';
-import AdminViewProducts from './admin/AViewProducts.js';
-import AdminAddProduct from './admin/AAddProduct.js';
-import AdminEditProducts from './admin/AEditProducts.js';
+
+
 import AdminOrders from './admin/AOrders.js';
-import AdminOrderDetail from './admin/AOrderDetail.js';
+
 import AdminCustomers from './admin/ACustomers.js';
-import AdminIndividualCustomer from './admin/AIndividualCustomer.js';
+
 import AdminSettings from './admin/ASettings.js';
+
+
+
+const stripePromise = loadStripe('pk_test_51RmwlwRuckXf5vemNjbtW6va56XmNAWtu5QkaTVuuP84itTAQOFS7T5IOhxjV8WEtPxsIh18NATN5Zvt0NsvTXjK00qkuk3udr'); // Replace with your real Stripe publishable key
 
 
 function App() {
   // Global cart state
   const [cartItems, setCartItems] = useState([]);
+
+  useEffect(() => {
+  document.title = "This Side Up";
+
+  const link =
+    document.querySelector("link[rel~='icon']") || document.createElement('link');
+  link.rel = 'icon';
+  link.href = '/whitelogofooter.svg';  
+  document.getElementsByTagName('head')[0].appendChild(link);
+}, []);
 
   const handleAddToCart = (productToAdd) => {
     setCartItems((prevItems) => {
@@ -72,7 +89,7 @@ function App() {
       if (existingItem) {
         return prevItems.map((item) =>
           item.id === productToAdd.id &&
-          item.variant === productToAdd.variant
+            item.variant === productToAdd.variant
             ? { ...item, quantity: item.quantity + productToAdd.quantity }
             : item
         );
@@ -83,7 +100,7 @@ function App() {
   };
 
 
-  
+
   return (
     <Router>
       <Routes>
@@ -154,12 +171,33 @@ function App() {
                   path="/customSkimboards"
                   element={<CustomSkimboards />}
                 />
-              
+
+                <Route
+                  path="/checkoutCS"
+                  element={
+                    <PrivateRoute>
+                      <Elements stripe={stripePromise}>
+                        <CheckoutCS
+                        />
+                      </Elements>
+                    </PrivateRoute>
+                  }
+                />
+
                 <Route
                   path="/checkout"
                   element={
                     <PrivateRoute>
-                      <CheckOut />
+                      <Elements stripe={stripePromise}>
+                        <CheckOut
+                          cartItems={cartItems}
+                          handlePlaceOrder={() => {
+                            setCartItems([]);
+                            alert("Your order has been placed!");
+
+                          }}
+                        />
+                      </Elements>
                     </PrivateRoute>
                   }
                 />
@@ -188,16 +226,9 @@ function App() {
         >
           <Route index element={<Admin />} />
           <Route path="products" element={<AdminProducts />} />
-          <Route path="viewproducts" element={<AdminViewProducts />} />
-          <Route path="addproduct" element={<AdminAddProduct />} />
-          <Route path="editproducts/:id" element={<AdminEditProducts />} />
+
           <Route path="orders" element={<AdminOrders />} />
-          <Route path="orderdetail/:id" element={<AdminOrderDetail />} />
           <Route path="customers" element={<AdminCustomers />} />
-          <Route
-            path="individualcustomer/:id"
-            element={<AdminIndividualCustomer />}
-          />
           <Route path="settings" element={<AdminSettings />} />
         </Route>
       </Routes>

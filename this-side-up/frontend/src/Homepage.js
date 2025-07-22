@@ -5,6 +5,35 @@ import './Homepage.css';
 function Homepage() {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
+  const [heroImages, setHeroImages] = useState([]);
+  const [heroText, setHeroText] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Helper to split text every 3 words
+  const splitEveryNWords = (text, n = 3) => {
+    return text
+      .split(' ')
+      .reduce((acc, word, i) => {
+        const lineIndex = Math.floor(i / n);
+        if (!acc[lineIndex]) acc[lineIndex] = [];
+        acc[lineIndex].push(word);
+        return acc;
+      }, []);
+  };
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await fetch('http://localhost:5000/api/settings');
+        const data = await res.json();
+        setHeroImages(data.heroImages || []);
+        setHeroText(data.announcement || '');
+      } catch (err) {
+        console.error('Failed to load homepage settings', err);
+      }
+    };
+    fetchSettings();
+  }, []);
 
   useEffect(() => {
     fetch('http://localhost:5000/api/products/skimboards')
@@ -21,23 +50,61 @@ function Homepage() {
       .catch(err => console.error('Failed to fetch skimboards:', err));
   }, []);
 
+  useEffect(() => {
+    if (currentIndex >= heroImages.length) {
+      setCurrentIndex(0);
+    }
+  }, [heroImages, currentIndex]);
+
+  // Auto slide every 4 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex(prevIndex =>
+        (prevIndex + 1) % heroImages.length
+      );
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [heroImages.length]);
+
+  const nextSlide = () => {
+    setCurrentIndex((currentIndex + 1) % heroImages.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentIndex((currentIndex - 1 + heroImages.length) % heroImages.length);
+  };
+
+  if (heroImages.length === 0) return <p>Loading hero carousel...</p>;
+
   return (
     <div className="homepage">
-      {/* Hero */}
-      <section className='hero'>
-        <h1 className='heroText'>Ride the Shore<br />Own the Wave</h1>
-        
+      {/* Hero carousel */}
+      <section className="hero">
+        <div
+          className="hero-background"
+          style={{
+            backgroundImage: `url(${heroImages[currentIndex]?.imageUrl || ''})`
+          }}
+        >
+          {heroText && (
+            <h1 className="heroText">
+              {splitEveryNWords(heroText).map((line, index) => (
+                <div key={index}>{line.join(' ')}</div>
+              ))}
+            </h1>
+          )}
+        </div>
       </section>
+
       {/* Clothing Promo */}
       <section className='clothing'>
         <div className="image-overlay">
           <img src="/images/skimboard 1.png" alt="surfOverlay" className="board-img" />
         </div>
         <div className='clothing-Images'></div>
-        {/* Image overlay */}
-      <div className="image-overlay2">
-        <img src="/images/skimboard 1.png" alt="surfOverlay" className="board-img2" />
-      </div>
+        <div className="image-overlay2">
+          <img src="/images/skimboard 1.png" alt="surfOverlay" className="board-img2" />
+        </div>
         <div className="right-text">
           <h2>Trying to look good<br />while riding the waves?</h2>
           <p className="smallText">Browse through our collection of high-quality <br />clothing made to enhance your flow.</p>
@@ -48,7 +115,6 @@ function Homepage() {
             <button onClick={() => navigate('/boardshorts')}>Boardshorts</button>
           </div>
         </div>
-        
       </section>
 
       {/* Boards Showcase */}
@@ -76,15 +142,13 @@ function Homepage() {
         </div>
       </section>
 
-    
-
       {/* Logo and Surfer Image */}
       <section className="logo-and-action">
         <div className="brand-logo"></div>
         <img className="surfing-img" alt='man surfing' />
         <div className="image-overlay3">
-        <img src="/images/skimboard 1.png" alt="surfOverlay" className="board-img3" />
-      </div>
+          <img src="/images/skimboard 1.png" alt="surfOverlay" className="board-img3" />
+        </div>
       </section>
 
       {/* Tryout Session */}
@@ -103,7 +167,6 @@ function Homepage() {
             </div>
           </div>
         </div>
-      
       </section>
     </div>
   );

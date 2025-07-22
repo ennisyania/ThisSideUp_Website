@@ -3,8 +3,10 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import useSignup from "./hooks/useSignup"; // Make sure this exists
 import "./component/AuthForm.css";
+import { useNavigate } from 'react-router-dom';
 
 export default function Register() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -20,6 +22,9 @@ export default function Register() {
     }
 
     await signup(email, password);
+    if (!error) {
+      navigate('/login'); // Redirect to login after successful registration
+    }
   };
 
   return (

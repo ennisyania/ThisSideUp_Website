@@ -212,6 +212,7 @@
   transform: skewX(20deg);
   transform-origin: top left;
 
+
   /* styling */
   background-color: var(--profile-active-link);
   padding:  5px 50px;

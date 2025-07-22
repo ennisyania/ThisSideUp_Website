@@ -1,27 +1,31 @@
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useContext, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
     CardElement,
     useStripe,
     useElements,
 } from '@stripe/react-stripe-js';
-import React, { useState, useContext, useEffect } from 'react';
+import AuthContext from './context/AuthContext';
 import './CheckOut.css';
 
-import AuthContext from './context/AuthContext'; // Import the context, not the provider
-
-export default function CheckOut({ cartItems, handlePlaceOrder }) {
+export default function CheckoutCS({ handlePlaceOrder }) {
     const navigate = useNavigate();
+    const location = useLocation();
     const { user, token } = useContext(AuthContext);
-    const { nanoid } = require('nanoid');
+
+    const [availableCodes, setAvailableCodes] = useState([]);
+    const [discountCode, setDiscountCode] = useState('');
+    const [appliedDiscount, setAppliedDiscount] = useState(0);
+    const [siteDiscount, setSiteDiscount] = useState(0);
+
     const stripe = useStripe();
     const elements = useElements();
 
-    // Discount states
-    const [availableCodes, setAvailableCodes] = useState([]);
-    const [siteDiscount, setSiteDiscount] = useState(0);
+    // Receive skimboardData from CustomSkimboards page
+    const skimboardData = location.state || {};
 
-    const [discountCode, setDiscountCode] = useState('');
-    const [appliedDiscount, setAppliedDiscount] = useState(0);
+    // Destructure to get form data, totalPrice, images
+    const { form = {}, totalPrice = 0, images = [] } = skimboardData;
 
     // Contact & Shipping fields
     const [contactEmail, setContactEmail] = useState('');
@@ -37,43 +41,6 @@ export default function CheckOut({ cartItems, handlePlaceOrder }) {
     const [nameOnCard, setNameOnCard] = useState('');
 
     useEffect(() => {
-        const fetchUserProfile = async () => {
-            try {
-                const token = localStorage.getItem('token');
-                if (!token) return;
-
-                const res = await fetch('http://localhost:5000/api/user/me', {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-
-                if (!res.ok) {
-                    throw new Error('Failed to fetch user profile');
-                }
-
-                const data = await res.json();
-
-                // Fill fields if data exists, fallback to empty string
-                setContactEmail(data.email || '');
-                setCountryRegion(data.address?.country || '');
-                setFirstName(data.firstName || '');
-                setLastName(data.lastName || '');
-                setAddress(data.address?.street || '');
-                setPostalCode(data.address?.zip || '');
-                setPhone(data.phone || '');
-
-            } catch (error) {
-                console.error('Error fetching user profile:', error);
-            }
-        };
-
-        fetchUserProfile();
-    }, []);
-
-
-    // Fetch storewide and manual discounts
-    useEffect(() => {
         const fetchDiscounts = async () => {
             try {
                 const res = await fetch('http://localhost:5000/api/settings/discounts');
@@ -87,20 +54,6 @@ export default function CheckOut({ cartItems, handlePlaceOrder }) {
         fetchDiscounts();
     }, []);
 
-    // Calculate subtotal
-    const calculateSubtotal = () => {
-        if (!Array.isArray(cartItems)) return 0;
-        return cartItems.reduce((total, item) => total + (item.price || 0) * (item.quantity || 0), 0);
-    };
-
-    const calculateShippingCost = () => (shippingMethod === 'express' ? 10.00 : 5.00);
-
-    const subtotal = calculateSubtotal();
-    const shippingCost = calculateShippingCost();
-    const storeDiscountAmount = (subtotal + shippingCost) * (siteDiscount / 100);
-    const total = subtotal + shippingCost - appliedDiscount - storeDiscountAmount;
-
-    // Apply discount code
     const handleApplyDiscount = () => {
         const code = availableCodes.find(c => c.code === discountCode.trim().toUpperCase());
         if (code) {
@@ -112,7 +65,42 @@ export default function CheckOut({ cartItems, handlePlaceOrder }) {
         }
     };
 
-    // Handle payment
+    useEffect(() => {
+        // Try to fill form with user info if available
+        const fetchUserProfile = async () => {
+            try {
+                if (!token) return;
+
+                const res = await fetch('http://localhost:5000/api/user/me', {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                if (!res.ok) throw new Error('Failed to fetch user profile');
+                const data = await res.json();
+
+                setContactEmail(data.email || '');
+                setCountryRegion(data.address?.country || '');
+                setFirstName(data.firstName || '');
+                setLastName(data.lastName || '');
+                setAddress(data.address?.street || '');
+                setPostalCode(data.address?.zip || '');
+                setPhone(data.phone || '');
+            } catch (err) {
+                console.error(err);
+            }
+        };
+        fetchUserProfile();
+    }, [token]);
+
+    // Shipping cost (simple fixed)
+    const shippingCost = shippingMethod === 'express' ? 10 : 5;
+
+    // Store discount amount (percentage)
+    const storeDiscountAmount = ((totalPrice + shippingCost) * (siteDiscount / 100));
+
+    // Total amount including shipping and discounts
+    const total = totalPrice + shippingCost - appliedDiscount - storeDiscountAmount;
+
+    // Payment and order submission
     const handlePaynowClick = async () => {
         if (!stripe || !elements) return;
 
@@ -121,74 +109,80 @@ export default function CheckOut({ cartItems, handlePlaceOrder }) {
             return;
         }
 
-        const res = await fetch('http://localhost:5000/api/create-payment-intent', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ amount: total * 100, email: user.email }),
-        });
+        try {
+            // Create payment intent on backend with total * 100 (cents)
+            const res = await fetch('http://localhost:5000/api/create-payment-intent', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ amount: Math.round(total * 100), email: user.email }),
+            });
+            const { clientSecret } = await res.json();
 
-        const { clientSecret } = await res.json();
-
-        const result = await stripe.confirmCardPayment(clientSecret, {
-            payment_method: {
-                card: elements.getElement(CardElement),
-                billing_details: {
-                    name: nameOnCard,
-                    email: contactEmail,
+            const result = await stripe.confirmCardPayment(clientSecret, {
+                payment_method: {
+                    card: elements.getElement(CardElement),
+                    billing_details: {
+                        name: nameOnCard,
+                        email: contactEmail,
+                    },
                 },
-            },
-        });
+            });
 
-        if (result.error) {
-            alert(result.error.message);
-        } else if (result.paymentIntent.status === 'succeeded') {
-            const orderPayload = {
-                orderId: `odr_${nanoid(6)}`,
-                contactEmail,
-                countryRegion,
-                firstName,
-                lastName,
-                address,
-                aptSuiteEtc,
-                postalCode,
-                phone,
-                newsAndOffers,
-                shippingMethod,
-                discountCode,
-                appliedDiscount,
-                subtotal,
-                shippingCost,
-                total,
-                placedAt: new Date(),
-                items: cartItems.map(item => ({
-                    productId: item.id,
-                    size: item.size || item.variant || 'Default',
-                    quantity: item.quantity || 1
-                })),
-                paymentIntentId: result.paymentIntent.id,
-            };
+            if (result.error) {
+                alert(result.error.message);
+                return;
+            }
 
-            try {
-                const res = await fetch('http://localhost:5000/api/orders', {
+            if (result.paymentIntent.status === 'succeeded') {
+                // Prepare order payload for ordersCS collection
+                const orderPayload = {
+                    userId: user._id,
+                    contactEmail,
+                    countryRegion,
+                    firstName,
+                    lastName,
+                    address,
+                    aptSuiteEtc,
+                    postalCode,
+                    phone,
+                    newsAndOffers,
+                    shippingMethod,
+                    discountCode: discountCode.trim() || null,
+                    appliedDiscount,
+                    siteDiscount,
+                    laborCost: 0, // add your laborCost if applicable
+                    subtotal: totalPrice,
+                    shippingCost,
+                    total,
+                    form,
+                    images,
+                    paymentIntentId: result.paymentIntent.id,
+                    placedAt: new Date(),
+                    orderStatus: 'pending',
+                };
+
+                // Post order to your custom ordersCS backend route
+                const orderRes = await fetch('http://localhost:5000/api/ordersCS', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`,
+                        Authorization: `Bearer ${token}`,
                     },
                     body: JSON.stringify(orderPayload),
                 });
 
-                const data = await res.json();
-                if (!res.ok) {
-                    console.error('Order error:', data.message || data.error);
-                    throw new Error(data.message || 'Failed to place order');
+                const data = await orderRes.json();
+                if (!orderRes.ok) {
+                    throw new Error(data.message || 'Failed to place custom skimboard order');
                 }
 
-                handlePlaceOrder();
+                if (handlePlaceOrder) handlePlaceOrder();
+
                 navigate('/orderhistory');
-            } catch (error) {
-                console.error('Order submission error:', error.message);
             }
+        } catch (error) {
+            console.error('Order submission error:', error.message);
+            alert(`Order submission failed: ${error.message}`);
         }
     };
 
@@ -348,55 +342,76 @@ export default function CheckOut({ cartItems, handlePlaceOrder }) {
                 <div className="checkout-right-column">
                     <section className="order-summary-section">
                         <h2>Order Summary</h2>
-                        <div className="order-items-list">
-                            {(!Array.isArray(cartItems) || cartItems.length === 0) ? (
-                                <p>Your cart is empty.</p>
-                            ) : (
-                                cartItems.map(item => (
-                                    <div key={item.id + (item.variant || '')} className="order-summary-item">
-                                        {item.imageSrc && <img src={item.imageSrc} alt={item.title} className="order-item-image" />}
-                                        <div className="order-item-details">
-                                            <div className="order-item-title">{item.title}</div>
-                                            {item.variant && item.variant !== 'Default' && <div className="order-item-variant">{item.variant}</div>}
-                                        </div>
-                                        <div className="order-item-quantity">x{item.quantity}</div>
-                                        <div className="order-item-price">${(item.price * item.quantity).toFixed(2)}</div>
+
+                        <div>
+                            <h3>Custom Skimboard Details</h3>
+                            <div style={{ whiteSpace: 'pre-wrap', fontSize: 14, lineHeight: 1.5 }}>
+                                {Object.entries(form).map(([key, value]) => (
+                                    <div key={key}>
+                                        <strong>{key.charAt(0).toUpperCase() + key.slice(1)}:</strong> {value || 'N/A'}
                                     </div>
-                                ))
-                            )}
+                                ))}
+                            </div>
+
+                            <h4 style={{ marginTop: 12 }}>Uploaded Images</h4>
+                            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                                {images.map((url, i) => (
+                                    <img
+                                        key={i}
+                                        src={url}
+                                        alt={`Custom Skimboard Reference ${i + 1}`}
+                                        style={{ maxWidth: 100, maxHeight: 100, borderRadius: 5 }}
+                                    />
+                                ))}
+                            </div>
                         </div>
 
-                        <div className="discount-code-section">
+                        {/* Discount code input and apply */}
+                        <div className="discount-code-section" style={{ marginTop: 20 }}>
                             <input
                                 type="text"
                                 placeholder="Discount code or gift card"
                                 value={discountCode}
                                 onChange={(e) => setDiscountCode(e.target.value)}
                                 className="discount-input"
+                                style={{ padding: '8px', width: '60%', borderRadius: 4, border: '1px solid #ccc' }}
                             />
-                            <button onClick={handleApplyDiscount} className="apply-button"><span>Apply</span></button>
+                            <button onClick={handleApplyDiscount} className="apply-button" style={{ marginLeft: 8, padding: '8px 16px' }}>
+                                Apply
+                            </button>
                         </div>
 
-                        <div className="summary-breakdown">
-                            <div className="summary-line"><span>Subtotal</span><span>${subtotal.toFixed(2)}</span></div>
-                            <div className="summary-line"><span>Shipping</span><span>${shippingCost.toFixed(2)}</span></div>
+                        <div className="summary-breakdown" style={{ marginTop: 20 }}>
+                            <div className="summary-line">
+                                <span>Customization Price</span>
+                                <span>${totalPrice.toFixed(2)}</span>
+                            </div>
+                            <div className="summary-line">
+                                <span>Shipping</span>
+                                <span>${shippingCost.toFixed(2)}</span>
+                            </div>
                             {siteDiscount > 0 && (
                                 <div className="summary-line discount-line">
                                     <span>Store Discount ({siteDiscount}%)</span>
-                                    <span>-${storeDiscountAmount.toFixed(2)}</span>
+                                    <span>- ${storeDiscountAmount.toFixed(2)}</span>
                                 </div>
                             )}
+
                             {appliedDiscount > 0 && (
                                 <div className="summary-line discount-line">
                                     <span>Code Discount</span>
-                                    <span>-${appliedDiscount.toFixed(2)}</span>
+                                    <span>- ${appliedDiscount.toFixed(2)}</span>
                                 </div>
                             )}
-                            <div className="summary-line total-line"><span>Total</span><span>${total.toFixed(2)}</span></div>
+
+                            <div className="summary-line total-line">
+                                <span>Total</span>
+                                <span>${total.toFixed(2)}</span>
+                            </div>
                         </div>
                     </section>
                 </div>
             </div>
         </div>
     );
-};
+}
