@@ -214,10 +214,37 @@ export default function AOrders() {
               ✕
             </button>
             <h2>Order {selectedOrder.id}</h2>
+
             <p><strong>Customer:</strong> {selectedOrder.customer}</p>
-            <p><strong>Date:</strong> {new Date(selectedOrder.date).toLocaleDateString()}</p>
-            <p><strong>Status:</strong> {selectedOrder.status.charAt(0).toUpperCase() + selectedOrder.status.slice(1)}</p>
+            <p><strong>Contact Email:</strong> {selectedOrder.contactEmail}</p>
+            <p><strong>Phone:</strong> {selectedOrder.phone}</p>
+
+            <p><strong>Shipping Address:</strong><br />
+              {selectedOrder.address}<br />
+              {selectedOrder.aptSuiteEtc && <>{selectedOrder.aptSuiteEtc}<br /></>}
+              {selectedOrder.postalCode}, {selectedOrder.countryRegion}
+            </p>
+
+            <p><strong>Shipping Method:</strong> {selectedOrder.shippingMethod}</p>
+
+            {selectedOrder.discountCode && (
+              <p><strong>Discount Code:</strong> {selectedOrder.discountCode} (−%{selectedOrder.appliedDiscount || '0.00'})</p>
+            )}
+
+            <p><strong>Subtotal:</strong> ${selectedOrder.subtotal?.toFixed(2)}</p>
+            <p><strong>Shipping Cost:</strong> ${selectedOrder.shippingCost?.toFixed(2)}</p>
+
             <p><strong>Total:</strong> {selectedOrder.total}</p>
+            <p><strong>Date:</strong> {new Date(selectedOrder.date).toLocaleString('en-SG', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: false
+            })}</p>
+
+            <p><strong>Status:</strong> {selectedOrder.status.charAt(0).toUpperCase() + selectedOrder.status.slice(1)}</p>
 
             <div className="modal-actions">
               <label htmlFor="status-select"><strong>Update Status:</strong></label>

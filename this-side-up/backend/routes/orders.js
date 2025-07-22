@@ -51,9 +51,26 @@ router.get('/allOrders', async (req, res) => {
     const formatted = orders.map(o => ({
       id: o._id.toString(),
       customer: `${o.firstName} ${o.lastName}`,
-      date: o.placedAt.toISOString().slice(0, 10),
+      contactEmail: o.contactEmail,
+      countryRegion: o.countryRegion,
+      address: o.address,
+      aptSuiteEtc: o.aptSuiteEtc,
+      postalCode: o.postalCode,
+      phone: o.phone,
+
+      shippingMethod: o.shippingMethod,
+      discountCode: o.discountCode,
+      appliedDiscount: o.appliedDiscount,
+      subtotal: Number(o.subtotal),
+      shippingCost: Number(o.shippingCost),
+      address: o.address,
+      aptSuiteEtc: o.aptSuiteEtc,
+      postalCode: o.postalCode,
+      phone: o.phone,
+
+      date: o.placedAt.toISOString(),
       status: o.orderStatus,
-      total: `$${(o.total || 0).toFixed(2)}`,  // Use totalAmount here
+      total: `$${(o.total || 0).toFixed(2)}`,
     }));
 
     res.json(formatted);
