@@ -1,5 +1,7 @@
 import express from 'express';
 import User from '../models/userModel.js';
+import bcrypt from 'bcrypt';
+
 
 // Require before use
 
@@ -76,6 +78,56 @@ router.delete('/admins/:id', requireAuth, async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: 'Failed to demote admin' });
     }
+});
+
+// GET /api/user/me
+router.get('/me', requireAuth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select('firstName lastName email phone address');
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch user' });
+  }
+});
+
+
+// Edit user details (protected)
+router.put('/edit', requireAuth, async (req, res) => {
+  const userId = req.user._id; // Provided by requireAuth middleware
+  const {
+    firstName,
+    lastName,
+    email,
+    phone,
+    address,
+    password,
+  } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    // Update fields if provided
+    if (firstName) user.firstName = firstName;
+    if (lastName) user.lastName = lastName;
+    if (email) user.email = email;
+    if (phone) user.phone = phone;
+    if (address) {
+      user.address = {
+        ...user.address, // Preserve existing address values
+        ...address,      // Overwrite with new values
+      };
+    }
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(password, salt);
+    }
+
+    await user.save();
+    res.json({ message: 'User details updated successfully' });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update user details' });
+  }
 });
 
 

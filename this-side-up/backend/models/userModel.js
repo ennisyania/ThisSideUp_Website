@@ -12,7 +12,8 @@ const userSchema = new Schema({
     default: () => `usr_${nanoid(6)}`, // e.g., usr_f1z2a9
     unique: true,
   },
-  name: { type: String },  // optional full name field
+  firstName: { type: String },
+  lastName: { type: String },  // optional full name field
   email: {
     type: String,
     required: true,
