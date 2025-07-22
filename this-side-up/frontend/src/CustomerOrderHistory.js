@@ -17,7 +17,10 @@ export default function CustomerOrderHistory() {
   const { user, token } = useContext(AuthContext);
 
   const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [ordersCS, setOrdersCS] = useState([]);
+  const [loadingOrders, setLoadingOrders] = useState(true);
+  const [loadingOrdersCS, setLoadingOrdersCS] = useState(true);
+
   const [filterStatus, setFilterStatus] = useState('all');  // Track current filter
 
   useEffect(() => {
@@ -32,12 +35,37 @@ export default function CustomerOrderHistory() {
       } catch (error) {
         console.error(error);
       } finally {
-        setLoading(false);
+        setLoadingOrders(false);
       }
     }
 
+
+
     if (user && token) {
       fetchOrders();
+    }
+  }, [user, token]);
+
+  useEffect(() => {
+    async function fetchOrdersCS() {
+      try {
+        const res = await fetch('http://localhost:5000/api/ordersCS/myorders', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error('Failed to fetch orders');
+        const data = await res.json();
+        setOrdersCS(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoadingOrdersCS(false);
+      }
+    }
+
+
+
+    if (user && token) {
+      fetchOrdersCS();
     }
   }, [user, token]);
 
@@ -47,6 +75,12 @@ export default function CustomerOrderHistory() {
     const statuses = statusMapping[filterStatus];
     return orders.filter(order => statuses.includes(order.status.toLowerCase()));
   }, [orders, filterStatus]);
+
+  const filteredOrdersCS = React.useMemo(() => {
+    if (filterStatus === 'all') return ordersCS;
+    const statuses = statusMapping[filterStatus];
+    return ordersCS.filter(orderCS => statuses.includes(orderCS.status.toLowerCase()));
+  }, [ordersCS, filterStatus]);
 
   // Capitalize helper
   const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
@@ -112,8 +146,10 @@ export default function CustomerOrderHistory() {
 
       {/* Main Content */}
       <main className="customer-profile-main-content">
+
+        {/* {normal orders} */}
         <div className="profile-card order-history-card">
-          {loading ? (
+          {loadingOrders ? (
             <p>Loading orders...</p>
           ) : filteredOrders.length === 0 ? (
             <p>No orders found.</p>
@@ -138,6 +174,40 @@ export default function CustomerOrderHistory() {
                     </td>
                     <td>{order.date}</td>
                     <td>{order.total}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+        <br />
+        {/* {custom skimboard} */}
+        <div className="profile-card order-history-card">
+          {loadingOrdersCS ? (
+            <p>Loading orders...</p>
+          ) : filteredOrdersCS.length === 0 ? (
+            <p>No orders found.</p>
+          ) : (
+            <table className="order-history-table">
+              <thead>
+                <tr>
+                  <th>Id</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredOrdersCS.map((orderCS) => (
+                  <tr key={orderCS.id}>
+                    <td>{orderCS.id}</td>
+                    <td>
+                      <span className={`status-badge ${orderCS.status.toLowerCase()}`}>
+                        {capitalize(orderCS.status)}
+                      </span>
+                    </td>
+                    <td>{orderCS.date}</td>
+                    <td>{orderCS.total}</td>
                   </tr>
                 ))}
               </tbody>
