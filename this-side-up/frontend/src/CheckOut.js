@@ -36,6 +36,42 @@ export default function CheckOut({ cartItems, handlePlaceOrder }) {
     const [shippingMethod, setShippingMethod] = useState('standard');
     const [nameOnCard, setNameOnCard] = useState('');
 
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) return;
+
+                const res = await fetch('http://localhost:5000/api/user/me', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                if (!res.ok) {
+                    throw new Error('Failed to fetch user profile');
+                }
+
+                const data = await res.json();
+
+                // Fill fields if data exists, fallback to empty string
+                setContactEmail(data.email || '');
+                setCountryRegion(data.address?.country || '');
+                setFirstName(data.firstName || '');
+                setLastName(data.lastName || '');
+                setAddress(data.address?.street || '');
+                setPostalCode(data.address?.zip || '');
+                setPhone(data.phone || '');
+
+            } catch (error) {
+                console.error('Error fetching user profile:', error);
+            }
+        };
+
+        fetchUserProfile();
+    }, []);
+
+
     // Fetch storewide and manual discounts
     useEffect(() => {
         const fetchDiscounts = async () => {
