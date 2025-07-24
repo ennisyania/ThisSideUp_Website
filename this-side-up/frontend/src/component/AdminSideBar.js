@@ -13,7 +13,6 @@ export default function AdminSideBar() {
 
       <div className="sidebar-content">
 
-  {/* Logo at the top */}
   <Link to="/admin">
   <img
     src="/ThisSideupwhitelogoadmin.svg"
@@ -22,7 +21,6 @@ export default function AdminSideBar() {
   />
 </Link>
 
-  {/* Navigation Links */}
   <nav className="admin-nav">
     <Link to="/admin" className="admin-link">
       <img src="/dashboardadminsidebaricon.svg" alt="" className="nav-icon" />
@@ -43,6 +41,9 @@ export default function AdminSideBar() {
     <Link to="/admin/settings" className="admin-link">
       <img src="/settingsadminicon.svg" alt="" className="nav-icon" />
       <span>Settings</span>
+    </Link>
+    <Link to="/">
+      <span>Back to Homepage</span>
     </Link>
   </nav>
 </div>
