@@ -1,12 +1,17 @@
 // src/Profile.js
-import React from 'react';
+
 import { Link, useLocation } from 'react-router-dom';
 import ProfileDefaultContent from './ProfileDefaultContent'; // Import ProfileDefaultContent
 import CustomerOrderHistory from './CustomerOrderHistory'; // Import CustomerOrderHistory
+import React, { useContext } from 'react';
+import AuthContext from './context/AuthContext'; // Adjust the path if needed
+
 import './Profile.css';
 
 export default function Profile() {
     const location = useLocation();
+    const { user } = useContext(AuthContext);
+
 
     // Image URLs
     const sidebarBgUrl = `${process.env.PUBLIC_URL}/images/AdminSidebar.png`;
@@ -58,8 +63,14 @@ export default function Profile() {
                                 Order History
                             </Link>
                             {/* Nested links for Order History sub-sections */}
-                            
+
                         </li>
+                        {user?.role === 'admin' && (
+                            <li>
+                                <Link to="/admin">Admin Page</Link>
+                            </li>
+                        )}
+
                     </ul>
                 </nav>
             </aside>
