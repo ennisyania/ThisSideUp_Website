@@ -120,12 +120,7 @@ function AStoreOrders() {
     loadOrders();
   }, [filters]);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      loadOrders();
-    }, 10000);
-    return () => clearInterval(interval);
-  }, []);
+
 
   const parseTotal = (totalStr) => {
     if (!totalStr) return 0;
@@ -133,7 +128,10 @@ function AStoreOrders() {
     return isNaN(num) ? 0 : num;
   };
 
-  const totalOrders = orders.length;
+  const totalOrders = orders.filter(
+    o => o.status !== 'delivered' && o.status !== 'refunded'
+  ).length;
+
   const avgOrderValue = totalOrders
     ? (orders.reduce((sum, o) => sum + parseTotal(o.total), 0) / totalOrders).toFixed(2)
     : '0.00';
@@ -195,7 +193,7 @@ function AStoreOrders() {
         <div className="kpi-card purple-border">
           <div className="kpi-icon purple-bg"><Package /></div>
           <div>
-            <h4>Total Orders</h4>
+            <h4>Total Active Orders</h4>
             <p>{totalOrders}</p>
           </div>
         </div>
@@ -424,14 +422,11 @@ function ACustoms() {
     loadOrders();
   }, [filters]);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      loadOrders();
-    }, 10000);
-    return () => clearInterval(interval);
-  }, []);
 
-  const totalOrders = orders.length;
+  const totalOrders = orders.filter(
+    o => o.status !== 'delivered' && o.status !== 'refunded'
+  ).length;
+
   const avgOrderValue = totalOrders
     ? (orders.reduce((sum, o) => sum + parseFloat(o.total.replace(/[^0-9.-]+/g, '')), 0) / totalOrders).toFixed(2)
     : '0.00';
@@ -496,7 +491,7 @@ function ACustoms() {
         <div className="kpi-card purple-border">
           <div className="kpi-icon purple-bg"><Package /></div>
           <div>
-            <h4>Total Orders</h4>
+            <h4>Total Active Orders</h4>
             <p>{totalOrders}</p>
           </div>
         </div>
