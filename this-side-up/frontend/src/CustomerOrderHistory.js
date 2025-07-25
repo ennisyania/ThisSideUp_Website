@@ -171,6 +171,7 @@ export default function CustomerOrderHistory() {
                 Order History
               </Link>
               <ul className="order-history-subnav">
+
                 {['pending', 'completed', 'cancelled'].map((status) => (
                   <li key={status}>
                     <Link
@@ -186,6 +187,7 @@ export default function CustomerOrderHistory() {
                     </Link>
                   </li>
                 ))}
+
               </ul>
             </li>
           </ul>

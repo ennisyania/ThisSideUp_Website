@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './Profile.css';
@@ -265,6 +266,7 @@ export default function ProfileDefaultContent() {
       </div>
 
       {message && <div className="form-message">{message}</div>}
+
     </>
   );
 }
