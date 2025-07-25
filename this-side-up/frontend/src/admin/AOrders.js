@@ -398,7 +398,7 @@ function ACustoms() {
       if (filters.dateRange) params.set('dateRange', filters.dateRange);
 
       // Note: your backend may need support for filtering on /myorders or do client-side filtering
-      const res = await fetch(`http://localhost:5000/api/ordersCS/myorders?${params.toString()}`, {
+      const res = await fetch(`http://localhost:5000/api/ordersCS/allOrders?${params.toString()}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -618,7 +618,18 @@ function ACustoms() {
             <p><strong>Subtotal:</strong> ${(selectedOrder.subtotal || 0).toFixed(2)}</p>
             <p><strong>Shipping Cost:</strong> ${(selectedOrder.shippingCost || 0).toFixed(2)}</p>
 
-            <p><strong>Total:</strong> {selectedOrder.total}</p>
+            {selectedOrder.discountCode && (
+              <>
+                <p><strong>Discount Code:</strong> {selectedOrder.discountCode}</p>
+                <p><strong>Applied Discount:</strong> ${selectedOrder.appliedDiscount?.toFixed(2) || '0.00'}</p>
+              </>
+            )}
+
+            <p><strong>Total:</strong> ${(selectedOrder.total || 0)}</p>
+
+            <p><strong>Subscribed to News & Offers:</strong> {selectedOrder.newsAndOffers ? 'Yes' : 'No'}</p>
+
+
             <p><strong>Date:</strong> {new Date(selectedOrder.date).toLocaleString('en-SG', {
               day: 'numeric',
               month: 'long',
@@ -628,16 +639,17 @@ function ACustoms() {
               hour12: false
             })}</p>
 
+
             <p><strong>Status:</strong> {selectedOrder.status.charAt(0).toUpperCase() + selectedOrder.status.slice(1)}</p>
 
             {/* Show Form Details */}
             <h3>Skimboard Details</h3>
-            <p><strong>Shape:</strong> {selectedOrder.form?.shape || '-'}</p>
-            <p><strong>Thickness:</strong> {selectedOrder.form?.thickness || '-'}</p>
-            <p><strong>Length:</strong> {selectedOrder.form?.length || '-'}</p>
-            <p><strong>Rocker Profile:</strong> {selectedOrder.form?.rockerProfile || '-'}</p>
-            <p><strong>Deck Channels:</strong> {selectedOrder.form?.deckChannels || '-'}</p>
-            <p><strong>Extra Details:</strong> {selectedOrder.form?.extraDetails || '-'}</p>
+            <p><strong>Shape:</strong> {selectedOrder.shape || '-'}</p>
+            <p><strong>Thickness:</strong> {selectedOrder.thickness || '-'}</p>
+            <p><strong>Length:</strong> {selectedOrder.length || '-'}</p>
+            <p><strong>Rocker Profile:</strong> {selectedOrder.rockerProfile || '-'}</p>
+            <p><strong>Deck Channels:</strong> {selectedOrder.deckChannels || '-'}</p>
+            <p><strong>Extra Details:</strong> {selectedOrder.extraDetails || '-'}</p>
 
             {/* Show Images */}
             <h3>Images</h3>
