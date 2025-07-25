@@ -7,6 +7,7 @@ import {
 import React, { useState, useContext, useEffect } from 'react';
 import './CheckOut.css';
 
+
 import AuthContext from './context/AuthContext'; // Import the context, not the provider
 
 export default function CheckOut({ cartItems, handlePlaceOrder }) {

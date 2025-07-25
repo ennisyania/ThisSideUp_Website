@@ -9,21 +9,45 @@ import { getCollection } from './products.js'; // adjust path as needed
 
 const router = express.Router();
 
-// Create new order
+
+
 router.post('/', requireAuth, async (req, res) => {
   try {
     if (!req.user) {
       return res.status(401).json({ error: 'User not found in request, authorization denied' });
     }
+
     const userId = req.user._id;
     const order = new Order({ ...req.body, userId });
     await order.save();
+
+    // === REDUCE PRODUCT QUANTITIES HERE ===
+    const productCollection = await getCollection();
+
+    for (const item of req.body.items) {
+      const product = await productCollection.findOne({ productId: item.productId });
+      if (!product) continue;
+
+      const sizeIndex = product.sizes.indexOf(item.size);
+      if (sizeIndex !== -1) {
+        const updatedQuantities = [...product.quantities];
+        updatedQuantities[sizeIndex] = Math.max(updatedQuantities[sizeIndex] - item.quantity, 0);
+
+        await productCollection.updateOne(
+          { productId: item.productId },
+          { $set: { quantities: updatedQuantities } }
+        );
+      }
+    }
+
+
     res.status(201).json({ message: 'Order saved', orderId: order._id });
   } catch (error) {
     console.error('Error saving order:', error);
     res.status(500).json({ error: 'Failed to save order' });
   }
 });
+
 
 // Get all orders with optional filters
 // Consider protecting this route with requireAuth or admin middleware
