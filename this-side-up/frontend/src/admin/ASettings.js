@@ -578,7 +578,7 @@ function DiscountsForm() {
           fontWeight: 500,
         }}
       >
-        Value (%)
+        Value ($)
         <input
           type="number"
           min={1}
@@ -633,7 +633,7 @@ function DiscountsForm() {
             }}
           >
             <span>
-              {c.code} - {c.value}% off
+              {c.code} - ${c.value} off
             </span>
             <button
               onClick={() => deleteCode(c.code)}
