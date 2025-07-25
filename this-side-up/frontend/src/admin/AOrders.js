@@ -13,7 +13,7 @@ import './AAdmin.css';
 const STATUSES = ['pending', 'shipped', 'delivered', 'refunded'];
 
 export default function AOrders() {
-  const [active, setActive] = useState('Orders');
+  const [active, setActive] = useState('Store');
 
   const tabStyle = {
     padding: '0.6rem 1.2rem',
@@ -60,7 +60,7 @@ export default function AOrders() {
           // remove border and background or keep as needed
         }}
       >
-        {['Orders', 'Customs'].map(tab => (
+        {['Store', 'Customs'].map(tab => (
           <button
             key={tab}
             onClick={() => setActive(tab)}
@@ -72,14 +72,14 @@ export default function AOrders() {
       </nav>
 
       <div>
-        {active === 'Orders' && <ABasicOrders />}
+        {active === 'Store' && <AStoreOrders />}
         {active === 'Customs' && <ACustoms />}
       </div>
     </div>
   );
 }
 
-function ABasicOrders() {
+function AStoreOrders() {
   const [orders, setOrders] = useState([]);
   const [filters, setFilters] = useState({ status: 'all', dateRange: 'all' });
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -182,7 +182,7 @@ function ABasicOrders() {
   return (
     <div className="admin-page orders-page">
       <h1 className="page-title">
-        <Package className="page-icon" /> Orders
+        <Package className="page-icon" />Store Orders
       </h1>
 
       {loading && (
