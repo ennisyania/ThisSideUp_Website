@@ -1,0 +1,115 @@
+.tryouts-top {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.tryouts-image {
+  width: 40%;
+  height: auto;
+  object-fit: cover;
+  padding: 2rem;
+}
+
+.tryouts-right {
+  flex: 1;
+  padding-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.title {
+  font-size: 4.5rem;
+  font-weight: 800;
+  text-align: left;
+}
+
+.subtitle {
+  font-size: 2rem;
+  font-weight: 700;
+  text-shadow: 2px 2px #eee;
+  padding-left: 2rem;
+}
+
+.free-tag {
+  color: #E86540;
+  font-weight: bold;
+  font-style: italic;
+  font-size: 1.5rem;
+  padding-left: 4rem;
+}
+
+.free-drink {
+  font-weight: bold;
+  padding-left: 2rem;
+}
+
+.price-note {
+  font-size: 1rem;
+  padding-left: 8rem;
+}
+
+.description {
+  font-size: 1.2rem;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.schedule-pricing {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  border-top: 1px solid #aaa;
+  padding-top: 1rem;
+  padding-left: 2rem;
+  gap: 4rem;
+}
+
+.schedule, .pricing {
+  flex: 1 1 45%;
+  font-size: 1.4rem;
+}
+
+.pricing .note {
+  font-size: 1rem;
+  color: #666;
+}
+
+.bottom-part {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-left: 2rem;
+}
+
+.contact-button {
+  padding: 0.75rem 1.5rem;
+  background-color: #E86540;
+  color: white;
+  font-size: 1.25rem;
+  width: fit-content;
+  border: none;
+  cursor: pointer;
+  transform: skew(-10deg);
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.contact-button span {
+  display: inline-block;
+  transform: skew(10deg);
+}
+
+.contact-button:hover {
+  background-color: #d14d1f;
+}
+
+.disclaimer {
+  font-size: 0.75rem;
+  color: #555;
+  max-width: 50%;
+}
