@@ -73,10 +73,13 @@ router.get('/allOrders', requireAuth, async (req, res) => {
     }));
 
     res.json(formatted);
+    console.log('Orders response:', data);
+
   } catch (error) {
     console.error('Failed to fetch orders:', error);
-    res.status(500).json({ error: 'Failed to fetch orders' });
+    res.status(500).json([]); 
   }
+
 });
 
 // Update order status (non-refund)

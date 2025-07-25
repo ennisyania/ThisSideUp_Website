@@ -25,7 +25,12 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000',       // Your React app origin
+  allowedHeaders: ['Content-Type', 'Authorization'], // explicitly allow Authorization header
+  credentials: true,                      // if you want cookies or auth credentials
+}));
+
 app.use(express.json());
 
 // Configure multer to store files locally (in 'uploads' folder)

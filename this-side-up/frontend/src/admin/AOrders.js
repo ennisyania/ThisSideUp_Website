@@ -21,21 +21,36 @@ export default function AOrders() {
   const [confirming, setConfirming] = useState(false);
   const [updating, setUpdating] = useState(false);
 
-  async function loadOrders() {
-    setLoading(true);
-    try {
-      const params = new URLSearchParams();
-      if (filters.status !== 'all') params.set('status', filters.status);
-      if (filters.dateRange) params.set('dateRange', filters.dateRange);
-      const res = await fetch(`http://localhost:5000/api/orders/allOrders?${params.toString()}`);
-      const data = await res.json();
+async function loadOrders() {
+  setLoading(true);
+  try {
+    const token = localStorage.getItem('token'); // <-- get the token
+    const params = new URLSearchParams();
+    if (filters.status !== 'all') params.set('status', filters.status);
+    if (filters.dateRange) params.set('dateRange', filters.dateRange);
+
+    const res = await fetch(`http://localhost:5000/api/orders/allOrders?${params.toString()}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,  // <-- pass token here
+      },
+    });
+
+    const data = await res.json();
+
+    if (Array.isArray(data)) {
       setOrders(data);
-    } catch (e) {
-      console.error('Failed to load orders', e);
-    } finally {
-      setLoading(false);
+    } else {
+      console.error('Unexpected response format:', data);
+      setOrders([]);
     }
+  } catch (e) {
+    console.error('Failed to load orders', e);
+    setOrders([]);
+  } finally {
+    setLoading(false);
   }
+}
+
 
   useEffect(() => {
     loadOrders();
