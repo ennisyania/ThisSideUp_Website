@@ -71,7 +71,37 @@ router.get('/myorders', requireAuth, async (req, res) => {
     }
     const userId = req.user._id;
 
-    const orders = await OrderCS.find({ userId }).sort({ placedAt: -1 }).limit(100);
+    const { status, dateRange } = req.query;
+
+    // Build the query filter object
+    const filter = { userId };
+
+    // Filter by status if provided and not 'all'
+    if (status && status !== 'all') {
+      filter.orderStatus = status;
+    }
+
+    // Filter by dateRange
+    if (dateRange && dateRange !== 'all') {
+      const now = new Date();
+      let startDate;
+
+      if (dateRange === 'last7') {
+        startDate = new Date(now);
+        startDate.setDate(now.getDate() - 7);
+      } else if (dateRange === 'last30') {
+        startDate = new Date(now);
+        startDate.setDate(now.getDate() - 30);
+      } else if (dateRange === 'thisMonth') {
+        startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+      }
+
+      if (startDate) {
+        filter.placedAt = { $gte: startDate, $lte: now };
+      }
+    }
+
+    const orders = await OrderCS.find(filter).sort({ placedAt: -1 }).limit(100);
 
     const formatted = orders.map(o => ({
       id: o._id.toString(),
@@ -85,8 +115,22 @@ router.get('/myorders', requireAuth, async (req, res) => {
       deckChannels: o.form.deckChannels,
       extraDetails: o.form.extraDetails,
       images: o.images,
-
+      firstName: o.firstName,
+      lastName: o.lastName,
+      contactEmail: o.contactEmail,
+      phone: o.phone,
+      address: o.address,
+      aptSuiteEtc: o.aptSuiteEtc,
+      postalCode: o.postalCode,
+      countryRegion: o.countryRegion,
+      shippingMethod: o.shippingMethod,
+      discountCode: o.discountCode,
+      appliedDiscount: o.appliedDiscount,
+      subtotal: o.subtotal,
+      shippingCost: o.shippingCost,
+      paymentIntentId: o.paymentIntentId,
     }));
+
 
     res.json(formatted);
   } catch (error) {
@@ -94,6 +138,7 @@ router.get('/myorders', requireAuth, async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch user orders' });
   }
 });
+
 
 
 
