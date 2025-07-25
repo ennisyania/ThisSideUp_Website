@@ -43,7 +43,7 @@ export default function ProductDetail({ onAddToCart }) {
     if (!canAddToCart) return;
 
     onAddToCart({
-      id: product._id || product.productId || productId,
+      id: product.productId || productId,
       title: product.name,
       price,
       quantity,

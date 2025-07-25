@@ -59,8 +59,7 @@ import AdminSettings from './admin/ASettings.js';
 
 
 
-const stripePromise = loadStripe('pk_test_51RmwlwRuckXf5vemNjbtW6va56XmNAWtu5QkaTVuuP84itTAQOFS7T5IOhxjV8WEtPxsIh18NATN5Zvt0NsvTXjK00qkuk3udr'); // Replace with your real Stripe publishable key
-
+const stripePromise = loadStripe('pk_test_51RmwlwRuckXf5vemNjbtW6va56XmNAWtu5QkaTVuuP84itTAQOFS7T5IOhxjV8WEtPxsIh18NATN5Zvt0NsvTXjK00qkuk3udr'); 
 
 function App() {
   // Global cart state
