@@ -10,7 +10,6 @@ import { getCollection } from './products.js'; // adjust path as needed
 const router = express.Router();
 
 
-
 router.post('/', requireAuth, async (req, res) => {
   try {
     if (!req.user) {
