@@ -5,7 +5,7 @@ import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-import { getCollection } from './products.js'; // adjust path as needed
+import { getCollection } from './products.js';
 
 const router = express.Router();
 
@@ -48,16 +48,13 @@ router.post('/', requireAuth, async (req, res) => {
 });
 
 
-// Get all orders with optional filters
-// Consider protecting this route with requireAuth or admin middleware
+
 router.get('/allOrders', requireAuth, async (req, res) => {
   try {
     const { status, dateRange } = req.query;
     const query = {};
 
-    if (status && status !== 'all') {
-      query.orderStatus = status.toLowerCase();
-    }
+    if (status && status !== 'all') query.orderStatus = status.toLowerCase();
 
     if (dateRange && dateRange !== 'all') {
       let startDate;
@@ -67,13 +64,30 @@ router.get('/allOrders', requireAuth, async (req, res) => {
       else if (dateRange === 'last30') startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
       else if (dateRange === 'thisMonth') startDate = new Date(now.getFullYear(), now.getMonth(), 1);
 
-      if (startDate) {
-        query.placedAt = { $gte: startDate };
-      }
+      if (startDate) query.placedAt = { $gte: startDate };
     }
 
     const orders = await Order.find(query).sort({ placedAt: -1 }).limit(100);
 
+    // Get product collection
+    const productCollection = await getCollection('products');
+
+    // Fetch all unique productIds from the orders
+    const allProductIds = [...new Set(orders.flatMap(order => order.items.map(i => i.productId)))];
+
+    // Find products in one batch query
+    const products = await productCollection.find({ productId: { $in: allProductIds } }).toArray();
+
+    // Map productId -> product details
+    const productMap = {};
+    products.forEach(p => {
+      productMap[p.productId] = {
+        name: p.name,
+        imageurl: p.imageurl,
+      };
+    });
+
+    // Format orders for response
     const formatted = orders.map(o => ({
       id: o._id.toString(),
       customer: `${o.firstName} ${o.lastName}`,
@@ -83,27 +97,42 @@ router.get('/allOrders', requireAuth, async (req, res) => {
       aptSuiteEtc: o.aptSuiteEtc,
       postalCode: o.postalCode,
       phone: o.phone,
-
       shippingMethod: o.shippingMethod,
       discountCode: o.discountCode,
       appliedDiscount: o.appliedDiscount,
       subtotal: Number(o.subtotal),
       shippingCost: Number(o.shippingCost),
-
-      date: o.placedAt.toISOString(),  // full ISO date string
+      date: o.placedAt.toISOString(),
       status: o.orderStatus,
-      total: `$${(o.total || 0).toFixed(2)}`,
+      items: o.items.map(item => {
+        const plainItem = item.toObject ? item.toObject() : item;
+        const product = productMap[plainItem.productId];
+        const sizeIndex = product?.sizes?.indexOf(plainItem.size);
+        const unitPrice = (sizeIndex !== -1 && sizeIndex !== undefined)
+          ? product.price[sizeIndex]
+          : null;
+
+        return {
+          productId: plainItem.productId,
+          size: plainItem.size,
+          quantity: plainItem.quantity,
+          name: product?.name || 'Unknown Product',
+          imageurl: product?.imageurl || null,
+          unitPrice, 
+        };
+
+      }),
+
     }));
 
     res.json(formatted);
-    console.log('Orders response:', data);
-
   } catch (error) {
     console.error('Failed to fetch orders:', error);
-    res.status(500).json([]); 
+    res.status(500).json([]);
   }
-
 });
+
+
 
 // Update order status (non-refund)
 router.patch('/allOrders/:id', requireAuth, async (req, res) => {

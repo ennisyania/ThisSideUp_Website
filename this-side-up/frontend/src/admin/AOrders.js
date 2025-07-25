@@ -323,6 +323,20 @@ function AStoreOrders() {
 
             <p><strong>Status:</strong> {selectedOrder.status.charAt(0).toUpperCase() + selectedOrder.status.slice(1)}</p>
 
+            <p><strong>Items:</strong></p>
+            <ul>
+              {selectedOrder.items?.map((item, idx) => (
+                <li key={idx} className="order-item">
+                  {item.imageurl && (
+                    <img src={item.imageurl} alt={item.name} width="40" style={{ marginRight: '8px' }} />
+                  )}
+                  <strong>{item.name}</strong> — Size: {item.size}, Qty: {item.quantity}
+                </li>
+              ))}
+            </ul>
+
+
+
             <div className="modal-actions">
               <label htmlFor="status-select"><strong>Update Status:</strong></label>
               <select
