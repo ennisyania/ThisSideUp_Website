@@ -6,25 +6,42 @@ import axios from 'axios';
 export default function ASettings() {
   const [active, setActive] = useState('Homepage');
 
-  return (
-    <div className="admin-page settings-page">
-      <h1 className="page-title">⚙️ Site Settings</h1>
+  const tabStyle = {
+    padding: '0.6rem 1.2rem',
+    border: 'none',
+    backgroundColor: '#e0e0e0',
+    color: '#333',
+    fontWeight: '500',
+    borderRadius: '6px',
+    cursor: 'pointer',
+    transition: 'background-color 0.3s ease',
+  };
+
+  const activeTabStyle = {
+    ...tabStyle,
+    backgroundColor: '#333',
+    color: 'white',
+  };
+
 
       <nav className="settings-tabs">
+
 
         {['Homepage', 'Admins', 'Discounts'].map(tab => (
 
           <button
             key={tab}
             onClick={() => setActive(tab)}
-            className={active === tab ? 'tab-active' : ''}
+            style={active === tab ? activeTabStyle : tabStyle}
           >
             {tab}
           </button>
         ))}
       </nav>
 
+
       <div className="settings-content">
+
 
         {active === 'Homepage' && <HomepageForm />}
         {active === 'Admins' && <AdminForm />}
@@ -46,6 +63,7 @@ export default function ASettings() {
 
 
 
+
 function HomepageForm() {
   const [heroImages, setHeroImages] = useState([]);
   const [announcement, setAnnouncement] = useState('');
@@ -53,7 +71,6 @@ function HomepageForm() {
   const [uploadingIndex, setUploadingIndex] = useState(null); // Track which image is uploading
 
   useEffect(() => {
-    // Load existing homepage settings on mount
     async function fetchSettings() {
       try {
         const token = localStorage.getItem('token');
@@ -78,7 +95,7 @@ function HomepageForm() {
     setHeroImages(hs => hs.map(h => (h.id === id ? { ...h, imageUrl: val } : h)));
   };
 
-  const removeHeroImage = (id) => {
+  const removeHeroImage = id => {
     setHeroImages(hs => hs.filter(h => h.id !== id));
   };
 
@@ -125,18 +142,71 @@ function HomepageForm() {
   }
 
   return (
-    <section className="settings-section">
-      <h3 className="mt-4">Hero Carousel Images</h3>
+    <section
+      style={{
+        backgroundColor: 'white',
+        padding: '1.5rem',
+        borderRadius: '8px',
+        boxShadow: '0 0 10px rgba(0,0,0,0.06)',
+        maxWidth: '100%',
+        marginBottom: '2rem',
+      }}
+    >
+      <h3 style={{ fontSize: '1.25rem', marginBottom: '1rem', color: '#222' }}>Hero Carousel Images</h3>
       {heroImages.map(h => (
-        <div key={h.id} className="banner-row" style={{ alignItems: 'center' }}>
+        <div
+          key={h.id}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            marginBottom: '0.75rem',
+          }}
+        >
           {h.imageUrl ? (
-            <img src={h.imageUrl} alt="Hero" style={{ maxHeight: 80, marginRight: 8 }} />
+            <img
+              src={h.imageUrl}
+              alt="Hero"
+              style={{ maxHeight: 80, marginRight: 8, borderRadius: 6, objectFit: 'cover' }}
+            />
           ) : null}
-          <input type="file" accept="image/*" onChange={e => handleUploadImage(e, h.id)} disabled={uploadingIndex === h.id} />
-          <button onClick={() => removeHeroImage(h.id)} disabled={uploadingIndex === h.id}>Remove</button>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={e => handleUploadImage(e, h.id)}
+            disabled={uploadingIndex === h.id}
+            style={{ marginRight: '8px' }}
+          />
+          <button
+            onClick={() => removeHeroImage(h.id)}
+            disabled={uploadingIndex === h.id}
+            style={{
+              backgroundColor: '#e74c3c',
+              color: 'white',
+              border: 'none',
+              padding: '0.4rem 0.7rem',
+              borderRadius: '4px',
+              cursor: uploadingIndex === h.id ? 'not-allowed' : 'pointer',
+            }}
+          >
+            Remove
+          </button>
         </div>
       ))}
-      <button onClick={addHeroImage} disabled={uploadingIndex !== null}>Add Hero Image</button>
+      <button
+        onClick={addHeroImage}
+        disabled={uploadingIndex !== null}
+        style={{
+          backgroundColor: '#BE40E8',
+          color: 'white',
+          border: 'none',
+          padding: '0.6rem 1.2rem',
+          borderRadius: '6px',
+          cursor: uploadingIndex !== null ? 'not-allowed' : 'pointer',
+          marginBottom: '1.5rem',
+        }}
+      >
+        Add Hero Image
+      </button>
 
 
       <h3 className="mt-4">Announcement Bar (Hero Text)</h3>
@@ -162,6 +232,7 @@ function HomepageForm() {
 
 
 
+
 function AdminForm() {
   const [admins, setAdmins] = useState([]);
   const [email, setEmail] = useState('');
@@ -172,11 +243,11 @@ function AdminForm() {
 
   const fetchAdmins = async () => {
     try {
-      const token = localStorage.getItem('token'); // adjust if you're using context
+      const token = localStorage.getItem('token');
       const res = await axios.get('http://localhost:5000/api/user/admins', {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
       setAdmins(res.data);
     } catch (err) {
@@ -184,17 +255,20 @@ function AdminForm() {
     }
   };
 
-
   const addAdmin = async () => {
     if (!email) return alert('Email is required');
 
     try {
       const token = localStorage.getItem('token');
-      await axios.put('http://localhost:5000/api/user/admins/promote', { email }, {
-        headers: {
-          Authorization: `Bearer ${token}`
+      await axios.put(
+        'http://localhost:5000/api/user/admins/promote',
+        { email },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      });
+      );
       setEmail('');
       fetchAdmins();
     } catch (err) {
@@ -202,15 +276,13 @@ function AdminForm() {
     }
   };
 
-
-
-  const removeAdmin = async (id) => {
+  const removeAdmin = async id => {
     try {
       const token = localStorage.getItem('token');
       await axios.delete(`http://localhost:5000/api/user/admins/${id}`, {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
       fetchAdmins();
     } catch (err) {
@@ -218,22 +290,101 @@ function AdminForm() {
     }
   };
 
-
   return (
-    <section className="settings-section">
-      <h3>Add New Admin</h3>
+    <section
+      style={{
+        backgroundColor: 'white',
+        padding: '1.5rem',
+        borderRadius: '8px',
+        boxShadow: '0 0 10px rgba(0,0,0,0.06)',
+        maxWidth: '100%',
+        marginBottom: '2rem',
+      }}
+    >
+      <h3 style={{ fontSize: '1.25rem', marginBottom: '1rem', color: '#222' }}>Add New Admin</h3>
 
-      <label>Email
-        <input type="email" value={email} onChange={e => setEmail(e.target.value)} />
+      <label
+        style={{
+          display: 'block',
+          marginBottom: '1rem',
+          fontWeight: 500,
+        }}
+      >
+        Email
+        <input
+          type="email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          style={{
+            width: '100%',
+            padding: '0.5rem',
+            fontSize: '1rem',
+            borderRadius: '5px',
+            border: '1px solid #ccc',
+            marginTop: '0.3rem',
+          }}
+        />
       </label>
-      <button onClick={addAdmin}>Add Admin</button>
+      <button
+        onClick={addAdmin}
+        style={{
+          backgroundColor: '#BE40E8',
+          color: 'white',
+          border: 'none',
+          padding: '0.6rem 1.3rem',
+          borderRadius: '6px',
+          cursor: 'pointer',
+          fontWeight: '600',
+        }}
+      >
+        Add Admin
+      </button>
 
-      <h3 className="mt-4">Current Admins</h3>
-      <ul className="admin-list">
+      <h3
+        style={{
+          fontSize: '1.25rem',
+          marginTop: '2rem',
+          marginBottom: '1rem',
+          color: '#222',
+        }}
+      >
+        Current Admins
+      </h3>
+      <ul
+        style={{
+          listStyle: 'none',
+          paddingLeft: 0,
+          margin: 0,
+          maxHeight: '300px',
+          overflowY: 'auto',
+        }}
+      >
         {admins.map(admin => (
-          <li key={admin._id}>
+          <li
+            key={admin._id}
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              padding: '0.5rem 0',
+              borderBottom: '1px solid #eee',
+            }}
+          >
             <span>{admin.email}</span>
-            <button onClick={() => removeAdmin(admin._id)} className="ml-2">Remove</button>
+            <button
+              onClick={() => removeAdmin(admin._id)}
+              style={{
+                backgroundColor: '#e74c3c',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                padding: '0.3rem 0.7rem',
+                cursor: 'pointer',
+                fontWeight: '600',
+              }}
+            >
+              Remove
+            </button>
           </li>
         ))}
       </ul>
@@ -266,11 +417,15 @@ function DiscountsForm() {
   const saveSiteDiscount = async () => {
     try {
       const token = localStorage.getItem('token');
-      await axios.post('http://localhost:5000/api/settings/discounts', {
-        siteDiscount
-      }, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.post(
+        'http://localhost:5000/api/settings/discounts',
+        {
+          siteDiscount,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       alert('Storewide discount saved');
     } catch (err) {
       alert('Failed to save storewide discount');
@@ -292,7 +447,7 @@ function DiscountsForm() {
     }
   };
 
-  const deleteCode = async (code) => {
+  const deleteCode = async code => {
     try {
       const token = localStorage.getItem('token');
       await axios.delete(`http://localhost:5000/api/settings/discount-codes/${code}`, {
@@ -305,43 +460,158 @@ function DiscountsForm() {
   };
 
   return (
-    <section className="settings-section">
-      <h3>Storewide Discount</h3>
-      <label>Sitewide Discount (%)
+    <section
+      style={{
+        backgroundColor: 'white',
+        padding: '1.5rem',
+        borderRadius: '8px',
+        boxShadow: '0 0 10px rgba(0,0,0,0.06)',
+        maxWidth: '100%',
+        marginBottom: '2rem',
+      }}
+    >
+      <h3 style={{ fontSize: '1.25rem', marginBottom: '1rem', color: '#222' }}>Storewide Discount</h3>
+      <label
+        style={{
+          display: 'block',
+          marginBottom: '1rem',
+          fontWeight: 500,
+        }}
+      >
+        Sitewide Discount (%)
         <input
           type="number"
           min={0}
           max={100}
           value={siteDiscount}
           onChange={e => setSiteDiscount(Number(e.target.value))}
+          style={{
+            width: '100%',
+            padding: '0.5rem',
+            fontSize: '1rem',
+            borderRadius: '5px',
+            border: '1px solid #ccc',
+            marginTop: '0.3rem',
+          }}
         />
       </label>
-      <button onClick={saveSiteDiscount}>Save Sitewide Discount</button>
+      <button
+        onClick={saveSiteDiscount}
+        style={{
+          backgroundColor: '#BE40E8',
+          color: 'white',
+          border: 'none',
+          padding: '0.6rem 1.3rem',
+          borderRadius: '6px',
+          cursor: 'pointer',
+          fontWeight: '600',
+          marginBottom: '2rem',
+        }}
+      >
+        Save Sitewide Discount
+      </button>
 
-      <h3 className="mt-4">Discount Codes</h3>
-      <label>Code
+      <h3 style={{ fontSize: '1.25rem', marginBottom: '1rem', color: '#222' }}>Discount Codes</h3>
+      <label
+        style={{
+          display: 'block',
+          marginBottom: '0.5rem',
+          fontWeight: 500,
+        }}
+      >
+        Code
         <input
           type="text"
           value={newCode.code}
           onChange={e => setNewCode(c => ({ ...c, code: e.target.value.toUpperCase() }))}
+          style={{
+            width: '100%',
+            padding: '0.5rem',
+            fontSize: '1rem',
+            borderRadius: '5px',
+            border: '1px solid #ccc',
+            marginTop: '0.3rem',
+          }}
         />
       </label>
-      <label>Value (%)
+      <label
+        style={{
+          display: 'block',
+          marginBottom: '1rem',
+          fontWeight: 500,
+        }}
+      >
+        Value (%)
         <input
           type="number"
           min={1}
           max={100}
           value={newCode.value}
           onChange={e => setNewCode(c => ({ ...c, value: Number(e.target.value) }))}
+          style={{
+            width: '100%',
+            padding: '0.5rem',
+            fontSize: '1rem',
+            borderRadius: '5px',
+            border: '1px solid #ccc',
+            marginTop: '0.3rem',
+          }}
         />
       </label>
-      <button onClick={addDiscountCode}>Add Code</button>
+      <button
+        onClick={addDiscountCode}
+        style={{
+          backgroundColor: '#BE40E8',
+          color: 'white',
+          border: 'none',
+          padding: '0.6rem 1.3rem',
+          borderRadius: '6px',
+          cursor: 'pointer',
+          fontWeight: '600',
+          marginBottom: '1.5rem',
+        }}
+      >
+        Add Code
+      </button>
 
-      <ul className="admin-list">
+      <ul
+        style={{
+          listStyle: 'none',
+          paddingLeft: 0,
+          margin: 0,
+          maxHeight: '300px',
+          overflowY: 'auto',
+          borderTop: '1px solid #eee',
+        }}
+      >
         {codes.map(c => (
-          <li key={c.code}>
-            <span>{c.code} - {c.value}% off</span>
-            <button onClick={() => deleteCode(c.code)}>Remove</button>
+          <li
+            key={c.code}
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              padding: '0.5rem 0',
+              borderBottom: '1px solid #eee',
+            }}
+          >
+            <span>
+              {c.code} - {c.value}% off
+            </span>
+            <button
+              onClick={() => deleteCode(c.code)}
+              style={{
+                backgroundColor: '#e74c3c',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                padding: '0.3rem 0.7rem',
+                cursor: 'pointer',
+                fontWeight: '600',
+              }}
+            >
+              Remove
+            </button>
           </li>
         ))}
       </ul>

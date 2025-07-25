@@ -255,7 +255,7 @@ export default function AProducts() {
     setSaving(true);
     try {
       const res = await fetch(`http://localhost:5000/api/products/${selectedProduct._id}`, {
-        method: 'PUT', 
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(editData),
       });
@@ -305,7 +305,16 @@ export default function AProducts() {
       </h1>
 
       <button
-        style={{ marginBottom: '1rem', padding: '0.5rem 1rem', fontSize: '1rem' }}
+        style={{
+          marginBottom: '1rem',
+          padding: '0.5rem 1rem',
+          fontSize: '1rem',
+          backgroundColor: '#BE40E8',
+          color: 'white',
+          border: 'none',
+          borderRadius: '6px',
+          cursor: 'pointer'
+        }}
         onClick={() => setAddingNew(true)}
       >
         + Add New Product
@@ -334,7 +343,7 @@ export default function AProducts() {
         </div>
       )}
 
-      <table className="orders-table">
+      <table className="table-wrapper">
         <thead>
           <tr>
             <th>ID</th>
@@ -382,46 +391,71 @@ export default function AProducts() {
               ✕
             </button>
 
-            <h2>Edit Product: {selectedProduct.name}</h2>
+            <h2 style={{ fontSize: '1.8rem', marginBottom: '1rem' }}>
+              Edit Product: {selectedProduct.name}
+            </h2>
 
             {/* Name */}
-            <label>
+            <label style={{ display: 'block', marginBottom: '1rem' }}>
               Name:<br />
               <input
                 type="text"
                 value={editData.name}
                 onChange={e => handleEditChange('name', e.target.value)}
                 disabled={saving}
+                style={{
+                  width: '100%',
+                  padding: '0.5rem',
+                  fontSize: '1rem',
+                  borderRadius: '4px',
+                  border: '1px solid #ccc',
+                  marginTop: '0.25rem'
+                }}
               />
             </label>
 
-            {/* Show current image */}
+            {/* Current Image */}
             <img
               src={editData.imageurl || 'placeholder-image-url.jpg'}
               alt={editData.name}
-              style={{ width: '100%', maxHeight: '300px', objectFit: 'cover', borderRadius: '8px' }}
+              style={{
+                width: '100%',
+                maxHeight: '300px',
+                objectFit: 'cover',
+                borderRadius: '8px',
+                marginTop: '1rem'
+              }}
             />
 
-            {/* Upload new image */}
-            <label style={{ display: 'block', marginTop: '1rem' }}>
+            {/* Upload New Image */}
+            <label style={{ display: 'block', marginTop: '1rem', marginBottom: '1rem' }}>
               Change Image:<br />
               <input
                 type="file"
                 accept="image/*"
                 onChange={e => handleImageUpload(e, false)}
                 disabled={uploadingImage || saving}
+                style={{ marginTop: '0.25rem' }}
               />
             </label>
 
             {uploadingImage && <p>Uploading image...</p>}
 
             {/* Category */}
-            <label style={{ marginTop: '1rem' }}>
+            <label style={{ display: 'block', marginTop: '1rem', marginBottom: '1rem' }}>
               Category:<br />
               <select
                 value={editData.category}
                 onChange={e => handleEditChange('category', e.target.value)}
                 disabled={saving}
+                style={{
+                  width: '100%',
+                  padding: '0.5rem',
+                  fontSize: '1rem',
+                  borderRadius: '4px',
+                  border: '1px solid #ccc',
+                  marginTop: '0.25rem'
+                }}
               >
                 {CATEGORIES.map(cat => (
                   <option key={cat} value={cat}>
@@ -432,14 +466,21 @@ export default function AProducts() {
             </label>
 
             {/* Description */}
-            <label style={{ marginTop: '1rem', display: 'block' }}>
+            <label style={{ display: 'block', marginTop: '1rem' }}>
               Description:<br />
               <textarea
                 value={editData.description}
                 onChange={e => handleEditChange('description', e.target.value)}
                 rows={4}
                 disabled={saving}
-                style={{ width: '100%' }}
+                style={{
+                  width: '100%',
+                  padding: '0.5rem',
+                  fontSize: '1rem',
+                  borderRadius: '4px',
+                  border: '1px solid #ccc',
+                  marginTop: '0.25rem'
+                }}
               />
             </label>
 
@@ -456,13 +497,27 @@ export default function AProducts() {
                       value={detail}
                       onChange={e => handleDetailChange(i, e.target.value, false)}
                       disabled={saving}
-                      style={{ width: '90%' }}
+                      style={{
+                        width: '90%',
+                        padding: '0.4rem',
+                        fontSize: '1rem',
+                        border: '1px solid #ccc',
+                        borderRadius: '4px'
+                      }}
                     />
                     <button
                       type="button"
                       onClick={() => removeDetail(i, false)}
                       disabled={saving}
-                      style={{ marginLeft: '0.5rem', cursor: 'pointer' }}
+                      style={{
+                        marginLeft: '0.5rem',
+                        cursor: 'pointer',
+                        padding: '0.2rem 0.5rem',
+                        backgroundColor: '#e74c3c',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: '4px'
+                      }}
                       aria-label="Remove detail"
                     >
                       ✕
@@ -471,11 +526,21 @@ export default function AProducts() {
                 ))}
               </ul>
             )}
+
             <button
               type="button"
               onClick={() => addDetail(false)}
               disabled={saving}
-              style={{ marginBottom: '1rem' }}
+              style={{
+                padding: '0.5rem 1rem',
+                fontSize: '1rem',
+                marginBottom: '1rem',
+                backgroundColor: '#BE40E8',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer'
+              }}
             >
               + Add Detail
             </button>
@@ -486,67 +551,94 @@ export default function AProducts() {
             {editData.sizes.length === 0 ? (
               <p>This product has no sizes. Edit price and quantity below.</p>
             ) : (
-              <table style={{ width: '100%', marginBottom: '1rem' }}>
-                <thead>
-                  <tr>
-                    <th>Size</th>
-                    <th>Price ($)</th>
-                    <th>Quantity</th>
-                    <th>Remove</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {editData.sizes.map((size, i) => (
-                    <tr key={i}>
-                      <td>
-                        <input
-                          type="text"
-                          value={editData.sizes[i]}
-                          onChange={e => handleSizeChange(i, 'size', e.target.value)}
-                          disabled={saving}
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="number"
-                          value={editData.price[i]}
-                          onChange={e => handleSizeChange(i, 'price', e.target.value)}
-                          min="0"
-                          disabled={saving}
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="number"
-                          value={editData.quantities[i]}
-                          onChange={e => handleSizeChange(i, 'quantity', e.target.value)}
-                          min="0"
-                          disabled={saving}
-                        />
-                      </td>
-                      <td>
-                        <button
-                          type="button"
-                          onClick={() => removeSizeOption(i, false)}
-                          disabled={saving}
-                          style={{ cursor: 'pointer' }}
-                        >
-                          ✕
-                        </button>
-                      </td>
+              <div style={{ overflowX: 'auto', marginBottom: '1rem' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <thead>
+                    <tr>
+                      <th style={{ textAlign: 'left', padding: '0.5rem' }}>Size</th>
+                      <th style={{ textAlign: 'left', padding: '0.5rem' }}>Price ($)</th>
+                      <th style={{ textAlign: 'left', padding: '0.5rem' }}>Quantity</th>
+                      <th></th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {editData.sizes.map((size, i) => (
+                      <tr key={i}>
+                        <td style={{ padding: '0.5rem' }}>
+                          <input
+                            type="text"
+                            value={editData.sizes[i]}
+                            onChange={e => handleSizeChange(i, 'size', e.target.value)}
+                            disabled={saving}
+                            style={{ width: '100%', padding: '0.4rem', borderRadius: '4px', border: '1px solid #ccc' }}
+                          />
+                        </td>
+                        <td style={{ padding: '0.5rem' }}>
+                          <input
+                            type="number"
+                            value={editData.price[i]}
+                            onChange={e => handleSizeChange(i, 'price', e.target.value)}
+                            min="0"
+                            disabled={saving}
+                            style={{ width: '100%', padding: '0.4rem', borderRadius: '4px', border: '1px solid #ccc' }}
+                          />
+                        </td>
+                        <td style={{ padding: '0.5rem' }}>
+                          <input
+                            type="number"
+                            value={editData.quantities[i]}
+                            onChange={e => handleSizeChange(i, 'quantity', e.target.value)}
+                            min="0"
+                            disabled={saving}
+                            style={{ width: '100%', padding: '0.4rem', borderRadius: '4px', border: '1px solid #ccc' }}
+                          />
+                        </td>
+                        <td style={{ padding: '0.5rem' }}>
+                          <button
+                            type="button"
+                            onClick={() => removeSizeOption(i, false)}
+                            disabled={saving}
+                            style={{
+                              backgroundColor: '#e74c3c',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '4px',
+                              padding: '0.4rem 0.6rem',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            ✕
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
 
-            <button type="button" onClick={() => addSizeOption(false)} disabled={saving} style={{ marginBottom: '1rem' }}>
+            <button
+              type="button"
+              onClick={() => addSizeOption(false)}
+              disabled={saving}
+              style={{
+                padding: '0.5rem 1rem',
+                fontSize: '1rem',
+                marginBottom: '1rem',
+                backgroundColor: '#BE40E8',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer'
+              }}
+            >
               + Add Size
             </button>
 
+            {/* Single Price/Quantity if no sizes */}
             {editData.sizes.length === 0 && (
               <>
-                <label>
+                <label style={{ display: 'block', marginBottom: '1rem' }}>
                   Price:<br />
                   <input
                     type="number"
@@ -554,10 +646,17 @@ export default function AProducts() {
                     onChange={e => handleSizeChange(0, 'price', e.target.value)}
                     min="0"
                     disabled={saving}
+                    style={{
+                      width: '100%',
+                      padding: '0.5rem',
+                      borderRadius: '4px',
+                      border: '1px solid #ccc',
+                      marginTop: '0.25rem'
+                    }}
                   />
                 </label>
-                <br />
-                <label style={{ marginTop: '1rem' }}>
+
+                <label style={{ display: 'block', marginBottom: '1rem' }}>
                   Quantity:<br />
                   <input
                     type="number"
@@ -565,16 +664,32 @@ export default function AProducts() {
                     onChange={e => handleSizeChange(0, 'quantity', e.target.value)}
                     min="0"
                     disabled={saving}
+                    style={{
+                      width: '100%',
+                      padding: '0.5rem',
+                      borderRadius: '4px',
+                      border: '1px solid #ccc',
+                      marginTop: '0.25rem'
+                    }}
                   />
                 </label>
               </>
             )}
 
+            {/* Save Button */}
             <div style={{ marginTop: '1.5rem' }}>
               <button
                 onClick={handleSave}
                 disabled={saving}
-                style={{ padding: '0.5rem 1rem', fontSize: '1rem' }}
+                style={{
+                  padding: '0.75rem 1.5rem',
+                  fontSize: '1rem',
+                  backgroundColor: '#BE40E8',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '6px',
+                  cursor: 'pointer'
+                }}
               >
                 {saving ? 'Saving...' : 'Save Changes'}
               </button>
@@ -596,46 +711,69 @@ export default function AProducts() {
               ✕
             </button>
 
-            <h2>Add New Product</h2>
+            <h2 style={{ fontSize: '1.8rem', marginBottom: '1rem' }}>Add New Product</h2>
 
             {/* Name */}
-            <label>
+            <label style={{ display: 'block', marginBottom: '1rem' }}>
               Name:<br />
               <input
                 type="text"
                 value={addData.name}
                 onChange={e => handleEditChange('name', e.target.value, true)}
                 disabled={addingSaving}
+                style={{
+                  width: '100%',
+                  padding: '0.5rem',
+                  fontSize: '1rem',
+                  borderRadius: '4px',
+                  border: '1px solid #ccc',
+                  marginTop: '0.25rem'
+                }}
               />
             </label>
 
-            {/* Image preview */}
+            {/* Image Preview */}
             <img
               src={addData.imageurl || 'placeholder-image-url.jpg'}
               alt={addData.name || 'Preview'}
-              style={{ width: '100%', maxHeight: '300px', objectFit: 'cover', borderRadius: '8px' }}
+              style={{
+                width: '100%',
+                maxHeight: '300px',
+                objectFit: 'cover',
+                borderRadius: '8px',
+                marginTop: '1rem'
+              }}
             />
 
-            {/* Upload new image */}
-            <label style={{ display: 'block', marginTop: '1rem' }}>
+            {/* Upload New Image */}
+            <label style={{ display: 'block', marginTop: '1rem', marginBottom: '1rem' }}>
               Upload Image:<br />
               <input
                 type="file"
                 accept="image/*"
                 onChange={e => handleImageUpload(e, true)}
                 disabled={uploadingImage || addingSaving}
+                style={{ marginTop: '0.25rem' }}
               />
             </label>
 
             {uploadingImage && <p>Uploading image...</p>}
 
             {/* Category */}
-            <label style={{ marginTop: '1rem' }}>
+            <label style={{ display: 'block', marginTop: '1rem', marginBottom: '1rem' }}>
               Category:<br />
               <select
                 value={addData.category}
                 onChange={e => handleEditChange('category', e.target.value, true)}
                 disabled={addingSaving}
+                style={{
+                  width: '100%',
+                  padding: '0.5rem',
+                  fontSize: '1rem',
+                  borderRadius: '4px',
+                  border: '1px solid #ccc',
+                  marginTop: '0.25rem'
+                }}
               >
                 {CATEGORIES.map(cat => (
                   <option key={cat} value={cat}>
@@ -646,14 +784,21 @@ export default function AProducts() {
             </label>
 
             {/* Description */}
-            <label style={{ marginTop: '1rem', display: 'block' }}>
+            <label style={{ display: 'block', marginTop: '1rem' }}>
               Description:<br />
               <textarea
                 value={addData.description}
                 onChange={e => handleEditChange('description', e.target.value, true)}
                 rows={4}
                 disabled={addingSaving}
-                style={{ width: '100%' }}
+                style={{
+                  width: '100%',
+                  padding: '0.5rem',
+                  fontSize: '1rem',
+                  borderRadius: '4px',
+                  border: '1px solid #ccc',
+                  marginTop: '0.25rem'
+                }}
               />
             </label>
 
@@ -670,13 +815,27 @@ export default function AProducts() {
                       value={detail}
                       onChange={e => handleDetailChange(i, e.target.value, true)}
                       disabled={addingSaving}
-                      style={{ width: '90%' }}
+                      style={{
+                        width: '90%',
+                        padding: '0.4rem',
+                        fontSize: '1rem',
+                        border: '1px solid #ccc',
+                        borderRadius: '4px'
+                      }}
                     />
                     <button
                       type="button"
                       onClick={() => removeDetail(i, true)}
                       disabled={addingSaving}
-                      style={{ marginLeft: '0.5rem', cursor: 'pointer' }}
+                      style={{
+                        marginLeft: '0.5rem',
+                        cursor: 'pointer',
+                        padding: '0.2rem 0.5rem',
+                        backgroundColor: '#e74c3c',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: '4px'
+                      }}
                       aria-label="Remove detail"
                     >
                       ✕
@@ -685,11 +844,21 @@ export default function AProducts() {
                 ))}
               </ul>
             )}
+
             <button
               type="button"
               onClick={() => addDetail(true)}
               disabled={addingSaving}
-              style={{ marginBottom: '1rem' }}
+              style={{
+                padding: '0.5rem 1rem',
+                fontSize: '1rem',
+                marginBottom: '1rem',
+                backgroundColor: '#BE40E8',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer'
+              }}
             >
               + Add Detail
             </button>
@@ -700,50 +869,75 @@ export default function AProducts() {
             {addData.sizes.length === 0 ? (
               <p>This product has no sizes. Edit price and quantity below.</p>
             ) : (
-              <table style={{ width: '100%', marginBottom: '1rem' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '1rem' }}>
                 <thead>
                   <tr>
-                    <th>Size</th>
-                    <th>Price ($)</th>
-                    <th>Quantity</th>
-                    <th>Remove</th>
+                    <th style={{ textAlign: 'left', padding: '0.5rem' }}>Size</th>
+                    <th style={{ textAlign: 'left', padding: '0.5rem' }}>Price ($)</th>
+                    <th style={{ textAlign: 'left', padding: '0.5rem' }}>Quantity</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
                   {addData.sizes.map((size, i) => (
                     <tr key={i}>
-                      <td>
+                      <td style={{ padding: '0.5rem' }}>
                         <input
                           type="text"
                           value={addData.sizes[i]}
                           onChange={e => handleSizeChange(i, 'size', e.target.value, true)}
                           disabled={addingSaving}
+                          style={{
+                            width: '100%',
+                            padding: '0.4rem',
+                            borderRadius: '4px',
+                            border: '1px solid #ccc'
+                          }}
                         />
                       </td>
-                      <td>
+                      <td style={{ padding: '0.5rem' }}>
                         <input
                           type="number"
                           value={addData.price[i]}
                           onChange={e => handleSizeChange(i, 'price', e.target.value, true)}
                           min="0"
                           disabled={addingSaving}
+                          style={{
+                            width: '100%',
+                            padding: '0.4rem',
+                            borderRadius: '4px',
+                            border: '1px solid #ccc'
+                          }}
                         />
                       </td>
-                      <td>
+                      <td style={{ padding: '0.5rem' }}>
                         <input
                           type="number"
                           value={addData.quantities[i]}
                           onChange={e => handleSizeChange(i, 'quantity', e.target.value, true)}
                           min="0"
                           disabled={addingSaving}
+                          style={{
+                            width: '100%',
+                            padding: '0.4rem',
+                            borderRadius: '4px',
+                            border: '1px solid #ccc'
+                          }}
                         />
                       </td>
-                      <td>
+                      <td style={{ padding: '0.5rem' }}>
                         <button
                           type="button"
                           onClick={() => removeSizeOption(i, true)}
                           disabled={addingSaving}
-                          style={{ cursor: 'pointer' }}
+                          style={{
+                            backgroundColor: '#e74c3c',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '4px',
+                            padding: '0.4rem 0.6rem',
+                            cursor: 'pointer'
+                          }}
                         >
                           ✕
                         </button>
@@ -758,14 +952,24 @@ export default function AProducts() {
               type="button"
               onClick={() => addSizeOption(true)}
               disabled={addingSaving}
-              style={{ marginBottom: '1rem' }}
+              style={{
+                padding: '0.5rem 1rem',
+                fontSize: '1rem',
+                marginBottom: '1rem',
+                backgroundColor: '#BE40E8',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer'
+              }}
             >
               + Add Size
             </button>
 
+            {/* Fallback Price/Quantity Inputs */}
             {addData.sizes.length === 0 && (
               <>
-                <label>
+                <label style={{ display: 'block', marginBottom: '1rem' }}>
                   Price:<br />
                   <input
                     type="number"
@@ -773,10 +977,17 @@ export default function AProducts() {
                     onChange={e => handleSizeChange(0, 'price', e.target.value, true)}
                     min="0"
                     disabled={addingSaving}
+                    style={{
+                      width: '100%',
+                      padding: '0.5rem',
+                      borderRadius: '4px',
+                      border: '1px solid #ccc',
+                      marginTop: '0.25rem'
+                    }}
                   />
                 </label>
-                <br />
-                <label style={{ marginTop: '1rem' }}>
+
+                <label style={{ display: 'block', marginBottom: '1rem' }}>
                   Quantity:<br />
                   <input
                     type="number"
@@ -784,16 +995,32 @@ export default function AProducts() {
                     onChange={e => handleSizeChange(0, 'quantity', e.target.value, true)}
                     min="0"
                     disabled={addingSaving}
+                    style={{
+                      width: '100%',
+                      padding: '0.5rem',
+                      borderRadius: '4px',
+                      border: '1px solid #ccc',
+                      marginTop: '0.25rem'
+                    }}
                   />
                 </label>
               </>
             )}
 
+            {/* Submit Button */}
             <div style={{ marginTop: '1.5rem' }}>
               <button
                 onClick={handleAdd}
                 disabled={addingSaving}
-                style={{ padding: '0.5rem 1rem', fontSize: '1rem' }}
+                style={{
+                  padding: '0.75rem 1.5rem',
+                  fontSize: '1rem',
+                  backgroundColor: '#BE40E8',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '6px',
+                  cursor: 'pointer'
+                }}
               >
                 {addingSaving ? 'Adding...' : 'Add Product'}
               </button>

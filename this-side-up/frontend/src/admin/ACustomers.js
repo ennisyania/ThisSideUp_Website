@@ -47,7 +47,7 @@ export default function ACustomers() {
         </div>
       )}
 
-      <table className="orders-table">
+      <table className="table-wrapper">
         <thead>
           <tr>
             <th>User ID</th>
@@ -86,24 +86,57 @@ export default function ACustomers() {
             >
               ✕
             </button>
-            <h2>User Details</h2>
+            <h2 style={{ fontSize: '1.8rem', marginBottom: '1rem' }}>User Details</h2>
 
-            <p><strong>User ID:</strong> {selectedUser.userId}</p>
-            <p><strong>Name:</strong> {selectedUser.firstName} {selectedUser.lastName}</p>
-            <p><strong>Email:</strong> {selectedUser.email}</p>
-            <p><strong>Phone:</strong> {selectedUser.phone || '-'}</p>
-            <p><strong>Role:</strong> {selectedUser.role}</p>
+            <div style={{
+              border: '1px solid #ddd',
+              borderRadius: '8px',
+              padding: '1.5rem',
+              backgroundColor: '#f9f9f9',
+              maxWidth: '600px'
+            }}>
+              <p style={{ marginBottom: '0.75rem' }}>
+                <strong>User ID:</strong> {selectedUser.userId}
+              </p>
 
-            <p><strong>Address:</strong><br />
-              {selectedUser.address?.street || '-'}<br />
-              {selectedUser.address?.city && (<>{selectedUser.address.city}, </>)}
-              {selectedUser.address?.state && (<>{selectedUser.address.state} </>)}
-              {selectedUser.address?.zip && (<>{selectedUser.address.zip}<br /></>)}
-              {selectedUser.address?.country || '-'}
-            </p>
+              <p style={{ marginBottom: '0.75rem' }}>
+                <strong>Name:</strong> {selectedUser.firstName} {selectedUser.lastName}
+              </p>
 
-            <p><strong>Registered Date:</strong> {new Date(selectedUser.registeredDate).toLocaleString()}</p>
-            <p><strong>Last Updated:</strong> {new Date(selectedUser.updatedAt).toLocaleString()}</p>
+              <p style={{ marginBottom: '0.75rem' }}>
+                <strong>Email:</strong> {selectedUser.email}
+              </p>
+
+              <p style={{ marginBottom: '0.75rem' }}>
+                <strong>Phone:</strong> {selectedUser.phone || '-'}
+              </p>
+
+              <p style={{ marginBottom: '0.75rem' }}>
+                <strong>Role:</strong> {selectedUser.role}
+              </p>
+
+              <div style={{ marginBottom: '0.75rem' }}>
+                <p style={{ margin: 0 }}><strong>Address:</strong></p>
+                <p style={{ margin: '0.25rem 0 0 0.5rem' }}>
+                  {selectedUser.address?.street || '-'}<br />
+                  {selectedUser.address?.city && (<>{selectedUser.address.city}, </>)}
+                  {selectedUser.address?.state && (<>{selectedUser.address.state} </>)}
+                  {selectedUser.address?.zip && (<>{selectedUser.address.zip}<br /></>)}
+                  {selectedUser.address?.country || '-'}
+                </p>
+              </div>
+
+              <p style={{ marginBottom: '0.75rem' }}>
+                <strong>Registered Date:</strong>{' '}
+                {new Date(selectedUser.registeredDate).toLocaleString()}
+              </p>
+
+              <p style={{ marginBottom: '0' }}>
+                <strong>Last Updated:</strong>{' '}
+                {new Date(selectedUser.updatedAt).toLocaleString()}
+              </p>
+            </div>
+
           </div>
         </div>
       )}
