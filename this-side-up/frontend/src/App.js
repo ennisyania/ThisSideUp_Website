@@ -26,8 +26,6 @@ import Register from './Register.js';
 import Profile from './Profile.js';
 import CustomerOrderHistory from './CustomerOrderHistory.js';
 import NotFound from './NotFound.js'; // Generic 404 page
-import OrderCancelled from './Ordercancelled.js';
-import OrderPending from './Orderpending.js';
 
 // Import Product/Shop Pages
 import Skimboards from './Skimboards.js';
@@ -137,25 +135,6 @@ function App() {
                     </PrivateRoute>
                   }
                 />
-                <Route
-                  path="/orderhistory/cancelled" 
-                  element={
-                    <PrivateRoute>
-                      <OrderCancelled />
-                    </PrivateRoute>
-                  }
-                />
-                <Route
-                  path="/orderhistory/pending"
-                  element={
-                    <PrivateRoute>
-                      <OrderPending />
-                    </PrivateRoute>
-                  }
-                />
-                
-                <Route path="/myProfile" element={<Profile />} />
-                
                 <Route path="/skimboards" element={<Skimboards />} />
                 <Route path="/boardshorts" element={<Boardshorts />} />
                 <Route path="/accessories" element={<Accessories />} />

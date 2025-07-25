@@ -1,7 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
 
 export default function ASettings() {
   const [active, setActive] = useState('Homepage');
@@ -23,12 +21,33 @@ export default function ASettings() {
     color: 'white',
   };
 
+  return (
+    <div
+      style={{
+        padding: '2rem',
+        fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+        backgroundColor: '#f9f9f9',
+        minHeight: '100vh',
+      }}
+    >
+      <h1
+        style={{
+          fontSize: '2rem',
+          marginBottom: '1.5rem',
+          color: '#333',
+        }}
+      >
+        ⚙️ Site Settings
+      </h1>
 
-      <nav className="settings-tabs">
-
-
+      <nav
+        style={{
+          display: 'flex',
+          gap: '1rem',
+          marginBottom: '2rem',
+        }}
+      >
         {['Homepage', 'Admins', 'Discounts'].map(tab => (
-
           <button
             key={tab}
             onClick={() => setActive(tab)}
@@ -39,30 +58,16 @@ export default function ASettings() {
         ))}
       </nav>
 
-
-      <div className="settings-content">
-
-
+      <div>
         {active === 'Homepage' && <HomepageForm />}
         {active === 'Admins' && <AdminForm />}
         {active === 'Discounts' && <DiscountsForm />}
-
       </div>
     </div>
   );
 }
 
-
-
-
-
 // --- Inner Forms ---
-
-
-
-
-
-
 
 function HomepageForm() {
   const [heroImages, setHeroImages] = useState([]);
@@ -208,30 +213,62 @@ function HomepageForm() {
         Add Hero Image
       </button>
 
-
-      <h3 className="mt-4">Announcement Bar (Hero Text)</h3>
-      <label className="inline-label">
-        <input type="checkbox" checked={showAnn} onChange={e => setShowAnn(e.target.checked)} />
+      <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: '#222' }}>
+        Announcement Bar (Hero Text)
+      </h3>
+      <label
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          marginBottom: '1rem',
+          fontWeight: 500,
+          cursor: 'pointer',
+          userSelect: 'none',
+        }}
+      >
+        <input
+          type="checkbox"
+          checked={showAnn}
+          onChange={e => setShowAnn(e.target.checked)}
+          style={{ marginRight: '0.5rem', cursor: 'pointer' }}
+        />
         Enable Announcement
       </label>
       {showAnn && (
-
-        <textarea rows={2} value={announcement} onChange={e => setAnnouncement(e.target.value)} className="full-width" />
+        <textarea
+          rows={2}
+          value={announcement}
+          onChange={e => setAnnouncement(e.target.value)}
+          style={{
+            width: '100%',
+            padding: '0.5rem',
+            fontSize: '1rem',
+            borderRadius: '6px',
+            border: '1px solid #ccc',
+            resize: 'vertical',
+            marginBottom: '1.5rem',
+          }}
+        />
       )}
 
-      <button onClick={saveHomepageSettings} disabled={uploadingIndex !== null}>
-
+      <button
+        onClick={saveHomepageSettings}
+        disabled={uploadingIndex !== null}
+        style={{
+          backgroundColor: '#BE40E8',
+          color: 'white',
+          border: 'none',
+          padding: '0.75rem 1.5rem',
+          fontSize: '1rem',
+          borderRadius: '6px',
+          cursor: uploadingIndex !== null ? 'not-allowed' : 'pointer',
+        }}
+      >
         Save Homepage
       </button>
     </section>
   );
 }
-
-
-
-
-
-
 
 function AdminForm() {
   const [admins, setAdmins] = useState([]);
@@ -618,4 +655,3 @@ function DiscountsForm() {
     </section>
   );
 }
-

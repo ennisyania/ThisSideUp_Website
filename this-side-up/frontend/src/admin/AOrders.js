@@ -1,6 +1,4 @@
-// src/admin/AOrders.js
 import React, { useState, useEffect } from 'react';
-
 import {
   Package,
   TrendingUp,
@@ -104,38 +102,40 @@ export default function AOrders() {
 
   return (
     <div className="admin-page orders-page">
-      <h1 className="page-title">📦 Orders</h1>
+      <h1 className="page-title">
+        <Package className="page-icon" /> Orders
+      </h1>
 
       {loading && (
         <div className="loading-overlay">
-          <div className="spinner" /> Loading orders…
+          <RefreshCw className="spin" /> Loading orders…
         </div>
       )}
 
       <div className="kpi-cards">
         <div className="kpi-card purple-border">
-          <div className="kpi-icon purple-bg">📦</div>
+          <div className="kpi-icon purple-bg"><Package /></div>
           <div>
             <h4>Total Orders</h4>
             <p>{totalOrders}</p>
           </div>
         </div>
         <div className="kpi-card purple-border">
-          <div className="kpi-icon purple-bg">📈</div>
+          <div className="kpi-icon purple-bg"><TrendingUp /></div>
           <div>
             <h4>Avg. Order Value</h4>
             <p>${avgOrderValue}</p>
           </div>
         </div>
         <div className="kpi-card purple-border">
-          <div className="kpi-icon purple-bg">⏳</div>
+          <div className="kpi-icon purple-bg"><CalendarIcon /></div>
           <div>
             <h4>Pending</h4>
             <p>{pendingCount}</p>
           </div>
         </div>
         <div className="kpi-card purple-border">
-          <div className="kpi-icon purple-bg">💵</div>
+          <div className="kpi-icon purple-bg"><DollarSign /></div>
           <div>
             <h4>Refund Rate</h4>
             <p>{refundRate}</p>
@@ -144,6 +144,7 @@ export default function AOrders() {
       </div>
 
       <div className="filter-bar">
+        <FilterIcon className="filter-icon" />
         <select
           value={filters.status}
           onChange={e => setFilters({ ...filters, status: e.target.value })}
@@ -156,6 +157,7 @@ export default function AOrders() {
           ))}
         </select>
 
+        <CalendarIcon className="filter-icon" />
         <select
           value={filters.dateRange}
           onChange={e => setFilters({ ...filters, dateRange: e.target.value })}
@@ -170,13 +172,11 @@ export default function AOrders() {
       <table className="orders-table">
         <thead>
           <tr>
-
             <th>ID</th>
             <th>Customer</th>
             <th>Date</th>
             <th>Status</th>
             <th>Total</th>
-
           </tr>
         </thead>
         <tbody>
@@ -202,7 +202,6 @@ export default function AOrders() {
       {selectedOrder && (
         <div className="modal-backdrop">
           <div className="modal-contentpurple">
-
             <button
               aria-label="Close modal"
               className="modal-close"
@@ -214,7 +213,6 @@ export default function AOrders() {
             >
               ✕
             </button>
-
             <h2>Order {selectedOrder.id}</h2>
 
             <p><strong>Customer:</strong> {selectedOrder.customer}</p>
@@ -249,7 +247,6 @@ export default function AOrders() {
             <p><strong>Status:</strong> {selectedOrder.status.charAt(0).toUpperCase() + selectedOrder.status.slice(1)}</p>
 
             <div className="modal-actions">
-
               <label htmlFor="status-select"><strong>Update Status:</strong></label>
               <select
                 id="status-select"
@@ -285,7 +282,6 @@ export default function AOrders() {
                   }}
                 >
                   {updating ? 'Updating...' : 'Confirm'}
-
                 </button>
               )}
 
