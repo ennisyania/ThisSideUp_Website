@@ -7,6 +7,7 @@ import mongoose from 'mongoose';
 import serverless from 'serverless-http';
 import Stripe from 'stripe';
 import { fileURLToPath } from 'url';
+import nodemailer from 'nodemailer';
 
 import productsRoute from './routes/products.js';
 import userRoute from './routes/user.js';
@@ -84,6 +85,55 @@ app.post('/api/create-payment-intent', async (req, res) => {
     res.status(500).send({ error: err.message });
   }
 });
+
+//COnatct Page email route
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+});
+
+app.post('/api/contact', async (req, res) => {
+  const { name, email, phone, subject, message } = req.body;
+
+  if (!name || !email || !subject || !message) {
+    return res.status(400).json({ error: 'Please fill in all required fields' });
+  }
+
+  const mailBody = `
+Hi ${name},
+
+Thanks for reaching out! Here's a copy of what you sent us:
+
+Subject: ${subject}
+Phone: ${phone || '-'}
+Email: ${email}
+
+Message:
+${message}
+
+We'll get back to you shortly!
+
+— ThisSideUp
+`;
+
+  try {
+    await transporter.sendMail({
+      from: `"ThisSideUp" <${process.env.SMTP_USER}>`,
+      to: [email, process.env.SMTP_USER],
+      subject: `Thank you for your message: ${subject}`,
+      text: mailBody,
+    });
+
+    res.json({ message: 'Email sent successfully' });
+  } catch (error) {
+    console.error('Email send error:', error);
+    res.status(500).json({ error: 'Failed to send email' });
+  }
+});
+
 
 // Default test route
 app.get('/', (req, res) => {
