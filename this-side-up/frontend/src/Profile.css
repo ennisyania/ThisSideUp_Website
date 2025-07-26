@@ -8,7 +8,7 @@
     --profile-main-bg: #F8FAF5; /* Light background for main content */
     --profile-card-bg: #FFFFFF; /* White background for cards */
     --profile-text-dark: #333; /* Dark text for general content */
-    --profile-text-medium: #555; /* Medium text for labels/less important text */
+    --profile-text-medium: #555; /* Medium text for labels/xless important text */
     --profile-text-light: #777; /* Light text for minor details */
     --profile-border-color: #eee; /* Light border for general elements */
     --profile-input-border: #ddd; /* Slightly darker border for inputs */
@@ -149,7 +149,7 @@
 /* --- Main Content --- */
 .customer-profile-main-content {
     flex-grow: 1;
-    padding: 60px 40px 40px 40px; /* Adjusted padding to move content right */
+    padding: 0px 40px 40px 40px; /* Adjusted padding to move content right */
     background-color: var(--profile-main-bg);
     position: relative;
     z-index: 1;
@@ -399,12 +399,10 @@
 
 /* --- Wave Overlay --- */
 .wave-background-overlay { /* Using this class for the div in Profile.js */
-    top: 0;
+    top: 50px;
     left: 0;
-    width: 100%;
-    height: 170px;
-    object-fit: cover;
-    z-index: 0;
+    width: 100%; 
+    height: 220px;
     pointer-events: none;
     user-select: none;
     opacity: 0.95;
@@ -423,7 +421,7 @@
         max-width: unset;
         border-right: none;
         border-bottom: 1px solid rgba(255,255,255,0.08);
-        padding: 30px 20px 10px 20px;
+        padding: 10px 10px 10px 10px;
         transform: skewX(0deg); /* Remove skew on smaller screens */
         transform-origin: center;
     }

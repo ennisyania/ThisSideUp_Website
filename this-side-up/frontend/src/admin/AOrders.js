@@ -52,24 +52,18 @@ export default function AOrders() {
         Orders Management
       </h1>
 
-      <nav
-        style={{
-          display: 'flex',
-          gap: '1rem',
-          marginBottom: '2rem',
-          // remove border and background or keep as needed
-        }}
-      >
-        {['Store', 'Customs'].map(tab => (
-          <button
-            key={tab}
-            onClick={() => setActive(tab)}
-            style={active === tab ? activeTabStyle : tabStyle}
-          >
-            {tab}
-          </button>
-        ))}
-      </nav>
+        <nav className="orders-nav">
+  {['Store','Customs'].map(tab => (
+    <button
+      key={tab}
+      className={`orders-nav__tab ${tab === active ? 'orders-nav__tab--active' : ''}`}
+      onClick={() => setActive(tab)}
+    >
+      {tab}
+    </button>
+  ))}
+</nav>
+
 
       <div>
         {active === 'Store' && <AStoreOrders />}
