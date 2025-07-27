@@ -1,3 +1,4 @@
+
 .contact-container {
   display: flex;
   height: 100vh;
@@ -47,10 +48,12 @@
   align-items: center;
   justify-content: center;
   padding: 2rem;
+
 }
 
 .contact-form {
   width: 100%;
+
   max-width: 450px;
   display: flex;
   flex-direction: column;
@@ -65,10 +68,12 @@
 
 .contact-form label{
 color: #E86540;
+
 }
 
 .contact-form input,
 .contact-form textarea {
+
   border: none;
   border-bottom: 2px solid black;
   padding: 0.5rem 0;
@@ -101,4 +106,5 @@ color: #E86540;
 
 .contact-form button:hover {
   background-color: #d74f27;
+
 }

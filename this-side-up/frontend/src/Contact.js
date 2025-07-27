@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Contact.css';
 
-export default function ContactForm() {
+export default function ContactPage() {
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -16,34 +16,26 @@ export default function ContactForm() {
 
   const handleSubmit = async e => {
     e.preventDefault();
-
     try {
       const res = await fetch('http://localhost:5000/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       });
-
       const data = await res.json();
-
       if (res.ok) {
-        alert('Email sent successfully!');
-        setForm({
-          name: '',
-          email: '',
-          phone: '',
-          subject: '',
-          message: '',
-        });
+        alert('Message sent!');
+        setForm({ name: '', email: '', phone: '', subject: '', message: '' });
       } else {
-        alert(data.error || 'Failed to send email.');
+        alert(data.error || 'Failed to send.');
       }
-    } catch (err) {
-      alert('Network error. Please try again.');
+    } catch {
+      alert('Network error.');
     }
   };
 
   return (
+
     <div className="contact-container">
       <div className="contact-left">
         <h1><span>Let's get</span><br /><span>in touch</span></h1>
@@ -74,6 +66,7 @@ export default function ContactForm() {
           <textarea name="message" value={form.message} onChange={handleChange} required rows={5} />
 
           <button type="submit">Send to us</button>
+
         </form>
       </div>
     </div>
