@@ -79,7 +79,7 @@ function HomepageForm() {
     async function fetchSettings() {
       try {
         const token = localStorage.getItem('token');
-        const res = await fetch('${process.env.REACT_APP_API_URL}/api/settings', {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/settings`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -114,7 +114,7 @@ function HomepageForm() {
 
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('${process.env.REACT_APP_API_URL}/api/upload-image', {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/upload-image`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
@@ -135,7 +135,7 @@ function HomepageForm() {
   async function saveHomepageSettings() {
     try {
       const token = localStorage.getItem('token');
-      await fetch('${process.env.REACT_APP_API_URL}/api/settings', {
+      await fetch(`${process.env.REACT_APP_API_URL}/api/settings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ heroImages, announcement }),
@@ -281,7 +281,7 @@ function AdminForm() {
   const fetchAdmins = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get('${process.env.REACT_APP_API_URL}/api/user/admins', {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/user/admins`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -298,7 +298,7 @@ function AdminForm() {
     try {
       const token = localStorage.getItem('token');
       await axios.put(
-        '${process.env.REACT_APP_API_URL}/api/user/admins/promote',
+        `${process.env.REACT_APP_API_URL}/api/user/admins/promote`,
         { email },
         {
           headers: {
@@ -441,7 +441,7 @@ function DiscountsForm() {
   const fetchDiscounts = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get('${process.env.REACT_APP_API_URL}/api/settings/discounts', {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/settings/discounts`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSiteDiscount(res.data.siteDiscount || 0);
@@ -455,7 +455,7 @@ function DiscountsForm() {
     try {
       const token = localStorage.getItem('token');
       await axios.post(
-        '${process.env.REACT_APP_API_URL}/api/settings/discounts',
+        `${process.env.REACT_APP_API_URL}/api/settings/discounts`,
         {
           siteDiscount,
         },
@@ -474,7 +474,7 @@ function DiscountsForm() {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.post('${process.env.REACT_APP_API_URL}/api/settings/discount-codes', newCode, {
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/settings/discount-codes`, newCode, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setNewCode({ code: '', value: 0 });

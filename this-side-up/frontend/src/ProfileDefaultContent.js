@@ -44,7 +44,7 @@ export default function ProfileDefaultContent() {
     const fetchUser = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await axios.get('${process.env.REACT_APP_API_URL}/api/user/me', {
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/user/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = res.data;
@@ -80,7 +80,7 @@ export default function ProfileDefaultContent() {
       setLoading(true);
       const token = localStorage.getItem('token');
       await axios.put(
-        '${process.env.REACT_APP_API_URL}/api/user/edit',
+        `${process.env.REACT_APP_API_URL}/api/user/edit`,
         {
           firstName: contactForm.firstName,
           lastName: contactForm.lastName,
@@ -116,7 +116,7 @@ export default function ProfileDefaultContent() {
       setLoading(true);
       const token = localStorage.getItem('token');
       await axios.put(
-        '${process.env.REACT_APP_API_URL}/api/user/edit',
+        `${process.env.REACT_APP_API_URL}/api/user/edit`,
         {
           address: addressForm,
         },

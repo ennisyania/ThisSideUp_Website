@@ -26,7 +26,7 @@ export default function AProducts() {
   async function loadProducts() {
     setLoading(true);
     try {
-      const res = await fetch('${process.env.REACT_APP_API_URL}/api/products/all');
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/products/all`);
       const data = await res.json();
       setProducts(Array.isArray(data) ? data : []);
     } catch (e) {
@@ -48,7 +48,7 @@ export default function AProducts() {
 
     try {
       const token = localStorage.getItem('token'); // if auth required
-      const res = await fetch('${process.env.REACT_APP_API_URL}/api/upload-image', {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/upload-image`, {
         method: 'POST',
         headers: {
           // Authorization: `Bearer ${token}`,

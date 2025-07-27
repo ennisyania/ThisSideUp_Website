@@ -6,7 +6,7 @@ export default function Boardshorts() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    fetch('${process.env.REACT_APP_API_URL}/api/products/boardshorts')
+    fetch(`${process.env.REACT_APP_API_URL}/api/products/boardshorts`)
       .then(res => res.json())
       .then(data => {
         const formatted = data.map((item) => ({

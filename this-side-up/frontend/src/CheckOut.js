@@ -43,7 +43,7 @@ export default function CheckOut({ cartItems, handlePlaceOrder }) {
                 const token = localStorage.getItem('token');
                 if (!token) return;
 
-                const res = await fetch('${process.env.REACT_APP_API_URL}/api/user/me', {
+                const res = await fetch(`${process.env.REACT_APP_API_URL}/api/user/me`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -77,7 +77,7 @@ export default function CheckOut({ cartItems, handlePlaceOrder }) {
     useEffect(() => {
         const fetchDiscounts = async () => {
             try {
-                const res = await fetch('${process.env.REACT_APP_API_URL}/api/settings/discounts');
+                const res = await fetch(`${process.env.REACT_APP_API_URL}/api/settings/discounts`);
                 const data = await res.json();
                 setAvailableCodes(data.codes || []);
                 setSiteDiscount(data.siteDiscount || 0);
@@ -122,7 +122,7 @@ export default function CheckOut({ cartItems, handlePlaceOrder }) {
             return;
         }
 
-        const res = await fetch('${process.env.REACT_APP_API_URL}/api/create-payment-intent', {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/create-payment-intent`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ amount: total * 100, email: user.email }),
@@ -170,7 +170,7 @@ export default function CheckOut({ cartItems, handlePlaceOrder }) {
             };
 
             try {
-                const res = await fetch('${process.env.REACT_APP_API_URL}/api/orders', {
+                const res = await fetch(`${process.env.REACT_APP_API_URL}/api/orders`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

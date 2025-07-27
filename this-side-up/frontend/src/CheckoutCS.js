@@ -43,7 +43,7 @@ export default function CheckoutCS({ handlePlaceOrder }) {
     useEffect(() => {
         const fetchDiscounts = async () => {
             try {
-                const res = await fetch('${process.env.REACT_APP_API_URL}/api/settings/discounts');
+                const res = await fetch(`${process.env.REACT_APP_API_URL}/api/settings/discounts`);
                 const data = await res.json();
                 setAvailableCodes(data.codes || []);
                 setSiteDiscount(data.siteDiscount || 0);
@@ -71,7 +71,7 @@ export default function CheckoutCS({ handlePlaceOrder }) {
             try {
                 if (!token) return;
 
-                const res = await fetch('${process.env.REACT_APP_API_URL}/api/user/me', {
+                const res = await fetch(`${process.env.REACT_APP_API_URL}/api/user/me`,{
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 if (!res.ok) throw new Error('Failed to fetch user profile');
@@ -111,7 +111,7 @@ export default function CheckoutCS({ handlePlaceOrder }) {
 
         try {
             // Create payment intent on backend with total * 100 (cents)
-            const res = await fetch('${process.env.REACT_APP_API_URL}/api/create-payment-intent', {
+            const res = await fetch(`{process.env.REACT_APP_API_URL}/api/create-payment-intent`,{
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ amount: Math.round(total * 100), email: user.email }),
@@ -162,7 +162,7 @@ export default function CheckoutCS({ handlePlaceOrder }) {
                 };
 
                 // Post order to your custom ordersCS backend route
-                const orderRes = await fetch('${process.env.REACT_APP_API_URL}/api/ordersCS', {
+                const orderRes = await fetch(`{process.env.REACT_APP_API_URL}/api/ordersCS`,{
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
