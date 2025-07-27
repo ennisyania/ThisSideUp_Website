@@ -1,6 +1,5 @@
 * {
-  z-index: 100; 
-  background-color: F8FaF5;
+  z-index: 100;
 }
 
 .topLoggedinContainer {
@@ -8,7 +7,8 @@
   background-color: rgba(248, 250, 245, 1);
   border-bottom: 2px solid rgba(17, 15, 15, 1);
   box-sizing: border-box;
-  z-index: 1000; 
+  z-index: 10000;
+  position: relative;
 }
 
 .topLoggedin {
@@ -36,7 +36,7 @@
   gap: 4rem;
   white-space: nowrap;
   flex: 0 0 auto;
-  z-index: 1000;
+  z-index: 10000;
 }
 
 .clickable {
@@ -108,7 +108,7 @@
   left: 0;
   background-color: white;
   color: black;
-  z-index: 10;
+  z-index: 9999;
   padding: 0.75rem 1rem;
   display: flex;
   flex-direction: column;
@@ -129,6 +129,7 @@
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   transition: background-color 0.2s ease;
+  z-index: 9999;
 }
 
 .products-dropdown a:hover {
@@ -148,7 +149,7 @@
   right: 0;
   background-color: white;
   color: black;
-  z-index: 10;
+  z-index: 9999;
   padding: 0.75rem 1rem;
   display: flex;
   flex-direction: column;
@@ -166,6 +167,7 @@
   padding: 0.3rem 0.5rem;
   border-radius: 4px;
   transition: background-color 0.2s ease;
+  z-index: 9999;
 }
 
 .profile-dropdown a:hover {
