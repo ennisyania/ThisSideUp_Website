@@ -6,7 +6,7 @@ export default function Boardshorts() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    fetch(`https://thissideup-website.onrender.com//api/products/boardshorts`)
+    fetch(`https://thissideup-website.onrender.com/api/products/boardshorts`)
       .then(res => res.json())
       .then(data => {
         const formatted = data.map((item) => ({

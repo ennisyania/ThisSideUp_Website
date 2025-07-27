@@ -6,7 +6,7 @@ export default function Accessories() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    fetch(`https://thissideup-website.onrender.com//api/products/accessories`)
+    fetch(`https://thissideup-website.onrender.com/api/products/accessories`)
       .then(res => res.json())
       .then(data => {
         const formatted = data.map((item) => ({

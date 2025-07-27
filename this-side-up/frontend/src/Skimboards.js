@@ -6,7 +6,7 @@ export default function Skimboards() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    fetch(`https://thissideup-website.onrender.com//api/products/skimboards`)
+    fetch(`https://thissideup-website.onrender.com/api/products/skimboards`)
       .then(res => res.json())
       .then(data => {
         const formatted = data.map((item, index) => ({

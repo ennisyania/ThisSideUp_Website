@@ -27,7 +27,7 @@ export default function CustomerOrderHistory() {
   useEffect(() => {
     async function fetchOrders() {
       try {
-        const res = await fetch(`https://thissideup-website.onrender.com//api/orders/myorders`, {
+        const res = await fetch(`https://thissideup-website.onrender.com/api/orders/myorders`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error('Failed to fetch orders');
@@ -48,7 +48,7 @@ export default function CustomerOrderHistory() {
   useEffect(() => {
     async function fetchOrdersCS() {
       try {
-        const res = await fetch(`https://thissideup-website.onrender.com//api/ordersCS/myorders`, {
+        const res = await fetch(`https://thissideup-website.onrender.com/api/ordersCS/myorders`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error('Failed to fetch orders');

@@ -6,7 +6,7 @@ export default function Tshirt() {
   const [products, setProducts] = useState([]);
 
 useEffect(() => {
-  fetch(`https://thissideup-website.onrender.com//api/products/tshirts`)
+  fetch(`https://thissideup-website.onrender.com/api/products/tshirts`)
     .then(res => res.json())
     .then(data => {
       const formatted = data.map((item, index) => ({

@@ -24,7 +24,7 @@ function Homepage() {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const res = await fetch(`https://thissideup-website.onrender.com//api/settings`);
+        const res = await fetch(`https://thissideup-website.onrender.com/api/settings`);
         const data = await res.json();
         setHeroImages(data.heroImages || []);
         setHeroText(data.announcement || '');
@@ -36,7 +36,7 @@ function Homepage() {
   }, []);
 
   useEffect(() => {
-    fetch(`https://thissideup-website.onrender.com//api/products/skimboards`)
+    fetch(`https://thissideup-website.onrender.com/api/products/skimboards`)
       .then(res => res.json())
       .then(data => {
         const formatted = data.map((item) => ({
