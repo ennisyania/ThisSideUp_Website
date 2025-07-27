@@ -26,7 +26,7 @@ export default function AProducts() {
   async function loadProducts() {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/api/products/all');
+      const res = await fetch('${process.env.REACT_APP_API_URL}/api/products/all');
       const data = await res.json();
       setProducts(Array.isArray(data) ? data : []);
     } catch (e) {
@@ -48,7 +48,7 @@ export default function AProducts() {
 
     try {
       const token = localStorage.getItem('token'); // if auth required
-      const res = await fetch('http://localhost:5000/api/upload-image', {
+      const res = await fetch('${process.env.REACT_APP_API_URL}/api/upload-image', {
         method: 'POST',
         headers: {
           // Authorization: `Bearer ${token}`,
@@ -254,7 +254,7 @@ export default function AProducts() {
     if (!editData) return;
     setSaving(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/products/${selectedProduct._id}`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/products/${selectedProduct._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(editData),
@@ -281,7 +281,7 @@ export default function AProducts() {
 
     setAddingSaving(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/products`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/products`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(productToAdd),

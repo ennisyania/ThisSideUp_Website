@@ -26,7 +26,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.use(cors({
-  origin: 'http://localhost:3000',       // Your React app origin
+  origin: 'https://this-side-up.vercel.app/',       // Your React app origin
   allowedHeaders: ['Content-Type', 'Authorization'], // explicitly allow Authorization header
   credentials: true,                      // if you want cookies or auth credentials
 }));

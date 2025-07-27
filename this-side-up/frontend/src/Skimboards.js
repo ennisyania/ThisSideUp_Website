@@ -6,7 +6,7 @@ export default function Skimboards() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/products/skimboards')
+    fetch('${process.env.REACT_APP_API_URL}/api/products/skimboards')
       .then(res => res.json())
       .then(data => {
         const formatted = data.map((item, index) => ({

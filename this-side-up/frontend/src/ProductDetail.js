@@ -14,7 +14,7 @@ export default function ProductDetail({ onAddToCart }) {
     setSelectedSize(null);
     setError(null);
 
-    fetch(`http://localhost:5000/api/products/${productId}`)
+    fetch(`${process.env.REACT_APP_API_URL}/api/products/${productId}`)
       .then((res) => {
         if (!res.ok) throw new Error('Failed to fetch product');
         return res.json();

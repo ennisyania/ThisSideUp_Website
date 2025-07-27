@@ -6,7 +6,7 @@ export default function Accessories() {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/products/accessories')
+    fetch('${process.env.REACT_APP_API_URL}/api/products/accessories')
       .then(res => res.json())
       .then(data => {
         const formatted = data.map((item) => ({

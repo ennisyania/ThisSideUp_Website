@@ -9,7 +9,7 @@ export default function CustomSkimboards() {
   const LABOR_COST = 80;
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/products/skimboards')
+    fetch('${process.env.REACT_APP_API_URL}/api/products/skimboards')
       .then(res => res.json())
       .then(data => {
         const formatted = data.map(item => ({
@@ -99,7 +99,7 @@ export default function CustomSkimboards() {
         formData.append('images', file);
       });
 
-      const response = await fetch('http://localhost:5000/api/upload-images', {
+      const response = await fetch('${process.env.REACT_APP_API_URL}/api/upload-images', {
         method: 'POST',
         body: formData,
       });

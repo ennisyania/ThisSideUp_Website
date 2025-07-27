@@ -17,7 +17,7 @@ export default function ACustomers() {
     setLoading(true);
     const token = localStorage.getItem('token');
     try {
-      const res = await fetch('http://localhost:5000/api/user/all', {
+      const res = await fetch('${process.env.REACT_APP_API_URL}/api/user/all', {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (!res.ok) throw new Error('Failed to load users');

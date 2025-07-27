@@ -24,7 +24,7 @@ function Homepage() {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/settings');
+        const res = await fetch('${process.env.REACT_APP_API_URL}/api/settings');
         const data = await res.json();
         setHeroImages(data.heroImages || []);
         setHeroText(data.announcement || '');
@@ -36,7 +36,7 @@ function Homepage() {
   }, []);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/products/skimboards')
+    fetch('${process.env.REACT_APP_API_URL}/api/products/skimboards')
       .then(res => res.json())
       .then(data => {
         const formatted = data.map((item) => ({

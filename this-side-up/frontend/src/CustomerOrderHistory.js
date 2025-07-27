@@ -27,7 +27,7 @@ export default function CustomerOrderHistory() {
   useEffect(() => {
     async function fetchOrders() {
       try {
-        const res = await fetch('http://localhost:5000/api/orders/myorders', {
+        const res = await fetch('${process.env.REACT_APP_API_URL}/api/orders/myorders', {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error('Failed to fetch orders');
@@ -48,7 +48,7 @@ export default function CustomerOrderHistory() {
   useEffect(() => {
     async function fetchOrdersCS() {
       try {
-        const res = await fetch('http://localhost:5000/api/ordersCS/myorders', {
+        const res = await fetch('${process.env.REACT_APP_API_URL}/api/ordersCS/myorders', {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error('Failed to fetch orders');

@@ -6,7 +6,7 @@ export default function Tshirt() {
   const [products, setProducts] = useState([]);
 
 useEffect(() => {
-  fetch('http://localhost:5000/api/products/tshirts')
+  fetch('${process.env.REACT_APP_API_URL}/api/products/tshirts')
     .then(res => res.json())
     .then(data => {
       const formatted = data.map((item, index) => ({

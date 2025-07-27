@@ -90,7 +90,7 @@ function AStoreOrders() {
       if (filters.status !== 'all') params.set('status', filters.status);
       if (filters.dateRange) params.set('dateRange', filters.dateRange);
 
-      const res = await fetch(`http://localhost:5000/api/orders/allOrders?${params.toString()}`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/orders/allOrders?${params.toString()}`, {
         headers: { 'Authorization': `Bearer ${token}` },
       });
 
@@ -142,8 +142,8 @@ function AStoreOrders() {
     try {
       const statusLower = status.toLowerCase();
       const endpoint = statusLower === 'refunded'
-        ? `http://localhost:5000/api/orders/${id}/refund`
-        : `http://localhost:5000/api/orders/allOrders/${id}`;
+        ? `${process.env.REACT_APP_API_URL}/api/orders/${id}/refund`
+        : `${process.env.REACT_APP_API_URL}/api/orders/allOrders/${id}`;
 
       const method = statusLower === 'refunded' ? 'POST' : 'PATCH';
       const body = statusLower === 'refunded' ? null : JSON.stringify({ status: statusLower });
@@ -404,7 +404,7 @@ function ACustoms() {
       if (filters.dateRange) params.set('dateRange', filters.dateRange);
 
       // Note: your backend may need support for filtering on /myorders or do client-side filtering
-      const res = await fetch(`http://localhost:5000/api/ordersCS/allOrders?${params.toString()}`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/ordersCS/allOrders?${params.toString()}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -453,8 +453,8 @@ function ACustoms() {
       const statusLower = status.toLowerCase();
 
       const endpoint = statusLower === 'refunded'
-        ? `http://localhost:5000/api/ordersCS/${id}/refund`
-        : `http://localhost:5000/api/ordersCS/${id}`;
+        ? `${process.env.REACT_APP_API_URL}/api/ordersCS/${id}/refund`
+        : `${process.env.REACT_APP_API_URL}/api/ordersCS/${id}`;
 
       const method = statusLower === 'refunded' ? 'POST' : 'PATCH';
 
