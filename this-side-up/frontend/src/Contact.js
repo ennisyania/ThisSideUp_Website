@@ -35,87 +35,38 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="contact-page-container">
-      {/* LEFT SIDE */}
-      <div
-        className="contact-left-background"
-        style={{
-          backgroundImage: `url(${process.env.PUBLIC_URL}/images/FAQside.png)`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'right center',
-        }}
-      >
-        <div className="contact-title-overlay">
-          <h1>Let’s get in touch</h1>
-          <p className="contact-subtitle">Don’t be afraid to say hello to us!</p>
-          <div className="contact-info">
-            <div className="contact-info-item">
-              <span className="info-label">Phone</span>
-              <a className="info-value" href="tel:+6592200054">+65 9220 0054</a>
-            </div>
-            <div className="contact-info-item">
-              <span className="info-label">Email</span>
-              <a className="info-value" href="mailto:Hello@thissideup.com">Hello@thissideup.com</a>
-            </div>
-          </div>
+
+    <div className="contact-container">
+      <div className="contact-left">
+        <h1><span>Let's get</span><br /><span>in touch</span></h1>
+        <h2>Don't be afraid to<br />say hello to us!</h2>
+        <div className="contact-info">
+          <p>Phone<br /><strong>+65 9220 0054</strong></p>
+          <p>Email<br /><strong>Hello@thissideup.com</strong></p>
         </div>
       </div>
 
-      {/* RIGHT SIDE */}
-      <div className="contact-form-column">
-        <form className="contact-form" onSubmit={handleSubmit}>
+      <div className="contact-right">
+        <form onSubmit={handleSubmit} className="contact-form">
           <h2>Contact</h2>
-          <label>
-            Name*
-            <input
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              required
-            />
-          </label>
-          <label>
-            Email*
-            <input
-              type="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              required
-            />
-          </label>
-          <label>
-            Phone
-            <input
-              type="tel"
-              name="phone"
-              value={form.phone}
-              onChange={handleChange}
-            />
-          </label>
-          <label>
-            Subject*
-            <input
-              name="subject"
-              value={form.subject}
-              onChange={handleChange}
-              required
-            />
-          </label>
-          <label>
-            Tell us about what you’re interested in!*
-            <textarea
-              name="message"
-              rows={5}
-              value={form.message}
-              onChange={handleChange}
-              required
-            />
-          </label>
 
-          <button type="submit" className="contact-submit">
-            Send to us
-          </button>
+          <label>Name</label>
+          <input type="text" name="name" value={form.name} onChange={handleChange} required />
+
+          <label>Email</label>
+          <input type="email" name="email" value={form.email} onChange={handleChange} required />
+
+          <label>Phone</label>
+          <input type="tel" name="phone" value={form.phone} onChange={handleChange} />
+
+          <label>Subject</label>
+          <input type="text" name="subject" value={form.subject} onChange={handleChange} required />
+
+          <label>Tell us about what you're interested in!</label>
+          <textarea name="message" value={form.message} onChange={handleChange} required rows={5} />
+
+          <button type="submit">Send to us</button>
+
         </form>
       </div>
     </div>

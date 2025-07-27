@@ -5,7 +5,6 @@ import "./PopUpCart.css";
 export default function PopUpCart({ isOpen, onClose, cartItems, onQuantityChange, onRemoveItem }) {
   if (!isOpen) return null;
 
-  // Manually count total items and total price
   let totalItems = 0;
   let totalPrice = 0;
   for (let i = 0; i < cartItems.length; i++) {

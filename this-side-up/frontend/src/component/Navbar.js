@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 
 import AuthContext from "../context/AuthContext";
-import PopUpCart from './PopUpCart'; // updated popup cart
+import PopUpCart from './PopUpCart';
 
 const RightArrowIcon = () => (
   <svg
