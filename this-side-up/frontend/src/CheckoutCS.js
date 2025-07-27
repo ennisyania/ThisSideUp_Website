@@ -43,7 +43,7 @@ export default function CheckoutCS({ handlePlaceOrder }) {
     useEffect(() => {
         const fetchDiscounts = async () => {
             try {
-                const res = await fetch(`${process.env.REACT_APP_API_URL}/api/settings/discounts`);
+                const res = await fetch(`https://thissideup-website.onrender.com//api/settings/discounts`);
                 const data = await res.json();
                 setAvailableCodes(data.codes || []);
                 setSiteDiscount(data.siteDiscount || 0);
@@ -71,7 +71,7 @@ export default function CheckoutCS({ handlePlaceOrder }) {
             try {
                 if (!token) return;
 
-                const res = await fetch(`${process.env.REACT_APP_API_URL}/api/user/me`,{
+                const res = await fetch(`https://thissideup-website.onrender.com//api/user/me`,{
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 if (!res.ok) throw new Error('Failed to fetch user profile');

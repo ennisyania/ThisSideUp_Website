@@ -7,7 +7,7 @@ export default function Jackets() {
   const [products, setProducts] = useState([]);
 
 useEffect(() => {
-  fetch(`${process.env.REACT_APP_API_URL}/api/products/jackets`)
+  fetch(`https://thissideup-website.onrender.com//api/products/jackets`)
     .then(res => res.json())
     .then(data => {
       const formatted = data.map((item, index) => ({

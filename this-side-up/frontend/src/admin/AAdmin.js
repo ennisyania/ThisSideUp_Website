@@ -21,7 +21,7 @@ export default function AAdmin() {
         // Fetch monthly revenue
         const fetchMonthlyRevenue = async () => {
             try {
-                const res = await fetch(`${process.env.REACT_APP_API_URL}/api/admin/dashboard/revenue-monthly`);
+                const res = await fetch(`https://thissideup-website.onrender.com//api/admin/dashboard/revenue-monthly`);
                 const data = await res.json();
                 setMonthlyRevenue(data);
             } catch (err) {
@@ -35,13 +35,13 @@ export default function AAdmin() {
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
-                const res = await fetch(`${process.env.REACT_APP_API_URL}/api/admin/dashboard`);
+                const res = await fetch(`https://thissideup-website.onrender.com//api/admin/dashboard`);
                 const text = await res.text();
                 console.log('Raw dashboard response:', text);
 
                 const allTimeData = JSON.parse(text);
 
-                const todayRes = await fetch(`${process.env.REACT_APP_API_URL}/api/admin/dashboard/today`);
+                const todayRes = await fetch(`https://thissideup-website.onrender.com//api/admin/dashboard/today`);
                 const todayText = await todayRes.text();
                 console.log('Raw today response:', todayText);
 
@@ -87,7 +87,7 @@ export default function AAdmin() {
     useEffect(() => {
         const fetchCustomerData = async () => {
             try {
-                const res = await fetch(`${process.env.REACT_APP_API_URL}/api/admin/dashboard/customers`);
+                const res = await fetch(`https://thissideup-website.onrender.com//api/admin/dashboard/customers`);
                 const data = await res.json();
                 setCustomerData(data);
             } catch (err) {
@@ -107,7 +107,7 @@ export default function AAdmin() {
     useEffect(() => {
         const fetchRefundData = async () => {
             try {
-                const res = await fetch(`${process.env.REACT_APP_API_URL}/api/admin/dashboard/refunded`);
+                const res = await fetch(`https://thissideup-website.onrender.com//api/admin/dashboard/refunded`);
                 const data = await res.json();
                 setRefundData(data);
             } catch (err) {
@@ -129,7 +129,7 @@ export default function AAdmin() {
     useEffect(() => {
         const fetchRecentOrders = async () => {
             try {
-                const res = await fetch(`${process.env.REACT_APP_API_URL}/api/admin/dashboard/recent-orders`);
+                const res = await fetch(`https://thissideup-website.onrender.com//api/admin/dashboard/recent-orders`);
                 const data = await res.json();
                 setRecentOrders(data);
             } catch (err) {

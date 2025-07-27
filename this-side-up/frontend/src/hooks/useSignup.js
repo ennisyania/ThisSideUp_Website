@@ -11,7 +11,7 @@ export default function useSignup() {
     setError(null);
 
     try {
-      const res = await fetch("${process.env.REACT_APP_API_URL}/api/user/register", {
+      const res = await fetch("https://thissideup-website.onrender.com//api/user/register", {
 
         method: "POST",
         headers: { "Content-Type": "application/json" },

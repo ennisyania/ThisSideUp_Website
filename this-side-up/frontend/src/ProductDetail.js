@@ -14,7 +14,7 @@ export default function ProductDetail({ onAddToCart }) {
     setSelectedSize(null);
     setError(null);
 
-    fetch(`${process.env.REACT_APP_API_URL}/api/products/${productId}`)
+    fetch(`https://thissideup-website.onrender.com//api/products/${productId}`)
       .then((res) => {
         if (!res.ok) throw new Error('Failed to fetch product');
         return res.json();

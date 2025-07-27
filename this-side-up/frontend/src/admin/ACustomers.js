@@ -17,7 +17,7 @@ export default function ACustomers() {
     setLoading(true);
     const token = localStorage.getItem('token');
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/user/all`, {
+      const res = await fetch(`https://thissideup-website.onrender.com//api/user/all`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (!res.ok) throw new Error('Failed to load users');
