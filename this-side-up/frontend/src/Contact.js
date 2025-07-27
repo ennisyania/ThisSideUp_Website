@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import './Contact.css';
 
-export default function ContactForm() {
+export default function ContactPage() {
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -15,121 +16,108 @@ export default function ContactForm() {
 
   const handleSubmit = async e => {
     e.preventDefault();
-
     try {
       const res = await fetch('http://localhost:5000/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       });
-
       const data = await res.json();
-
       if (res.ok) {
-        alert('Email sent successfully!');
-        setForm({
-          name: '',
-          email: '',
-          phone: '',
-          subject: '',
-          message: '',
-        });
+        alert('Message sent!');
+        setForm({ name: '', email: '', phone: '', subject: '', message: '' });
       } else {
-        alert(data.error || 'Failed to send email.');
+        alert(data.error || 'Failed to send.');
       }
-    } catch (err) {
-      alert('Network error. Please try again.');
+    } catch {
+      alert('Network error.');
     }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{
-        maxWidth: 400,
-        margin: '2rem auto',
-        padding: '1rem',
-        border: '1px solid #ccc',
-        borderRadius: 6,
-        fontFamily: 'Arial, sans-serif',
-      }}
-    >
-      <h2 style={{ textAlign: 'center' }}>Contact Us</h2>
-
-      <label>
-        Name*:<br />
-        <input
-          type="text"
-          name="name"
-          value={form.name}
-          onChange={handleChange}
-          required
-          style={{ width: '100%', padding: '0.5rem', marginBottom: '0.7rem' }}
-        />
-      </label>
-
-      <label>
-        Email*:<br />
-        <input
-          type="email"
-          name="email"
-          value={form.email}
-          onChange={handleChange}
-          required
-          style={{ width: '100%', padding: '0.5rem', marginBottom: '0.7rem' }}
-        />
-      </label>
-
-      <label>
-        Phone:<br />
-        <input
-          type="tel"
-          name="phone"
-          value={form.phone}
-          onChange={handleChange}
-          style={{ width: '100%', padding: '0.5rem', marginBottom: '0.7rem' }}
-        />
-      </label>
-
-      <label>
-        Subject*:<br />
-        <input
-          type="text"
-          name="subject"
-          value={form.subject}
-          onChange={handleChange}
-          required
-          style={{ width: '100%', padding: '0.5rem', marginBottom: '0.7rem' }}
-        />
-      </label>
-
-      <label>
-        Message*:<br />
-        <textarea
-          name="message"
-          value={form.message}
-          onChange={handleChange}
-          required
-          rows={5}
-          style={{ width: '100%', padding: '0.5rem', marginBottom: '1rem' }}
-        />
-      </label>
-
-      <button
-        type="submit"
+    <div className="contact-page-container">
+      {/* LEFT SIDE */}
+      <div
+        className="contact-left-background"
         style={{
-          width: '100%',
-          padding: '0.7rem',
-          backgroundColor: '#007bff',
-          color: 'white',
-          border: 'none',
-          borderRadius: 4,
-          fontWeight: 'bold',
-          cursor: 'pointer',
+          backgroundImage: `url(${process.env.PUBLIC_URL}/images/FAQside.png)`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'right center',
         }}
       >
-        Send Message
-      </button>
-    </form>
+        <div className="contact-title-overlay">
+          <h1>Let’s get in touch</h1>
+          <p className="contact-subtitle">Don’t be afraid to say hello to us!</p>
+          <div className="contact-info">
+            <div className="contact-info-item">
+              <span className="info-label">Phone</span>
+              <a className="info-value" href="tel:+6592200054">+65 9220 0054</a>
+            </div>
+            <div className="contact-info-item">
+              <span className="info-label">Email</span>
+              <a className="info-value" href="mailto:Hello@thissideup.com">Hello@thissideup.com</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* RIGHT SIDE */}
+      <div className="contact-form-column">
+        <form className="contact-form" onSubmit={handleSubmit}>
+          <h2>Contact</h2>
+          <label>
+            Name*
+            <input
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              required
+            />
+          </label>
+          <label>
+            Email*
+            <input
+              type="email"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+              required
+            />
+          </label>
+          <label>
+            Phone
+            <input
+              type="tel"
+              name="phone"
+              value={form.phone}
+              onChange={handleChange}
+            />
+          </label>
+          <label>
+            Subject*
+            <input
+              name="subject"
+              value={form.subject}
+              onChange={handleChange}
+              required
+            />
+          </label>
+          <label>
+            Tell us about what you’re interested in!*
+            <textarea
+              name="message"
+              rows={5}
+              value={form.message}
+              onChange={handleChange}
+              required
+            />
+          </label>
+
+          <button type="submit" className="contact-submit">
+            Send to us
+          </button>
+        </form>
+      </div>
+    </div>
   );
 }
