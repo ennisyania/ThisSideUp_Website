@@ -344,7 +344,7 @@
     margin-bottom: 25px; /* Keep consistent margin below */
     border: none; /* No border */
     transform: none; /* No parallelogram transform */
-    width: 100%; /* Adjusted width to match image */
+    width: 80%; /* Adjusted width to match image */
     min-width: 500px; /* Ensure it's not too small */
     box-sizing: border-box;
     margin: 0 auto; /* Center horizontally */
