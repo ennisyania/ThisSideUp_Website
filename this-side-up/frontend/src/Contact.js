@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './Contact.css';
 
 export default function ContactForm() {
   const [form, setForm] = useState({
@@ -43,93 +44,38 @@ export default function ContactForm() {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{
-        maxWidth: 400,
-        margin: '2rem auto',
-        padding: '1rem',
-        border: '1px solid #ccc',
-        borderRadius: 6,
-        fontFamily: 'Arial, sans-serif',
-      }}
-    >
-      <h2 style={{ textAlign: 'center' }}>Contact Us</h2>
+    <div className="contact-container">
+      <div className="contact-left">
+        <h1><span>Let's get</span><br /><span>in touch</span></h1>
+        <h2>Don't be afraid to<br />say hello to us!</h2>
+        <div className="contact-info">
+          <p>Phone<br /><strong>+65 9220 0054</strong></p>
+          <p>Email<br /><strong>Hello@thissideup.com</strong></p>
+        </div>
+      </div>
 
-      <label>
-        Name*:<br />
-        <input
-          type="text"
-          name="name"
-          value={form.name}
-          onChange={handleChange}
-          required
-          style={{ width: '100%', padding: '0.5rem', marginBottom: '0.7rem' }}
-        />
-      </label>
+      <div className="contact-right">
+        <form onSubmit={handleSubmit} className="contact-form">
+          <h2>Contact</h2>
 
-      <label>
-        Email*:<br />
-        <input
-          type="email"
-          name="email"
-          value={form.email}
-          onChange={handleChange}
-          required
-          style={{ width: '100%', padding: '0.5rem', marginBottom: '0.7rem' }}
-        />
-      </label>
+          <label>Name</label>
+          <input type="text" name="name" value={form.name} onChange={handleChange} required />
 
-      <label>
-        Phone:<br />
-        <input
-          type="tel"
-          name="phone"
-          value={form.phone}
-          onChange={handleChange}
-          style={{ width: '100%', padding: '0.5rem', marginBottom: '0.7rem' }}
-        />
-      </label>
+          <label>Email</label>
+          <input type="email" name="email" value={form.email} onChange={handleChange} required />
 
-      <label>
-        Subject*:<br />
-        <input
-          type="text"
-          name="subject"
-          value={form.subject}
-          onChange={handleChange}
-          required
-          style={{ width: '100%', padding: '0.5rem', marginBottom: '0.7rem' }}
-        />
-      </label>
+          <label>Phone</label>
+          <input type="tel" name="phone" value={form.phone} onChange={handleChange} />
 
-      <label>
-        Message*:<br />
-        <textarea
-          name="message"
-          value={form.message}
-          onChange={handleChange}
-          required
-          rows={5}
-          style={{ width: '100%', padding: '0.5rem', marginBottom: '1rem' }}
-        />
-      </label>
+          <label>Subject</label>
+          <input type="text" name="subject" value={form.subject} onChange={handleChange} required />
 
-      <button
-        type="submit"
-        style={{
-          width: '100%',
-          padding: '0.7rem',
-          backgroundColor: '#007bff',
-          color: 'white',
-          border: 'none',
-          borderRadius: 4,
-          fontWeight: 'bold',
-          cursor: 'pointer',
-        }}
-      >
-        Send Message
-      </button>
-    </form>
+          <label>Tell us about what you're interested in!</label>
+          <textarea name="message" value={form.message} onChange={handleChange} required rows={5} />
+
+          <button type="submit">Send to us</button>
+        </form>
+      </div>
+    </div>
   );
 }
