@@ -374,6 +374,33 @@ body {
 .status-badge.refunded { background-color: #ffebee; color: #f44336; } /* Light red */
 
 
+/* Orders button stuff */
+/* Container for the two tabs */
+.orders-nav {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+/* Base tab look */
+.orders-nav__tab {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  background-color: #e0e0e0;
+  color: #333;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Active “Store” tab */
+.orders-nav__tab--active {
+  background-color: #BE40E8;   /* purple – or use your --admin-purple-chart var */
+  color: #fff;
+}
+
+
 /* Traffic Channel Chart */
 .traffic-channel-card {
     display: flex;
