@@ -16,7 +16,7 @@ export default function FAQ() {
             answer: "Board size depends on your weight and skill level. As a general rule, the board should reach somewhere between your mid-chest and chin when standing upright. Lighter riders can use smaller boards, while heavier riders should opt for larger ones for better float and stability."
         },
         {
-            question: "How do I put traction on my skimboard?",
+            question: "How do I put wax on my skimboard?",
             answer: "Wax typically comes in 'bar' form and is applied to the top/deck of the board by rubbing the bar, with even/firm pressure, in circular motions, from nose to tail, and rail to rail."
         },
         {
