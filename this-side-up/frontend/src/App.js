@@ -59,21 +59,21 @@ import AdminSettings from './admin/ASettings.js';
 
 
 
-const stripePromise = loadStripe('pk_test_51RmwlwRuckXf5vemNjbtW6va56XmNAWtu5QkaTVuuP84itTAQOFS7T5IOhxjV8WEtPxsIh18NATN5Zvt0NsvTXjK00qkuk3udr'); 
+const stripePromise = loadStripe('pk_test_51RmwlwRuckXf5vemNjbtW6va56XmNAWtu5QkaTVuuP84itTAQOFS7T5IOhxjV8WEtPxsIh18NATN5Zvt0NsvTXjK00qkuk3udr');
 
 function App() {
   // Global cart state
   const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
-  document.title = "This Side Up";
+    document.title = "This Side Up";
 
-  const link =
-    document.querySelector("link[rel~='icon']") || document.createElement('link');
-  link.rel = 'icon';
-  link.href = '/whitelogofooter.svg';  
-  document.getElementsByTagName('head')[0].appendChild(link);
-}, []);
+    const link =
+      document.querySelector("link[rel~='icon']") || document.createElement('link');
+    link.rel = 'icon';
+    link.href = '/whitelogofooter.svg';
+    document.getElementsByTagName('head')[0].appendChild(link);
+  }, []);
 
   const handleAddToCart = (productToAdd) => {
     setCartItems((prevItems) => {
@@ -96,6 +96,17 @@ function App() {
     });
   };
 
+  const handleQuantityChange = (itemId, newQuantity) => {
+    setCartItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === itemId ? { ...item, quantity: newQuantity } : item
+      )
+    );
+  };
+
+  const handleRemoveItem = (itemId) => {
+    setCartItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
+  };
 
 
   return (
@@ -107,7 +118,10 @@ function App() {
             <>
               <Navbar
                 cartItems={cartItems}
+                onQuantityChange={handleQuantityChange}
+                onRemoveItem={handleRemoveItem}
               />
+
               <Routes>
 
                 <Route path="/" element={<Homepage />} />
