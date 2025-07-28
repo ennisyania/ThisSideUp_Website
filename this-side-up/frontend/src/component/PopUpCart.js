@@ -14,22 +14,22 @@ export default function PopUpCart({ isOpen, onClose, cartItems, onQuantityChange
 
   const handleIncrement = (item) => {
     if (onQuantityChange) {
-      onQuantityChange(item.id, item.quantity + 1);
+      onQuantityChange(item.id, item.variant, item.quantity + 1);
     }
   };
 
-  const handleDecrement = (item) => {
-    if (item.quantity === 1) {
-      const confirmDelete = window.confirm(`Remove ${item.title} from cart?`);
-      if (confirmDelete && onRemoveItem) {
-        onRemoveItem(item.id);
-      }
-    } else {
-      if (onQuantityChange) {
-        onQuantityChange(item.id, item.quantity - 1);
-      }
+const handleDecrement = (item) => {
+  if (item.quantity === 1) {
+    const confirmDelete = window.confirm(`Remove ${item.title} from cart?`);
+    if (confirmDelete && onRemoveItem) {
+      onRemoveItem(item.id, item.variant);
     }
-  };
+  } else {
+    if (onQuantityChange) {
+      onQuantityChange(item.id, item.variant, item.quantity - 1);
+    }
+  }
+};
 
   return (
     <>
